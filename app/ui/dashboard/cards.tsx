@@ -5,33 +5,28 @@ import {
   InboxIcon,
 } from "@heroicons/react/24/outline";
 import { lusitana } from "@/app/ui/fonts";
-import { fetchCardData } from "@/app/lib/simple-data";
+import { fetchDashboardData } from "@/app/lib/learning-data";
 
 const iconMap = {
-  collected: BanknotesIcon,
-  customers: UserGroupIcon,
-  pending: ClockIcon,
-  invoices: InboxIcon,
+  accounts: UserGroupIcon,
+  subjects: InboxIcon,
+  participations: BanknotesIcon,
+  active: ClockIcon,
 };
 
-export async function CardWrapper() {
-  const {
-    numberOfInvoices,
-    numberOfCustomers,
-    totalPaidInvoices,
-    totalPendingInvoices,
-  } = await fetchCardData();
+export default async function CardWrapper() {
+  const data = await fetchDashboardData();
 
   return (
     <>
-      <Card title="Collected" value={totalPaidInvoices} type="collected" />
-      <Card title="Pending" value={totalPendingInvoices} type="pending" />
-      <Card title="Total Invoices" value={numberOfInvoices} type="invoices" />
+      <Card title="Total Accounts" value={data.totalAccounts} type="accounts" />
+      <Card title="Total Subjects" value={data.totalSubjects} type="subjects" />
       <Card
-        title="Total Customers"
-        value={numberOfCustomers}
-        type="customers"
+        title="Total Participations"
+        value={data.totalParticipations}
+        type="participations"
       />
+      <Card title="Active Subjects" value={data.activeSubjects} type="active" />
     </>
   );
 }
@@ -43,7 +38,7 @@ export function Card({
 }: {
   title: string;
   value: number | string;
-  type: "invoices" | "customers" | "pending" | "collected";
+  type: "accounts" | "subjects" | "participations" | "active";
 }) {
   const Icon = iconMap[type];
 
@@ -62,6 +57,3 @@ export function Card({
     </div>
   );
 }
-
-// Export default cũ để tương thích
-export default CardWrapper;

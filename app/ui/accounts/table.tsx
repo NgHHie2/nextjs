@@ -1,38 +1,22 @@
 import Image from "next/image";
 import { lusitana } from "@/app/ui/fonts";
 import Search from "@/app/ui/search";
+import { AccountsTable } from "@/app/lib/definitions";
+import { fetchFilteredAccounts } from "@/app/lib/learning-data";
 
-// Type cho customers data từ simple-data
-type CustomerWithStats = {
-  id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  total_invoices: number;
-  total_pending: string;
-  total_paid: string;
-};
+export default async function AccountTable({ query }: { query: string }) {
+  const accounts = await fetchFilteredAccounts(query);
 
-export default async function CustomersTable({
-  customers,
-}: {
-  customers: CustomerWithStats[];
-}) {
   return (
     <div className="w-full">
-      <h1 className={`${lusitana.className} mb-8 text-xl md:text-2xl`}>
-        Customers
-      </h1>
-      <Search placeholder="Search customers..." />
       <div className="mt-6 flow-root">
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden rounded-md bg-gray-50 p-2 md:pt-0">
-              {/* Mobile view */}
               <div className="md:hidden">
-                {customers?.map((customer) => (
+                {accounts?.map((account) => (
                   <div
-                    key={customer.id}
+                    key={account.id}
                     className="mb-2 w-full rounded-md bg-white p-4"
                   >
                     <div className="flex items-center justify-between border-b pb-4">
@@ -40,38 +24,36 @@ export default async function CustomersTable({
                         <div className="mb-2 flex items-center">
                           <div className="flex items-center gap-3">
                             <Image
-                              src={customer.image_url}
+                              src="/customers/default-avatar.png"
                               className="rounded-full"
-                              alt={`${customer.name}'s profile picture`}
+                              alt={`${account.firstName} ${account.lastName}'s profile picture`}
                               width={28}
                               height={28}
                             />
-                            <p>{customer.name}</p>
+                            <p>
+                              {account.firstName} {account.lastName}
+                            </p>
                           </div>
                         </div>
-                        <p className="text-sm text-gray-500">
-                          {customer.email}
-                        </p>
+                        <p className="text-sm text-gray-500">{account.email}</p>
                       </div>
                     </div>
                     <div className="flex w-full items-center justify-between border-b py-5">
-                      <div className="flex w-1/2 flex-col">
-                        <p className="text-xs">Pending</p>
-                        <p className="font-medium">{customer.total_pending}</p>
+                      <div className="flex flex-col">
+                        <p className="text-xs">Username</p>
+                        <p className="font-medium">{account.username}</p>
                       </div>
-                      <div className="flex w-1/2 flex-col">
-                        <p className="text-xs">Paid</p>
-                        <p className="font-medium">{customer.total_paid}</p>
+                      <div className="flex flex-col">
+                        <p className="text-xs">Phone</p>
+                        <p className="font-medium">{account.phoneNumber}</p>
                       </div>
                     </div>
                     <div className="pt-4 text-sm">
-                      <p>{customer.total_invoices} invoices</p>
+                      <p>{account.totalSubjects} subjects enrolled</p>
                     </div>
                   </div>
                 ))}
               </div>
-
-              {/* Desktop table */}
               <table className="hidden min-w-full rounded-md text-gray-900 md:table">
                 <thead className="rounded-md bg-gray-50 text-left text-sm font-normal">
                   <tr>
@@ -79,46 +61,54 @@ export default async function CustomersTable({
                       Name
                     </th>
                     <th scope="col" className="px-3 py-5 font-medium">
+                      Username
+                    </th>
+                    <th scope="col" className="px-3 py-5 font-medium">
                       Email
                     </th>
                     <th scope="col" className="px-3 py-5 font-medium">
-                      Total Invoices
+                      Phone
                     </th>
                     <th scope="col" className="px-3 py-5 font-medium">
-                      Total Pending
+                      Total Subjects
                     </th>
-                    <th scope="col" className="px-4 py-5 font-medium">
-                      Total Paid
+                    <th scope="col" className="px-3 py-5 font-medium">
+                      Active Subjects
                     </th>
                   </tr>
                 </thead>
 
                 <tbody className="divide-y divide-gray-200 text-gray-900">
-                  {customers.map((customer) => (
-                    <tr key={customer.id} className="group">
+                  {accounts.map((account) => (
+                    <tr key={account.id} className="group">
                       <td className="whitespace-nowrap bg-white py-5 pl-4 pr-3 text-sm text-black group-first-of-type:rounded-md group-last-of-type:rounded-md sm:pl-6">
                         <div className="flex items-center gap-3">
                           <Image
-                            src={customer.image_url}
+                            src="/customers/default-avatar.png"
                             className="rounded-full"
-                            alt={`${customer.name}'s profile picture`}
+                            alt={`${account.firstName} ${account.lastName}'s profile picture`}
                             width={28}
                             height={28}
                           />
-                          <p>{customer.name}</p>
+                          <p>
+                            {account.firstName} {account.lastName}
+                          </p>
                         </div>
                       </td>
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
-                        {customer.email}
+                        {account.username}
                       </td>
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
-                        {customer.total_invoices}
+                        {account.email}
                       </td>
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
-                        {customer.total_pending}
+                        {account.phoneNumber}
                       </td>
-                      <td className="whitespace-nowrap bg-white px-4 py-5 text-sm group-first-of-type:rounded-md group-last-of-type:rounded-md">
-                        {customer.total_paid}
+                      <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
+                        {account.totalSubjects}
+                      </td>
+                      <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
+                        {account.activeSubjects}
                       </td>
                     </tr>
                   ))}

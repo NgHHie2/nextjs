@@ -1,7 +1,7 @@
 import { lusitana } from "@/app/ui/fonts";
-import { CardWrapper } from "@/app/ui/dashboard/cards";
-import RevenueChart from "@/app/ui/dashboard/revenue-chart";
-import LatestInvoices from "@/app/ui/dashboard/latest-invoices";
+import DashboardCardWrapper from "@/app/ui/dashboard/cards";
+import ParticipationChart from "@/app/ui/dashboard/participation-chart";
+import LatestActivities from "@/app/ui/dashboard/latest-activities";
 import { Suspense } from "react";
 import {
   RevenueChartSkeleton,
@@ -13,19 +13,19 @@ export default function Page() {
   return (
     <main>
       <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Dashboard
+        Learning Dashboard
       </h1>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <Suspense fallback={<CardsSkeleton />}>
-          <CardWrapper />
+          <DashboardCardWrapper />
         </Suspense>
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
         <Suspense fallback={<RevenueChartSkeleton />}>
-          <RevenueChart />
+          <ParticipationChart />
         </Suspense>
         <Suspense fallback={<LatestInvoicesSkeleton />}>
-          <LatestInvoices />
+          <LatestActivities />
         </Suspense>
       </div>
     </main>
