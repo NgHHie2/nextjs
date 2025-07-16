@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* System fonts fallback - không cần mạng */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}
+
+/* Custom font classes nếu muốn style riêng */
+.inter-font {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}
+
+.lusitana-font {
+  font-family: 'Times New Roman', 'Georgia', 'serif';
+  font-weight: 400;
+}
+
+.lusitana-font.font-bold {
+  font-weight: 700;
+}
+
+/* Input number styling */
 input[type='number'] {
   -moz-appearance: textfield;
   appearance: textfield;
@@ -15,4 +35,38 @@ input[type='number']::-webkit-inner-spin-button {
 input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+/* Optional: Custom styles for better typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Times New Roman', 'Georgia', serif;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus styles */
+:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }

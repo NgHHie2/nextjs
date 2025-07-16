@@ -1,15 +1,22 @@
 import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
 import Search from '@/app/ui/search';
-import {
-  CustomersTableType,
-  FormattedCustomersTable,
-} from '@/app/lib/definitions';
+
+// Type cho customers data từ simple-data
+type CustomerWithStats = {
+  id: string;
+  name: string;
+  email: string;
+  image_url: string;
+  total_invoices: number;
+  total_pending: string;
+  total_paid: string;
+};
 
 export default async function CustomersTable({
   customers,
 }: {
-  customers: FormattedCustomersTable[];
+  customers: CustomerWithStats[];
 }) {
   return (
     <div className="w-full">
@@ -21,6 +28,7 @@ export default async function CustomersTable({
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden rounded-md bg-gray-50 p-2 md:pt-0">
+              {/* Mobile view */}
               <div className="md:hidden">
                 {customers?.map((customer) => (
                   <div
@@ -62,6 +70,8 @@ export default async function CustomersTable({
                   </div>
                 ))}
               </div>
+              
+              {/* Desktop table */}
               <table className="hidden min-w-full rounded-md text-gray-900 md:table">
                 <thead className="rounded-md bg-gray-50 text-left text-sm font-normal">
                   <tr>

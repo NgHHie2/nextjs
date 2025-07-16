@@ -18,6 +18,37 @@ const config: Config = {
           600: '#2F6FEB',
         },
       },
+      fontFamily: {
+        // System fonts thay vì Google Fonts
+        'sans': [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'Roboto',
+          'Oxygen',
+          'Ubuntu',
+          'Cantarell',
+          'sans-serif'
+        ],
+        'serif': [
+          'Times New Roman',
+          'Georgia',
+          'serif'
+        ],
+        // Custom font classes
+        'inter': [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'Roboto',
+          'sans-serif'
+        ],
+        'lusitana': [
+          'Times New Roman',
+          'Georgia',
+          'serif'
+        ],
+      },
     },
     keyframes: {
       shimmer: {
@@ -29,4 +60,5 @@ const config: Config = {
   },
   plugins: [require('@tailwindcss/forms')],
 };
+
 export default config;
