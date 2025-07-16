@@ -1,6 +1,6 @@
-import Image from 'next/image';
-import { lusitana } from '@/app/ui/fonts';
-import Search from '@/app/ui/search';
+import Image from "next/image";
+import { lusitana } from "@/app/ui/fonts";
+import Search from "@/app/ui/search";
 
 // Type cho customers data từ simple-data
 type CustomerWithStats = {
@@ -70,7 +70,7 @@ export default async function CustomersTable({
                   </div>
                 ))}
               </div>
-              
+
               {/* Desktop table */}
               <table className="hidden min-w-full rounded-md text-gray-900 md:table">
                 <thead className="rounded-md bg-gray-50 text-left text-sm font-normal">

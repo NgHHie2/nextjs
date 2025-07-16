@@ -1,12 +1,12 @@
 // Sử dụng trực tiếp placeholder data thay vì database
-import { formatCurrency } from './utils';
-import { users, customers, invoices, revenue } from './placeholder-data';
+import { formatCurrency } from "./utils";
+import { users, customers, invoices, revenue } from "./placeholder-data";
 import type {
   CustomerField,
   InvoicesTable,
   LatestInvoice,
   Revenue,
-} from './definitions';
+} from "./definitions";
 
 export async function fetchRevenue(): Promise<Revenue[]> {
   // Simulate loading delay
@@ -23,10 +23,10 @@ export async function fetchLatestInvoices(): Promise<LatestInvoice[]> {
     .map((invoice) => {
       const customer = customers.find((c) => c.id === invoice.customer_id);
       return {
-        id: invoice.customer_id + '-' + invoice.date, // Tạo ID unique
-        name: customer?.name || 'Unknown Customer',
-        image_url: customer?.image_url || '/customers/default.png',
-        email: customer?.email || 'unknown@email.com',
+        id: invoice.customer_id + "-" + invoice.date, // Tạo ID unique
+        name: customer?.name || "Unknown Customer",
+        image_url: customer?.image_url || "/customers/default.png",
+        email: customer?.email || "unknown@email.com",
         amount: formatCurrency(invoice.amount),
       };
     });
@@ -42,14 +42,14 @@ export async function fetchCardData() {
 
   const totalPaidInvoices = formatCurrency(
     invoices
-      .filter((invoice) => invoice.status === 'paid')
-      .reduce((total, invoice) => total + invoice.amount, 0)
+      .filter((invoice) => invoice.status === "paid")
+      .reduce((total, invoice) => total + invoice.amount, 0),
   );
 
   const totalPendingInvoices = formatCurrency(
     invoices
-      .filter((invoice) => invoice.status === 'pending')
-      .reduce((total, invoice) => total + invoice.amount, 0)
+      .filter((invoice) => invoice.status === "pending")
+      .reduce((total, invoice) => total + invoice.amount, 0),
   );
 
   return {
@@ -71,23 +71,25 @@ export async function fetchFilteredInvoices(
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   // Kết hợp invoices với customer data
-  const invoicesWithCustomers: InvoicesTable[] = invoices.map((invoice, index) => {
-    const customer = customers.find((c) => c.id === invoice.customer_id);
-    return {
-      id: `invoice-${index}`, // Tạo ID đơn giản
-      customer_id: invoice.customer_id,
-      name: customer?.name || 'Unknown Customer',
-      email: customer?.email || 'unknown@email.com',
-      image_url: customer?.image_url || '/customers/default.png',
-      date: invoice.date,
-      amount: invoice.amount,
-      status: invoice.status as 'pending' | 'paid',
-    };
-  });
+  const invoicesWithCustomers: InvoicesTable[] = invoices.map(
+    (invoice, index) => {
+      const customer = customers.find((c) => c.id === invoice.customer_id);
+      return {
+        id: `invoice-${index}`, // Tạo ID đơn giản
+        customer_id: invoice.customer_id,
+        name: customer?.name || "Unknown Customer",
+        email: customer?.email || "unknown@email.com",
+        image_url: customer?.image_url || "/customers/default.png",
+        date: invoice.date,
+        amount: invoice.amount,
+        status: invoice.status as "pending" | "paid",
+      };
+    },
+  );
 
   // Filter dựa trên query
   let filteredInvoices = invoicesWithCustomers;
-  
+
   if (query) {
     const searchTerm = query.toLowerCase();
     filteredInvoices = invoicesWithCustomers.filter(
@@ -96,7 +98,7 @@ export async function fetchFilteredInvoices(
         invoice.email.toLowerCase().includes(searchTerm) ||
         invoice.amount.toString().includes(searchTerm) ||
         invoice.date.includes(searchTerm) ||
-        invoice.status.toLowerCase().includes(searchTerm)
+        invoice.status.toLowerCase().includes(searchTerm),
     );
   }
 
@@ -115,8 +117,8 @@ export async function fetchInvoicesPages(query: string): Promise<number> {
   const invoicesWithCustomers = invoices.map((invoice) => {
     const customer = customers.find((c) => c.id === invoice.customer_id);
     return {
-      name: customer?.name || 'Unknown Customer',
-      email: customer?.email || 'unknown@email.com',
+      name: customer?.name || "Unknown Customer",
+      email: customer?.email || "unknown@email.com",
       amount: invoice.amount,
       date: invoice.date,
       status: invoice.status,
@@ -124,7 +126,7 @@ export async function fetchInvoicesPages(query: string): Promise<number> {
   });
 
   let filteredInvoices = invoicesWithCustomers;
-  
+
   if (query) {
     const searchTerm = query.toLowerCase();
     filteredInvoices = invoicesWithCustomers.filter(
@@ -133,7 +135,7 @@ export async function fetchInvoicesPages(query: string): Promise<number> {
         invoice.email.toLowerCase().includes(searchTerm) ||
         invoice.amount.toString().includes(searchTerm) ||
         invoice.date.includes(searchTerm) ||
-        invoice.status.toLowerCase().includes(searchTerm)
+        invoice.status.toLowerCase().includes(searchTerm),
     );
   }
 
@@ -155,12 +157,12 @@ export async function fetchInvoiceById(id: string) {
 
   // Tìm invoice đầu tiên làm example (vì đây là demo)
   const invoice = invoices[0];
-  
+
   return {
     id: id,
     customer_id: invoice.customer_id,
     amount: invoice.amount / 100, // Convert cents to dollars
-    status: invoice.status as 'pending' | 'paid',
+    status: invoice.status as "pending" | "paid",
   };
 }
 
@@ -170,15 +172,15 @@ export async function fetchFilteredCustomers(query: string) {
   // Tính toán statistics cho mỗi customer
   const customersWithStats = customers.map((customer) => {
     const customerInvoices = invoices.filter(
-      (invoice) => invoice.customer_id === customer.id
+      (invoice) => invoice.customer_id === customer.id,
     );
 
     const total_invoices = customerInvoices.length;
     const total_pending = customerInvoices
-      .filter((invoice) => invoice.status === 'pending')
+      .filter((invoice) => invoice.status === "pending")
       .reduce((sum, invoice) => sum + invoice.amount, 0);
     const total_paid = customerInvoices
-      .filter((invoice) => invoice.status === 'paid')
+      .filter((invoice) => invoice.status === "paid")
       .reduce((sum, invoice) => sum + invoice.amount, 0);
 
     return {
@@ -194,13 +196,13 @@ export async function fetchFilteredCustomers(query: string) {
 
   // Filter theo query nếu có
   let filteredCustomers = customersWithStats;
-  
+
   if (query) {
     const searchTerm = query.toLowerCase();
     filteredCustomers = customersWithStats.filter(
       (customer) =>
         customer.name.toLowerCase().includes(searchTerm) ||
-        customer.email.toLowerCase().includes(searchTerm)
+        customer.email.toLowerCase().includes(searchTerm),
     );
   }
 

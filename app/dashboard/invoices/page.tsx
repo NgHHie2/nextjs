@@ -1,27 +1,21 @@
-import Pagination from '@/app/ui/invoices/pagination';
-import Search from '@/app/ui/search';
-import Table from '@/app/ui/invoices/table';
-import { CreateInvoice } from '@/app/ui/invoices/buttons';
-import { lusitana } from '@/app/ui/fonts';
-import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
-import { Suspense } from 'react';
-// Đổi từ fetchInvoicesPages từ data.ts sang simple-data.ts
-import { fetchInvoicesPages } from '@/app/lib/simple-data';
+import Pagination from "@/app/ui/invoices/pagination";
+import Search from "@/app/ui/search";
+import Table from "@/app/ui/invoices/table";
+import { CreateInvoice } from "@/app/ui/invoices/buttons";
+import { lusitana } from "@/app/ui/fonts";
+import { Suspense } from "react";
+import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
+import { fetchInvoicesPages } from "@/app/lib/simple-data";
 
-export default async function Page({
-  searchParams,
-}: {
+export default async function Page(props: {
   searchParams?: Promise<{
     query?: string;
     page?: string;
   }>;
 }) {
-  // Await the searchParams since it's now a Promise in Next.js 15+
-  const resolvedSearchParams = await searchParams;
-  const query = resolvedSearchParams?.query || '';
-  const currentPage = Number(resolvedSearchParams?.page) || 1;
-  
-  // Fetch total pages từ simple data
+  const searchParams = await props.searchParams;
+  const query = searchParams?.query || "";
+  const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await fetchInvoicesPages(query);
 
   return (

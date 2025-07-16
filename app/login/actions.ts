@@ -5,17 +5,17 @@ export async function authenticate(
   formData: FormData,
 ) {
   try {
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
     // Check credentials (hardcoded cho test)
-    if (email === 'user@nextmail.com' && password === '123456') {
+    if (email === "user@nextmail.com" && password === "123456") {
       // Redirect to dashboard
-      return { success: true, message: 'Login successful!' };
+      return { success: true, message: "Login successful!" };
     } else {
-      return { success: false, message: 'Invalid email or password.' };
+      return { success: false, message: "Invalid email or password." };
     }
   } catch (error) {
-    return { success: false, message: 'Something went wrong.' };
+    return { success: false, message: "Something went wrong." };
   }
 }

@@ -1,36 +1,36 @@
-'use client';
+"use client";
 
-import { lusitana } from '@/app/ui/fonts';
+import { lusitana } from "@/app/ui/fonts";
 import {
   AtSymbolIcon,
   KeyIcon,
   ExclamationCircleIcon,
-} from '@heroicons/react/24/outline';
-import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import { Button } from './button';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+} from "@heroicons/react/24/outline";
+import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import { Button } from "./button";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError("");
 
     const formData = new FormData(event.currentTarget);
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
     // Simple validation
-    if (email === 'user@nextmail.com' && password === '123456') {
+    if (email === "user@nextmail.com" && password === "123456") {
       // Redirect to dashboard
-      router.push('/dashboard');
+      router.push("/dashboard");
     } else {
-      setError('Invalid email or password.');
+      setError("Invalid email or password.");
     }
 
     setIsLoading(false);
@@ -86,7 +86,7 @@ export default function LoginForm() {
           </div>
         </div>
         <Button className="mt-4 w-full" type="submit" disabled={isLoading}>
-          {isLoading ? 'Logging in...' : 'Log in'} 
+          {isLoading ? "Logging in..." : "Log in"}
           <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <div className="flex h-8 items-end space-x-1">
