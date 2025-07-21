@@ -1,10 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
+import { PencilIcon, EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { lusitana } from "@/app/ui/fonts";
-import Search from "@/app/ui/search";
-import { AccountsTable } from "@/app/lib/definitions";
+import { AccountTable } from "@/app/lib/definitions";
 import { fetchFilteredAccounts } from "@/app/lib/learning-data";
+import { DeleteAccountButton } from "@/app/ui/accounts/buttons";
 
-export default async function AccountTable({ query }: { query: string }) {
+export default async function AccountsTable({ query }: { query: string }) {
   const accounts = await fetchFilteredAccounts(query);
 
   return (
@@ -13,6 +15,7 @@ export default async function AccountTable({ query }: { query: string }) {
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden rounded-md bg-gray-50 p-2 md:pt-0">
+              {/* Mobile view */}
               <div className="md:hidden">
                 {accounts?.map((account) => (
                   <div
@@ -23,13 +26,6 @@ export default async function AccountTable({ query }: { query: string }) {
                       <div>
                         <div className="mb-2 flex items-center">
                           <div className="flex items-center gap-3">
-                            <Image
-                              src="/customers/default-avatar.png"
-                              className="rounded-full"
-                              alt={`${account.firstName} ${account.lastName}'s profile picture`}
-                              width={28}
-                              height={28}
-                            />
                             <p>
                               {account.firstName} {account.lastName}
                             </p>
@@ -48,12 +44,31 @@ export default async function AccountTable({ query }: { query: string }) {
                         <p className="font-medium">{account.phoneNumber}</p>
                       </div>
                     </div>
-                    <div className="pt-4 text-sm">
-                      <p>{account.totalSubjects} subjects enrolled</p>
+                    <div className="flex w-full items-center justify-between pt-4">
+                      <p className="text-sm">
+                        {account.totalSubjects} subjects enrolled
+                      </p>
+                      <div className="flex justify-end gap-2">
+                        <Link
+                          href={`/dashboard/accounts/${account.id}`}
+                          className="rounded-md border p-2 hover:bg-gray-100"
+                        >
+                          <EyeIcon className="w-5" />
+                        </Link>
+                        <Link
+                          href={`/dashboard/accounts/${account.id}/edit`}
+                          className="rounded-md border p-2 hover:bg-gray-100"
+                        >
+                          <PencilIcon className="w-5" />
+                        </Link>
+                        <DeleteAccountButton id={account.id} />
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
+
+              {/* Desktop view */}
               <table className="hidden min-w-full rounded-md text-gray-900 md:table">
                 <thead className="rounded-md bg-gray-50 text-left text-sm font-normal">
                   <tr>
@@ -75,6 +90,9 @@ export default async function AccountTable({ query }: { query: string }) {
                     <th scope="col" className="px-3 py-5 font-medium">
                       Active Subjects
                     </th>
+                    <th scope="col" className="relative py-3 pl-6 pr-3">
+                      <span className="sr-only">Actions</span>
+                    </th>
                   </tr>
                 </thead>
 
@@ -83,13 +101,6 @@ export default async function AccountTable({ query }: { query: string }) {
                     <tr key={account.id} className="group">
                       <td className="whitespace-nowrap bg-white py-5 pl-4 pr-3 text-sm text-black group-first-of-type:rounded-md group-last-of-type:rounded-md sm:pl-6">
                         <div className="flex items-center gap-3">
-                          <Image
-                            src="/customers/default-avatar.png"
-                            className="rounded-full"
-                            alt={`${account.firstName} ${account.lastName}'s profile picture`}
-                            width={28}
-                            height={28}
-                          />
                           <p>
                             {account.firstName} {account.lastName}
                           </p>
@@ -109,6 +120,23 @@ export default async function AccountTable({ query }: { query: string }) {
                       </td>
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
                         {account.activeSubjects}
+                      </td>
+                      <td className="whitespace-nowrap bg-white py-3 pl-6 pr-3">
+                        <div className="flex justify-end gap-3">
+                          <Link
+                            href={`/dashboard/accounts/${account.id}`}
+                            className="rounded-md border p-2 hover:bg-gray-100"
+                          >
+                            <EyeIcon className="w-5" />
+                          </Link>
+                          <Link
+                            href={`/dashboard/accounts/${account.id}/edit`}
+                            className="rounded-md border p-2 hover:bg-gray-100"
+                          >
+                            <PencilIcon className="w-5" />
+                          </Link>
+                          <DeleteAccountButton id={account.id} />
+                        </div>
                       </td>
                     </tr>
                   ))}

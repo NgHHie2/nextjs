@@ -40,7 +40,7 @@ export type SubjectWithParticipants = {
 };
 
 // For pagination
-export type AccountsTable = {
+export type AccountTable = {
   id: number;
   username: string;
   firstName: string;

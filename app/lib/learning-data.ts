@@ -1,11 +1,11 @@
-import { Account, Subject, Participation, AccountStats, SubjectsTable, AccountsTable, DashboardCardData } from './definitions';
+import { Account, Subject, Participation, AccountStats, SubjectsTable, AccountTable, DashboardCardData } from './definitions';
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = 'http://localhost:3000';
 
 // Account functions
 export async function fetchAllAccounts(): Promise<Account[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/account`, {
+    const response = await fetch(`${API_BASE_URL}/api/accounts`, {
       cache: 'no-store',
     });
     
@@ -22,7 +22,7 @@ export async function fetchAllAccounts(): Promise<Account[]> {
 
 export async function fetchAccountById(id: number): Promise<Account | null> {
   try {
-    const response = await fetch(`${API_BASE_URL}/accounts/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/api/accounts/${id}`, {
       cache: 'no-store',
     });
     
@@ -37,7 +37,7 @@ export async function fetchAccountById(id: number): Promise<Account | null> {
   }
 }
 
-export async function fetchFilteredAccounts(query: string): Promise<AccountsTable[]> {
+export async function fetchFilteredAccounts(query: string): Promise<AccountTable[]> {
   try {
     const accounts = await fetchAllAccounts();
     
@@ -50,7 +50,7 @@ export async function fetchFilteredAccounts(query: string): Promise<AccountsTabl
     );
     
     // Transform to AccountsTable format
-    const accountsTable: AccountsTable[] = await Promise.all(
+    const accountsTable: AccountTable[] = await Promise.all(
       filteredAccounts.map(async (account) => {
         const participations = await fetchParticipationsByAccount(account.id);
         
@@ -264,7 +264,7 @@ export async function createAccount(accountData: Omit<Account, 'id'>): Promise<A
 
 export async function updateAccount(id: number, accountData: Partial<Account>): Promise<Account> {
   try {
-    const response = await fetch(`${API_BASE_URL}/accounts/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/api/accounts/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

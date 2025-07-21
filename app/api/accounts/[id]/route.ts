@@ -3,10 +3,11 @@ import { API_BASE_URL } from '@/app/lib/api-config';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const response = await fetch(`${API_BASE_URL}/account/${params.id}`, {
+    const { id } = await params;
+    const response = await fetch(`${API_BASE_URL}/account/${id}`, {
       cache: 'no-store',
     });
     
@@ -27,12 +28,12 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await request.json();
-    
-    const response = await fetch(`${API_BASE_URL}/account/${params.id}`, {
+    const { id } = await params;
+    const response = await fetch(`${API_BASE_URL}/account/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -57,10 +58,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const response = await fetch(`${API_BASE_URL}/account/${params.id}`, {
+    const { id } = await params;
+    const response = await fetch(`${API_BASE_URL}/account/${id}`, {
       method: 'DELETE',
     });
     

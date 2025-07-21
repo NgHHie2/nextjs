@@ -6,8 +6,15 @@ import { lusitana } from "@/app/ui/fonts";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const id = parseInt(params.id);
+export const dynamic = "force-dynamic";
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const resolvedParams = await params;
+  const id = parseInt(resolvedParams.id);
   const [account, participations] = await Promise.all([
     fetchAccountById(id),
     fetchParticipationsByAccount(id),

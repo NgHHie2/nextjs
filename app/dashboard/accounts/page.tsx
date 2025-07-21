@@ -4,6 +4,9 @@ import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
 import { fetchFilteredAccounts } from "@/app/lib/learning-data";
 import Search from "@/app/ui/search";
 import { lusitana } from "@/app/ui/fonts";
+import { CreateAccountButton } from "@/app/ui/accounts/buttons";
+
+export const dynamic = "force-dynamic";
 
 export default async function Page({
   searchParams,
@@ -22,7 +25,9 @@ export default async function Page({
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search accounts..." />
+        <CreateAccountButton></CreateAccountButton>
       </div>
+
       <Suspense key={query} fallback={<InvoicesTableSkeleton />}>
         <AccountsTable query={query} />
       </Suspense>
