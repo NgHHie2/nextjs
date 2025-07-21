@@ -11,11 +11,13 @@ import {
   CalendarDaysIcon,
   LockClosedIcon,
 } from "@heroicons/react/24/outline";
+import { createAccount } from "@/app/lib/data/account-data";
+import { AccountForm } from "@/app/lib/definitions";
 
 export default function CreateAccountForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<AccountForm>({
     username: "",
     password: "",
     firstName: "",
@@ -38,20 +40,7 @@ export default function CreateAccountForm() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/accounts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          birthDay: new Date(formData.birthDay).toISOString(),
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create account");
-      }
+      const response = await createAccount(formData);
 
       router.push("/dashboard/accounts");
       router.refresh();

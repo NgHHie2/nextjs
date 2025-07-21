@@ -1,7 +1,7 @@
 import {
   fetchAccountById,
   fetchParticipationsByAccount,
-} from "@/app/lib/learning-data";
+} from "@/app/lib/data/account-data";
 import { lusitana } from "@/app/ui/fonts";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -65,12 +65,6 @@ export default async function Page({
             <p>
               <strong>Total Subjects:</strong> {participations.length}
             </p>
-            <p>
-              <strong>Active Subjects:</strong> {participations.length}
-            </p>
-            <p>
-              <strong>Completion Rate:</strong> 85%
-            </p>
           </div>
         </div>
       </div>
@@ -102,9 +96,7 @@ export default async function Page({
                     {participation.subject?.code || "N/A"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                      Active
-                    </span>
+                    {participation.subject?.description || "N/A"}
                   </td>
                 </tr>
               ))}

@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import AccountsTable from "@/app/ui/accounts/table";
 import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
-import { fetchFilteredAccounts } from "@/app/lib/learning-data";
 import Search from "@/app/ui/search";
 import { lusitana } from "@/app/ui/fonts";
 import { CreateAccountButton } from "@/app/ui/accounts/buttons";

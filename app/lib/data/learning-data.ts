@@ -1,4 +1,4 @@
-import { Account, Subject, Participation, AccountStats, SubjectsTable, AccountTable, DashboardCardData } from './definitions';
+import { Account, Subject, Participation, AccountStats, SubjectsTable, AccountTable, DashboardCardData } from '../definitions';
 
 const API_BASE_URL = 'http://localhost:3000';
 
@@ -141,7 +141,7 @@ export async function fetchSubjectsPages(query: string): Promise<number> {
 // Participation functions
 export async function fetchParticipationsByAccount(accountId: number): Promise<Participation[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/participations/account/${accountId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/participations/account/${accountId}`, {
       cache: 'no-store',
     });
     

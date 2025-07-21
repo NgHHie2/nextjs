@@ -1,6 +1,6 @@
 import { CalendarIcon } from "@heroicons/react/24/outline";
 import { lusitana } from "@/app/ui/fonts";
-import { fetchParticipationChart } from "@/app/lib/learning-data";
+import { fetchParticipationChart } from "@/app/lib/data/learning-data";
 
 export default async function ParticipationChart() {
   const participationData = await fetchParticipationChart();

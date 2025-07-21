@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PencilIcon, EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { lusitana } from "@/app/ui/fonts";
 import { AccountTable } from "@/app/lib/definitions";
-import { fetchFilteredAccounts } from "@/app/lib/learning-data";
+import { fetchFilteredAccounts } from "@/app/lib/data/account-data";
 import { DeleteAccountButton } from "@/app/ui/accounts/buttons";
 
 export default async function AccountsTable({ query }: { query: string }) {
@@ -45,9 +45,7 @@ export default async function AccountsTable({ query }: { query: string }) {
                       </div>
                     </div>
                     <div className="flex w-full items-center justify-between pt-4">
-                      <p className="text-sm">
-                        {account.totalSubjects} subjects enrolled
-                      </p>
+                      <p className="text-sm">{account.birthDay}</p>
                       <div className="flex justify-end gap-2">
                         <Link
                           href={`/dashboard/accounts/${account.id}`}
@@ -75,20 +73,17 @@ export default async function AccountsTable({ query }: { query: string }) {
                     <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
                       Name
                     </th>
-                    <th scope="col" className="px-3 py-5 font-medium">
+                    <th scope="col" className="px-4 py-5 font-medium">
                       Username
                     </th>
-                    <th scope="col" className="px-3 py-5 font-medium">
+                    <th scope="col" className="px-4 py-5 font-medium">
                       Email
                     </th>
-                    <th scope="col" className="px-3 py-5 font-medium">
+                    <th scope="col" className="px-4 py-5 font-medium">
                       Phone
                     </th>
-                    <th scope="col" className="px-3 py-5 font-medium">
-                      Total Subjects
-                    </th>
-                    <th scope="col" className="px-3 py-5 font-medium">
-                      Active Subjects
+                    <th scope="col" className="px-4 py-5 font-medium">
+                      Birthday
                     </th>
                     <th scope="col" className="relative py-3 pl-6 pr-3">
                       <span className="sr-only">Actions</span>
@@ -116,10 +111,7 @@ export default async function AccountsTable({ query }: { query: string }) {
                         {account.phoneNumber}
                       </td>
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
-                        {account.totalSubjects}
-                      </td>
-                      <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
-                        {account.activeSubjects}
+                        {account.birthDay}
                       </td>
                       <td className="whitespace-nowrap bg-white py-3 pl-6 pr-3">
                         <div className="flex justify-end gap-3">

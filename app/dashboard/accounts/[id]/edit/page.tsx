@@ -1,6 +1,6 @@
 import EditAccountForm from "@/app/ui/accounts/edit-form";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
-import { fetchAccountById } from "@/app/lib/learning-data";
+import { fetchAccountById } from "@/app/lib/data/learning-data";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";

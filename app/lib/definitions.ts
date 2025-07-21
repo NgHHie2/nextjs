@@ -9,6 +9,16 @@ export type Account = {
   email: string;
 };
 
+export type AccountForm = {
+  username: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  birthDay: string;
+  phoneNumber: string;
+  email: string;
+};
+
 export type Subject = {
   status: string;
   id: number;

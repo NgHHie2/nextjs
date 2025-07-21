@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { UpdateSubject, DeleteSubject } from "@/app/ui/subjects/buttons";
-import { fetchFilteredSubjects } from "@/app/lib/learning-data";
+import { fetchFilteredSubjects } from "@/app/lib/data/learning-data";
 
 export default async function SubjectsTable({
   query,

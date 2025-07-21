@@ -11,15 +11,17 @@ import {
   PhoneIcon,
   CalendarDaysIcon,
 } from "@heroicons/react/24/outline";
+import { updateAccount } from "@/app/lib/data/account-data";
 
 export default function EditAccountForm({ account }: { account: Account }) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Account>({
+    id: account.id,
     username: account.username,
     firstName: account.firstName,
     lastName: account.lastName,
-    birthDay: account.birthDay, // Convert to date format
+    birthDay: account.birthDay.split("T")[0], // Convert to date format
     phoneNumber: account.phoneNumber,
     email: account.email,
   });
@@ -37,20 +39,7 @@ export default function EditAccountForm({ account }: { account: Account }) {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/accounts/${account.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          birthDay: new Date(formData.birthDay).toISOString(),
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update account");
-      }
+      const response = await updateAccount(account.id, formData);
 
       router.push("/dashboard/accounts");
       router.refresh();

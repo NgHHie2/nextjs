@@ -70,8 +70,8 @@ export async function DELETE(
       throw new Error('Failed to delete account');
     }
     
-    const data = await response.json();
-    return NextResponse.json(data);
+    const message = await response.text();
+    return NextResponse.json({ message });
   } catch (error) {
     console.error('Error deleting account:', error);
     return NextResponse.json(

@@ -4,6 +4,7 @@ import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { deleteAccount } from "@/app/lib/data/account-data";
 
 export function CreateAccountButton() {
   return (
@@ -29,14 +30,7 @@ export function DeleteAccountButton({ id }: { id: number }) {
     setIsDeleting(true);
 
     try {
-      const response = await fetch(`/api/accounts/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete account");
-      }
-
+      const response = await deleteAccount(id);
       // Refresh the page to update the list
       router.refresh();
     } catch (error) {

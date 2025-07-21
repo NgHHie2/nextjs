@@ -5,6 +5,7 @@ import {
   HomeIcon,
   DocumentDuplicateIcon,
   AcademicCapIcon,
+  ScissorsIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -23,6 +24,11 @@ const links = [
     name: "Participations",
     href: "/dashboard/participations",
     icon: DocumentDuplicateIcon,
+  },
+  {
+    name: "Splitter",
+    href: "/dashboard/splitter",
+    icon: ScissorsIcon,
   },
 ];
 
