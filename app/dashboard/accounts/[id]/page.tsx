@@ -1,10 +1,22 @@
+// app/dashboard/accounts/[id]/page.tsx
 import {
   fetchAccountById,
   fetchParticipationsByAccount,
-} from "@/app/lib/data/account-data";
+} from "@/app/lib/data/learning-data";
 import { lusitana } from "@/app/ui/fonts";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import Breadcrumbs from "@/app/ui/breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -25,21 +37,28 @@ export default async function Page({
   }
 
   return (
-    <main>
-      <div className="flex items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>Account Details</h1>
-        <Link
-          href={`/dashboard/accounts/${id}/edit`}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-500"
-        >
-          Edit Account
-        </Link>
-      </div>
+    <main className="space-y-6">
+      <Breadcrumbs
+        breadcrumbs={[
+          { label: "Accounts", href: "/dashboard/accounts/" },
+          {
+            label: "Account Details",
+            href: `/dashboard/accounts/${id}`,
+          },
+          {
+            label: account.username,
+            href: `/dashboard/accounts/${id}#username`,
+            active: true,
+          },
+        ]}
+      />
 
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div className="rounded-lg bg-gray-50 p-4">
-          <h2 className="text-lg font-semibold">Personal Information</h2>
-          <div className="mt-4 space-y-2">
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Personal Information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
             <p>
               <strong>Username:</strong> {account.username}
             </p>
@@ -56,54 +75,50 @@ export default async function Page({
               <strong>Birthday:</strong>{" "}
               {new Date(account.birthDay).toLocaleDateString()}
             </p>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        <div className="rounded-lg bg-gray-50 p-4">
-          <h2 className="text-lg font-semibold">Learning Statistics</h2>
-          <div className="mt-4 space-y-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Learning Statistics</CardTitle>
+          </CardHeader>
+          <CardContent>
             <p>
               <strong>Total Subjects:</strong> {participations.length}
             </p>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
 
-      <div className="mt-6">
-        <h2 className="text-lg font-semibold">Enrolled Subjects</h2>
-        <div className="mt-4 overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Subject
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Code
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
+      <Card>
+        <CardHeader>
+          <CardTitle>Enrolled Subjects</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Subject</TableHead>
+                <TableHead>Code</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {participations.map((participation) => (
-                <tr key={participation.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                <TableRow key={participation.id}>
+                  <TableCell>
                     {participation.subject?.title || "Unknown"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {participation.subject?.code || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  </TableCell>
+                  <TableCell>{participation.subject?.code || "N/A"}</TableCell>
+                  <TableCell>
                     {participation.subject?.description || "N/A"}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </main>
   );
 }
