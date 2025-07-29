@@ -1,5 +1,5 @@
 import "@/app/ui/global.css";
-import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function RootLayout({
   children,
@@ -9,7 +9,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AntdRegistry>{children}</AntdRegistry>
+        {children}
+        <Toaster />
       </body>
     </html>
   );

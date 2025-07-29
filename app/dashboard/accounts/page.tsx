@@ -7,14 +7,12 @@ import { CreateAccountButton } from "@/app/ui/accounts/buttons";
 
 export const dynamic = "force-dynamic";
 
-export default async function Page({
+export default function Page({
   searchParams,
 }: {
-  searchParams?: Promise<{
-    query?: string;
-  }>;
+  searchParams?: { query?: string };
 }) {
-  const resolvedSearchParams = await searchParams;
+  const resolvedSearchParams = searchParams;
   const query = resolvedSearchParams?.query || "";
 
   return (
