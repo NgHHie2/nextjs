@@ -12,9 +12,7 @@ export default async function Page({
 }) {
   const resolvedParams = await params;
   const id = parseInt(resolvedParams.id);
-  console.log(id);
   const account = await fetchAccountById(id);
-  console.log(account);
   if (!account) {
     notFound();
   }
@@ -27,6 +25,10 @@ export default async function Page({
           {
             label: "Edit Account",
             href: `/dashboard/accounts/${id}/edit`,
+          },
+          {
+            label: account.username,
+            href: `/dashboard/accounts/${id}/edit#username`,
             active: true,
           },
         ]}
