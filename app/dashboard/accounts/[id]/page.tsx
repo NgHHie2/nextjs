@@ -58,23 +58,31 @@ export default async function Page({
           <CardHeader>
             <CardTitle>Personal Information</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <p>
-              <strong>Username:</strong> {account.username}
-            </p>
-            <p>
-              <strong>Name:</strong> {account.firstName} {account.lastName}
-            </p>
-            <p>
-              <strong>Email:</strong> {account.email}
-            </p>
-            <p>
-              <strong>Phone:</strong> {account.phoneNumber}
-            </p>
-            <p>
-              <strong>Birthday:</strong>{" "}
-              {new Date(account.birthDay).toLocaleDateString()}
-            </p>
+          <CardContent>
+            <div className="divide-y divide-gray-200">
+              <div className="grid grid-cols-2 gap-4 py-2">
+                <span className="text-gray-500 font-medium">Username</span>
+                <span>{account.username}</span>
+              </div>
+              <div className="grid grid-cols-2 gap-4 py-2">
+                <span className="text-gray-500 font-medium">Name</span>
+                <span>
+                  {account.firstName} {account.lastName}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-4 py-2">
+                <span className="text-gray-500 font-medium">Email</span>
+                <span>{account.email}</span>
+              </div>
+              <div className="grid grid-cols-2 gap-4 py-2">
+                <span className="text-gray-500 font-medium">Phone</span>
+                <span>{account.phoneNumber}</span>
+              </div>
+              <div className="grid grid-cols-2 gap-4 py-2">
+                <span className="text-gray-500 font-medium">Birthday</span>
+                <span>{new Date(account.birthDay).toLocaleDateString()}</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -83,9 +91,15 @@ export default async function Page({
             <CardTitle>Learning Statistics</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>
-              <strong>Total Subjects:</strong> {participations.length}
-            </p>
+            <div className="divide-y divide-gray-200">
+              <div className="grid grid-cols-2 gap-4 py-2">
+                <span className="text-gray-500 font-medium">
+                  Total Subjects
+                </span>
+                <span>{participations.length}</span>
+              </div>
+              {/* Thêm dòng khác nếu muốn sau này */}
+            </div>
           </CardContent>
         </Card>
       </div>
