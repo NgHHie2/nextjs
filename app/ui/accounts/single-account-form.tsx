@@ -24,7 +24,7 @@ export default function SingleAccountForm() {
 
   const form = useForm<AccountForm>({
     defaultValues: {
-      username: "",
+      cccd: "",
       password: "",
       firstName: "",
       lastName: "",
@@ -53,12 +53,12 @@ export default function SingleAccountForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
-          name="username"
+          name="cccd"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>CCCD</FormLabel>
               <FormControl>
-                <Input placeholder="Enter username" {...field} />
+                <Input placeholder="Enter cccd" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

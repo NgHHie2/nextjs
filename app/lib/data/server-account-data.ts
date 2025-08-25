@@ -1,3 +1,4 @@
+// app/lib/data/server-account-data.ts
 import { cookies } from "next/headers";
 import {
   Account,
@@ -20,30 +21,46 @@ async function createRequestWithCookies(
   options: RequestInit = {}
 ) {
   const cookieStore = await cookies();
-  const cookieHeader = cookieStore.toString(); // Lấy tất cả cookies
+  const cookieHeader = cookieStore.toString();
 
   return fetch(url, {
     ...options,
     headers: {
       "Content-Type": "application/json",
-      Cookie: cookieHeader, // Forward cookies đến Next.js API
+      Cookie: cookieHeader,
       ...options.headers,
     },
   });
 }
 
 export async function fetchAllAccounts(
-  query?: string
+  query?: string,
+  role?: string,
+  currentPage?: number,
+  currentSize?: number,
+  sortBy?: string,
+  sortDir?: string
 ): Promise<AccountsPageResponse> {
   try {
-    // Next.js API route /api/accounts đã handle query parameter
-    const queryParam = query ? `?keyword=${encodeURIComponent(query)}` : "";
-    const response = await createRequestWithCookies(
-      `${API_BASE_URL}/api/accounts${queryParam}`,
-      {
-        cache: "no-store",
-      }
-    );
+    const params = new URLSearchParams();
+
+    if (query) params.set("keyword", query);
+    if (role && role !== "all") params.set("role", role);
+    if (sortBy) params.set("sortBy", sortBy);
+    if (sortDir) params.set("sortDir", sortDir);
+    if (currentPage) params.set("page", (currentPage - 1).toString());
+    if (currentSize) params.set("size", currentSize.toString());
+
+    const queryString = params.toString();
+    const url = `${API_BASE_URL}/api/accounts${
+      queryString ? `?${queryString}` : ""
+    }`;
+
+    console.log("hiep: ", url);
+
+    const response = await createRequestWithCookies(url, {
+      cache: "no-store",
+    });
 
     if (!response.ok) {
       throw new Error("Failed to fetch accounts");

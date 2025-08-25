@@ -228,12 +228,9 @@ export default function EditAccountForm({ account }: { account: Account }) {
           </div>
         </CardContent>
 
-        <CardFooter className="flex justify-between">
+        <CardFooter className="flex justify-end gap-4">
           <Button type="button" variant="outline" asChild>
-            <Link href="/dashboard/accounts">
-              <X className="h-4 w-4 mr-2" />
-              Cancel
-            </Link>
+            <Link href="/dashboard/accounts">Cancel</Link>
           </Button>
 
           <Button type="submit" disabled={isSubmitting}>
@@ -243,10 +240,7 @@ export default function EditAccountForm({ account }: { account: Account }) {
                 Updating...
               </>
             ) : (
-              <>
-                <Save className="h-4 w-4 mr-2" />
-                Update Account
-              </>
+              <>Update Account</>
             )}
           </Button>
         </CardFooter>

@@ -1,18 +1,35 @@
+// app/api/accounts/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { API_BASE_URL } from "@/app/lib/api-config";
 import { forwardToBackend } from "@/app/lib/api-utils";
 
 export async function GET(request: NextRequest) {
   try {
-    // Lấy query parameters từ URL
     const { searchParams } = new URL(request.url);
-    const keyword = searchParams.get("keyword");
 
-    // Build URL với query parameters nếu có
-    const queryString = keyword
-      ? `?keyword=${encodeURIComponent(keyword)}`
-      : "";
-    const backendUrl = `${API_BASE_URL}/account/search${queryString}`;
+    // Build query parameters for backend
+    const backendParams = new URLSearchParams();
+
+    const keyword = searchParams.get("keyword");
+    const role = searchParams.get("role");
+    const page = searchParams.get("page") || "0";
+    const size = searchParams.get("size") || "10";
+    const sortBy = searchParams.get("sortBy");
+    const sortDir = searchParams.get("sortDir");
+
+    if (keyword) backendParams.set("keyword", keyword);
+    if (role && role !== "all") backendParams.set("role", role);
+    if (sortBy) backendParams.set("sort", `${sortBy},${sortDir || "asc"}`);
+    backendParams.set("page", page);
+    backendParams.set("size", size);
+
+    const queryString = backendParams.toString();
+    const backendUrl = `${API_BASE_URL}/account/search${
+      queryString ? `?${queryString}` : ""
+    }`;
+
+    // console.log(backendUrl);
+    // console.log(sortBy);
 
     const response = await forwardToBackend(request, backendUrl, {
       method: "GET",
@@ -25,6 +42,7 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await response.json();
+    // console.log(data);
     return NextResponse.json(data);
   } catch (error) {
     console.error("Error fetching accounts:", error);

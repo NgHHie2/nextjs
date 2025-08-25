@@ -25,6 +25,7 @@ export type AccountForm = {
   birthDay: string;
   phoneNumber: string;
   email: string;
+  cccd: string;
 };
 
 export type Subject = {

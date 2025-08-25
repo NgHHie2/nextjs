@@ -25,7 +25,6 @@ export async function createAccount(
       },
       body: JSON.stringify({
         ...accountData,
-        birthDay: new Date(accountData.birthDay).toISOString(),
       }),
     });
 
