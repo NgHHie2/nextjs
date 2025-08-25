@@ -1,12 +1,14 @@
 export type Account = {
   id: number;
   username: string;
+  cccd: string;
   password?: string;
   firstName: string;
   lastName: string;
   birthDay: string;
   phoneNumber: string;
   email: string;
+  role: "ADMIN" | "TEACHER" | "STUDENT";
 };
 
 export type AccountsPageResponse = {
@@ -74,7 +76,7 @@ export type SubjectsTable = {
   description: string;
   participantCount: number;
   createdAt: string;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
 };
 
 // Dashboard card data

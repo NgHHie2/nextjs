@@ -10,6 +10,7 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "./button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { API_BASE_URL } from "@/app/lib/api-config";
 
 export default function LoginForm() {
   const [error, setError] = useState<string>("");
@@ -22,15 +23,45 @@ export default function LoginForm() {
     setError("");
 
     const formData = new FormData(event.currentTarget);
-    const email = formData.get("email") as string;
+    const username = formData.get("email") as string; // Backend expect username
     const password = formData.get("password") as string;
 
-    // Simple validation
-    if (email === "user@nextmail.com" && password === "123456") {
-      // Redirect to dashboard
-      router.push("/dashboard");
-    } else {
-      setError("Invalid email or password.");
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username, // Backend sử dụng username thay vì email
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Login successful:", data);
+
+        // Lưu user info vào localStorage
+        if (data.userId && data.username) {
+          localStorage.setItem(
+            "user",
+            JSON.stringify({
+              id: data.userId,
+              username: data.username,
+            })
+          );
+        }
+
+        // Redirect to dashboard
+        router.push("/dashboard");
+      } else {
+        setError(data.error || "Login failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("Network error. Please check your connection and try again.");
     }
 
     setIsLoading(false);
@@ -48,17 +79,16 @@ export default function LoginForm() {
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="email"
             >
-              Email
+              Username
             </label>
             <div className="relative">
               <input
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                 id="email"
-                type="email"
+                type="text"
                 name="email"
-                placeholder="Enter your email address"
+                placeholder="Enter your username"
                 required
-                defaultValue="user@nextmail.com"
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -79,7 +109,6 @@ export default function LoginForm() {
                 placeholder="Enter password"
                 required
                 minLength={6}
-                defaultValue="123456"
               />
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -89,13 +118,18 @@ export default function LoginForm() {
           {isLoading ? "Logging in..." : "Log in"}
           <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
-        <div className="flex h-8 items-end space-x-1">
-          {error && (
-            <>
-              <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-              <p className="text-sm text-red-500">{error}</p>
-            </>
-          )}
+        {error && (
+          <div className="flex items-center space-x-1 mt-2">
+            <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
+            <p className="text-sm text-red-500">{error}</p>
+          </div>
+        )}
+
+        {/* Test credentials info */}
+        <div className="mt-4 p-3 bg-blue-50 rounded-md">
+          <p className="text-sm text-blue-600 font-medium">Test Account:</p>
+          <p className="text-sm text-blue-600">Username: admin</p>
+          <p className="text-sm text-blue-600">Password: password</p>
         </div>
       </div>
     </form>

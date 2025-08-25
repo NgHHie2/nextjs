@@ -1,61 +1,99 @@
-import { cookies } from 'next/headers';
-import { Account, Subject, Participation, AccountStats, SubjectsTable, AccountTable, DashboardCardData, AccountForm, AccountsPageResponse } from '../definitions';
-import { API_BASE_URL } from "@/app/lib/api-config"
+import { cookies } from "next/headers";
+import {
+  Account,
+  Subject,
+  Participation,
+  AccountStats,
+  SubjectsTable,
+  AccountTable,
+  DashboardCardData,
+  AccountForm,
+  AccountsPageResponse,
+} from "../definitions";
+import { NEXT_BASE_URL } from "@/app/lib/api-config";
 
-export async function fetchAllAccounts(query: string): Promise<AccountsPageResponse> {
+const API_BASE_URL = NEXT_BASE_URL;
+
+// Helper function để tạo request với cookies forwarding đến Next.js API
+async function createRequestWithCookies(
+  url: string,
+  options: RequestInit = {}
+) {
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.toString(); // Lấy tất cả cookies
+
+  return fetch(url, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: cookieHeader, // Forward cookies đến Next.js API
+      ...options.headers,
+    },
+  });
+}
+
+export async function fetchAllAccounts(
+  query?: string
+): Promise<AccountsPageResponse> {
   try {
-    const cookieStore = await cookies();
-    const url = `${API_BASE_URL}/account/search${query ? `?keyword=${encodeURIComponent(query)}` : ""}`;
+    // Next.js API route /api/accounts đã handle query parameter
+    const queryParam = query ? `?keyword=${encodeURIComponent(query)}` : "";
+    const response = await createRequestWithCookies(
+      `${API_BASE_URL}/api/accounts${queryParam}`,
+      {
+        cache: "no-store",
+      }
+    );
 
-    const res = await fetch(url, {
-      cache: "no-store",
-      headers: { Cookie: cookieStore.toString() },
-    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch accounts");
+    }
 
-    if (!res.ok) throw new Error("Fetch failed");
-
-    return await res.json();
+    return await response.json();
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch accounts data.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch accounts data.");
   }
 }
 
 export async function fetchAccountById(id: number): Promise<Account | null> {
   try {
-    const cookieStore = await cookies();
-    const response = await fetch(`${API_BASE_URL}/account/${id}`, {
-      cache: 'no-store',
-      headers: {
-      // Nếu bạn muốn forward cookie từ request của user
-        Cookie: cookieStore.toString()
-        },
-    });
-    
+    const response = await createRequestWithCookies(
+      `${API_BASE_URL}/api/accounts/${id}`,
+      {
+        cache: "no-store",
+      }
+    );
+
     if (!response.ok) {
       return null;
     }
-    
+
     return response.json();
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch account.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch account.");
   }
 }
 
-export async function fetchParticipationsByAccount(accountId: number): Promise<Participation[]> {
+export async function fetchParticipationsByAccount(
+  accountId: number
+): Promise<Participation[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/participations/account/${accountId}`, {
-      cache: 'no-store',
-    });
-    
+    const response = await createRequestWithCookies(
+      `${API_BASE_URL}/api/participations/account/${accountId}`,
+      {
+        cache: "no-store",
+      }
+    );
+
     if (!response.ok) {
       return [];
     }
-    
+
     return response.json();
   } catch (error) {
-    console.error('Database Error:', error);
+    console.error("Database Error:", error);
     return [];
   }
 }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { API_BASE_URL } from "@/app/lib/api-config";
-import { cookies } from "next/headers";
+import { forwardToBackend } from "@/app/lib/api-utils";
 
 export async function GET(
   request: NextRequest,
@@ -8,17 +8,19 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const cookieStore = await cookies();
-    const authToken = cookieStore.get("jwt")?.value;
-    const response = await fetch(`${API_BASE_URL}/account/${id}`, {
-      cache: "no-store",
-      headers: {
-        Cookie: `jwt=${authToken || ""}`,
-      },
-    });
+
+    const response = await forwardToBackend(
+      request,
+      `${API_BASE_URL}/account/${id}`,
+      {
+        method: "GET",
+        cache: "no-store",
+      }
+    );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch account");
+      const errorData = await response.json();
+      return NextResponse.json(errorData, { status: response.status });
     }
 
     const data = await response.json();
@@ -39,18 +41,19 @@ export async function PUT(
   try {
     const body = await request.json();
     const { id } = await params;
-    const cookieStore = await cookies();
-    const authToken = cookieStore.get("jwt")?.value;
-    const response = await fetch(`${API_BASE_URL}/account/${id}`, {
-      method: "PUT",
-      headers: {
-        Cookie: `jwt=${authToken || ""}`,
-      },
-      body: JSON.stringify(body),
-    });
+
+    const response = await forwardToBackend(
+      request,
+      `${API_BASE_URL}/account/${id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(body),
+      }
+    );
 
     if (!response.ok) {
-      throw new Error("Failed to update account");
+      const errorData = await response.json();
+      return NextResponse.json(errorData, { status: response.status });
     }
 
     const data = await response.json();
@@ -70,21 +73,29 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const cookieStore = await cookies();
-    const authToken = cookieStore.get("jwt")?.value;
-    const response = await fetch(`${API_BASE_URL}/account/${id}`, {
-      method: "DELETE",
-      headers: {
-        Cookie: `jwt=${authToken || ""}`,
-      },
-    });
+
+    const response = await forwardToBackend(
+      request,
+      `${API_BASE_URL}/account/${id}`,
+      {
+        method: "DELETE",
+      }
+    );
 
     if (!response.ok) {
-      throw new Error("Failed to delete account");
+      const errorData = await response.json();
+      return NextResponse.json(errorData, { status: response.status });
     }
 
-    const message = await response.text();
-    return NextResponse.json({ message });
+    // Handle text response from backend
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const data = await response.json();
+      return NextResponse.json(data);
+    } else {
+      const message = await response.text();
+      return NextResponse.json({ message });
+    }
   } catch (error) {
     console.error("Error deleting account:", error);
     return NextResponse.json(

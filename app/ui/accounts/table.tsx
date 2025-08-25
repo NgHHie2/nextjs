@@ -14,6 +14,7 @@ import {
 
 export default async function AccountsTable({ query }: { query: string }) {
   // Gọi thẳng từ server
+  console.log("query: ", query);
   const data = await fetchAllAccounts(query);
 
   const pageData: {
