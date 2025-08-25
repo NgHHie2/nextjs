@@ -1,15 +1,19 @@
+// app/api/accounts/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { API_BASE_URL } from '@/app/lib/api-config';
+import { cookies } from 'next/headers';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const response = await fetch(`${API_BASE_URL}/account`, {
+    const cookieStore = await cookies();
+    const authToken = cookieStore.get('jwt')?.value;
+    const response = await fetch(`${API_BASE_URL}/account/search`, {
+      method: 'GET',
       cache: 'no-store',
+      headers: {
+        Cookie: `jwt=${authToken || ""}`
+      },
     });
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch accounts');
-    }
     
     const data = await response.json();
     return NextResponse.json(data);
@@ -25,18 +29,15 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
+    const cookieStore = await cookies();
+    const authToken = cookieStore.get('jwt')?.value;
     const response = await fetch(`${API_BASE_URL}/account`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        Cookie: `jwt=${authToken || ""}`
       },
       body: JSON.stringify(body),
     });
-    
-    if (!response.ok) {
-      throw new Error('Failed to create account');
-    }
     
     const data = await response.json();
     return NextResponse.json(data);

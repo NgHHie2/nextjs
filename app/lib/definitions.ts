@@ -9,6 +9,12 @@ export type Account = {
   email: string;
 };
 
+export type AccountsPageResponse = {
+  content: Account[];
+  totalPages: number;
+  totalElements: number;
+};
+
 export type AccountForm = {
   username: string;
   password: string;

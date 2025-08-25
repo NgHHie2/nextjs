@@ -1,78 +1,7 @@
 import { Account, Subject, Participation, AccountStats, SubjectsTable, AccountTable, DashboardCardData } from '../definitions';
+import { fetchAllAccounts } from './server-account-data';
 
 const API_BASE_URL = 'http://localhost:3000';
-
-// Account functions
-export async function fetchAllAccounts(): Promise<Account[]> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/accounts`, {
-      cache: 'no-store',
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch accounts');
-    }
-    
-    return response.json();
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch accounts data.');
-  }
-}
-
-export async function fetchAccountById(id: number): Promise<Account | null> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/accounts/${id}`, {
-      cache: 'no-store',
-    });
-    
-    if (!response.ok) {
-      return null;
-    }
-    
-    return response.json();
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch account.');
-  }
-}
-
-export async function fetchFilteredAccounts(query: string): Promise<AccountTable[]> {
-  try {
-    const accounts = await fetchAllAccounts();
-    
-    // Filter accounts based on query
-    const filteredAccounts = accounts.filter(account =>
-      account.username.toLowerCase().includes(query.toLowerCase()) ||
-      account.firstName.toLowerCase().includes(query.toLowerCase()) ||
-      account.lastName.toLowerCase().includes(query.toLowerCase()) ||
-      account.email.toLowerCase().includes(query.toLowerCase())
-    );
-    
-    // Transform to AccountsTable format
-    const accountsTable: AccountTable[] = await Promise.all(
-      filteredAccounts.map(async (account) => {
-        const participations = await fetchParticipationsByAccount(account.id);
-        
-        return {
-          id: account.id,
-          username: account.username,
-          firstName: account.firstName,
-          lastName: account.lastName,
-          email: account.email,
-          phoneNumber: account.phoneNumber,
-          totalSubjects: participations.length,
-          activeSubjects: participations.length, // Assume all are active for now
-        };
-      })
-    );
-    
-    return accountsTable;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch filtered accounts.');
-  }
-}
 
 // Subject functions
 export async function fetchSubjectById(id: number): Promise<any> {
@@ -189,11 +118,12 @@ export async function fetchDashboardData(): Promise<DashboardCardData> {
 // Latest activities (replacing latest invoices)
 export async function fetchLatestActivities() {
   try {
-    const accounts = await fetchAllAccounts();
+    const accounts = await fetchAllAccounts("");
+    console.log(accounts);
     
     // Get latest 5 accounts with their participations
     const latestActivities = await Promise.all(
-      accounts.slice(0, 5).map(async (account) => {
+      accounts.content.slice(0, 5).map(async (account) => {
         const participations = await fetchParticipationsByAccount(account.id);
         
         return {
@@ -237,63 +167,5 @@ export async function fetchParticipationChart() {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch participation chart data.');
-  }
-}
-
-// Account operations
-export async function createAccount(accountData: Omit<Account, 'id'>): Promise<Account> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/accounts`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(accountData),
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to create account');
-    }
-    
-    return response.json();
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to create account.');
-  }
-}
-
-export async function updateAccount(id: number, accountData: Partial<Account>): Promise<Account> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/accounts/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(accountData),
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to update account');
-    }
-    
-    return response.json();
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to update account.');
-  }
-}
-
-export async function deleteAccount(id: number): Promise<void> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/accounts/${id}`, {
-      method: 'DELETE',
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to delete account');
-    }
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to delete account.');
   }
 }

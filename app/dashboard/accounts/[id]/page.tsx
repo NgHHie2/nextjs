@@ -2,7 +2,7 @@
 import {
   fetchAccountById,
   fetchParticipationsByAccount,
-} from "@/app/lib/data/learning-data";
+} from "@/app/lib/data/server-account-data";
 import { lusitana } from "@/app/ui/fonts";
 import { notFound } from "next/navigation";
 import Link from "next/link";
