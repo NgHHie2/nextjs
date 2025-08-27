@@ -20,6 +20,7 @@ import SortableHeader from "@/app/ui/accounts/sortable-header";
 interface AccountsTableProps {
   query: string;
   currentPage?: number;
+  currentSize?: number;
   role?: string;
   sortBy?: string;
   sortDir?: string;
@@ -28,6 +29,7 @@ interface AccountsTableProps {
 export default async function AccountsTable({
   query,
   currentPage = 1,
+  currentSize = 10,
   role,
   sortBy,
   sortDir,
@@ -36,7 +38,7 @@ export default async function AccountsTable({
     query,
     role,
     currentPage,
-    10,
+    currentSize,
     sortBy,
     sortDir
   );
@@ -179,7 +181,7 @@ export default async function AccountsTable({
                   )}
                 </TableCell>
                 <TableCell className="text-right">
-                  <div className="flex justify-center">
+                  <div className="flex justify-center gap-1">
                     <Button variant="ghost" size="sm" asChild>
                       <Link href={`/dashboard/accounts/${account.id}`}>
                         <Eye className="h-4 w-4" />

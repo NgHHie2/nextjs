@@ -8,6 +8,7 @@ import { lusitana } from "@/app/ui/fonts";
 import { CreateAccountButton } from "@/app/ui/accounts/buttons";
 import { fetchAllAccounts } from "@/app/lib/data/server-account-data";
 import AccountsFilter from "@/app/ui/accounts/filter";
+import { pages } from "next/dist/build/templates/app-page";
 
 export const dynamic = "force-dynamic";
 
@@ -31,8 +32,6 @@ export default async function Page({ searchParams }: PageProps) {
   const sortBy = resolvedSearchParams?.sortBy || "";
   const sortDir = resolvedSearchParams?.sortDir || "";
 
-  console.log(resolvedSearchParams);
-
   // Fetch data for pagination info
   const data = await fetchAllAccounts(
     query,
@@ -43,6 +42,7 @@ export default async function Page({ searchParams }: PageProps) {
     sortDir
   );
   const totalPages = data.totalPages || 0;
+  const totalElements = data.totalElements || 0;
 
   return (
     <div className="space-y-6">
@@ -65,6 +65,7 @@ export default async function Page({ searchParams }: PageProps) {
         <AccountsTable
           query={query}
           currentPage={currentPage}
+          currentSize={pageSize}
           role={role}
           sortBy={sortBy}
           sortDir={sortDir}
@@ -75,7 +76,7 @@ export default async function Page({ searchParams }: PageProps) {
         <AccountsPagination
           currentPage={currentPage}
           totalPages={totalPages}
-          totalElements={data.totalElements || 0}
+          totalElements={totalElements}
           pageSize={pageSize}
         />
       )}

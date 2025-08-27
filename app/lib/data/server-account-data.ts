@@ -56,8 +56,6 @@ export async function fetchAllAccounts(
       queryString ? `?${queryString}` : ""
     }`;
 
-    console.log("hiep: ", url);
-
     const response = await createRequestWithCookies(url, {
       cache: "no-store",
     });

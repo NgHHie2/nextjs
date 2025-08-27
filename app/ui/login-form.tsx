@@ -124,13 +124,6 @@ export default function LoginForm() {
             <p className="text-sm text-red-500">{error}</p>
           </div>
         )}
-
-        {/* Test credentials info */}
-        <div className="mt-4 p-3 bg-blue-50 rounded-md">
-          <p className="text-sm text-blue-600 font-medium">Test Account:</p>
-          <p className="text-sm text-blue-600">Username: admin</p>
-          <p className="text-sm text-blue-600">Password: password</p>
-        </div>
       </div>
     </form>
   );

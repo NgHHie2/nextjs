@@ -50,6 +50,7 @@ export default function BulkUploadForm() {
         // Convert to BulkAccount format
         const accounts: BulkAccount[] = jsonData.map((row: any, index) => ({
           id: index + 1,
+          cccd: row.cccd || row.CCCD || row.Cccd || "",
           username: row.username || row.Username || "",
           password: row.password || row.Password || "",
           firstName: row.firstName || row.FirstName || row["First Name"] || "",
@@ -76,6 +77,7 @@ export default function BulkUploadForm() {
       try {
         const account = updatedAccounts[i];
         await createAccount({
+          cccd: account.cccd,
           username: account.username,
           password: account.password,
           firstName: account.firstName,
