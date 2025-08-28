@@ -3,26 +3,13 @@
 import Link from "next/link";
 import NavLinks from "@/app/ui/dashboard/nav-links";
 import AcmeLogo from "@/app/ui/acme-logo";
-import { PowerIcon } from "@heroicons/react/24/outline";
 import { SimpleThemeToggle } from "@/components/theme-toggle";
 import { useAuth } from "@/app/lib/auth/auth-context";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import SignoutButton from "../accounts/logout-button";
 
 export default function SideNav() {
-  const { user, loading } = useAuth();
-
-  const handleSignOut = async () => {
-    try {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-      window.location.href = "/login";
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
+  const { user } = useAuth();
 
   return (
     <div className="flex h-full flex-col px-3 py-4 md:px-2 bg-background dark:bg-gray-900">
@@ -58,14 +45,7 @@ export default function SideNav() {
           <SimpleThemeToggle />
         </div>
 
-        <Button
-          onClick={handleSignOut}
-          variant="ghost"
-          className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 dark:bg-gray-800 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
-        >
-          <PowerIcon className="w-6" />
-          <div className="hidden md:block">Sign Out</div>
-        </Button>
+        <SignoutButton></SignoutButton>
       </div>
     </div>
   );

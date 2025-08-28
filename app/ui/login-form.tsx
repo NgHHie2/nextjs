@@ -1,3 +1,4 @@
+// app/ui/login-form.tsx
 "use client";
 
 import { lusitana } from "@/app/ui/fonts";
@@ -10,11 +11,13 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "./button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/lib/auth/auth-context";
 
 export default function LoginForm() {
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { login } = useAuth(); // Sử dụng login method từ context
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -22,7 +25,7 @@ export default function LoginForm() {
     setError("");
 
     const formData = new FormData(event.currentTarget);
-    const username = formData.get("email") as string; // Backend expect username
+    const username = formData.get("email") as string;
     const password = formData.get("password") as string;
 
     try {
@@ -32,7 +35,7 @@ export default function LoginForm() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username, // Backend sử dụng username thay vì email
+          username,
           password,
         }),
       });
@@ -42,15 +45,15 @@ export default function LoginForm() {
       if (response.ok) {
         console.log("Login successful:", data);
 
-        // Lưu user info vào localStorage
-        if (data.userId && data.username) {
-          localStorage.setItem(
-            "user",
-            JSON.stringify({
-              id: data.userId,
-              username: data.username,
-            })
-          );
+        // Fetch user data sau khi login thành công
+        const userResponse = await fetch("/api/auth/me", {
+          credentials: "include",
+        });
+
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          // Update context với user data
+          login(userData);
         }
 
         // Redirect to dashboard
