@@ -29,8 +29,7 @@ export default function ClientNavLink({
         {
           "bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-gray-700 dark:hover:text-white":
             !isActive,
-          "bg-blue-600 text-white dark:bg-blue-600 dark:text-blue-300":
-            isActive,
+          "bg-blue-600 text-white dark:bg-blue-600 dark:text-white": isActive,
         },
         className
       )}
