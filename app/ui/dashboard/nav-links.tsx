@@ -8,11 +8,17 @@ import {
   DocumentDuplicateIcon,
 } from "@heroicons/react/24/outline";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/app/lib/auth/auth-context";
 
 // Navigation links
 const links = [
   { name: "Home", href: "/dashboard", icon: HomeIcon },
-  { name: "Accounts", href: "/dashboard/accounts", icon: UserGroupIcon },
+  {
+    name: "Accounts",
+    href: "/dashboard/accounts",
+    icon: UserGroupIcon,
+    adminTeacherOnly: true,
+  },
   {
     name: "Splitter",
     href: "/dashboard/splitter",
@@ -22,12 +28,20 @@ const links = [
 
 export default function NavLinks() {
   const pathname = usePathname();
+  const { isAdmin, isTeacher, loading } = useAuth();
 
   return (
-    <nav className="flex flex-row space-x-2 md:flex-col md:space-x-0 md:space-y-2">
+    <>
       {links.map((link) => {
+        // Ẩn tab nếu là adminTeacherOnly và user là student
+        if (link.adminTeacherOnly && !isAdmin && !isTeacher) {
+          return null;
+        }
+
         const LinkIcon = link.icon;
-        const isActive = pathname === link.href;
+        const isActive =
+          pathname === link.href ||
+          (link.href !== "/dashboard" && pathname.startsWith(link.href));
 
         return (
           <Link
@@ -50,6 +64,6 @@ export default function NavLinks() {
           </Link>
         );
       })}
-    </nav>
+    </>
   );
 }
