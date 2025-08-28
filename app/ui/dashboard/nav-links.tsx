@@ -1,69 +1,41 @@
+// app/ui/dashboard/client-nav-link.tsx
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  HomeIcon,
-  UserGroupIcon,
-  DocumentDuplicateIcon,
-} from "@heroicons/react/24/outline";
-import { cn } from "@/lib/utils";
-import { useAuth } from "@/app/lib/auth/auth-context";
+import clsx from "clsx";
 
-// Navigation links
-const links = [
-  { name: "Home", href: "/dashboard", icon: HomeIcon },
-  {
-    name: "Accounts",
-    href: "/dashboard/accounts",
-    icon: UserGroupIcon,
-    adminTeacherOnly: true,
-  },
-  {
-    name: "Splitter",
-    href: "/dashboard/splitter",
-    icon: DocumentDuplicateIcon,
-  },
-];
+interface ClientNavLinkProps {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+}
 
-export default function NavLinks() {
+export default function ClientNavLink({
+  href,
+  children,
+  className,
+}: ClientNavLinkProps) {
   const pathname = usePathname();
-  const { isAdmin, isTeacher, loading } = useAuth();
+
+  const isActive =
+    pathname === href || (href !== "/dashboard" && pathname?.startsWith(href));
 
   return (
-    <>
-      {links.map((link) => {
-        // Ẩn tab nếu là adminTeacherOnly và user là student
-        if (link.adminTeacherOnly && !isAdmin && !isTeacher) {
-          return null;
-        }
-
-        const LinkIcon = link.icon;
-        const isActive =
-          pathname === link.href ||
-          (link.href !== "/dashboard" && pathname.startsWith(link.href));
-
-        return (
-          <Link
-            key={link.name}
-            href={link.href}
-            className={cn(
-              "flex h-[48px] grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium transition-colors md:flex-none md:justify-start md:p-2 md:px-3",
-              {
-                // Active state - giữ nguyên style gốc + dark mode
-                "bg-sky-100 text-blue-600 dark:bg-blue-900 dark:text-blue-200":
-                  isActive,
-                // Inactive state - giữ nguyên + dark mode
-                "bg-gray-50 text-gray-600 dark:bg-gray-800 dark:text-gray-300 hover:bg-sky-100 dark:hover:bg-gray-800 hover:text-blue-600 dark:hover:text-blue-400":
-                  !isActive,
-              }
-            )}
-          >
-            <LinkIcon className="w-6" />
-            <p className="hidden md:block">{link.name}</p>
-          </Link>
-        );
-      })}
-    </>
+    <Link
+      href={href}
+      className={clsx(
+        "flex h-[48px] grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium transition-all duration-200 shadow-sm md:flex-none md:justify-start md:p-2 md:px-3",
+        {
+          "bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-gray-700 dark:hover:text-white":
+            !isActive,
+          "bg-blue-600 text-white dark:bg-blue-600 dark:text-blue-300":
+            isActive,
+        },
+        className
+      )}
+    >
+      {children}
+    </Link>
   );
 }
