@@ -91,8 +91,7 @@ export default function EditAccountForm({ account }: { account: Account }) {
 
     try {
       await updateAccount(account.id, formData);
-      router.push("/dashboard/accounts");
-      router.refresh();
+      window.location.href = "/dashboard/accounts";
     } catch (error) {
       console.error("Error updating account:", error);
       setError("Failed to update account. Please try again.");

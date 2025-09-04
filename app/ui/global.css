@@ -73,7 +73,7 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--border));
+  background: hsl(var(--muted-foreground));
   border-radius: 4px;
 }
 
