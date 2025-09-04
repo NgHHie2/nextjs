@@ -38,3 +38,19 @@ export async function createAccount(
     throw new Error("Failed to create account.");
   }
 }
+
+export async function deleteAccount(id: number): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/accounts/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete account");
+    }
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to delete account.");
+  }
+}
