@@ -9,6 +9,8 @@ import { CreateAccountButton } from "@/app/ui/accounts/buttons";
 import { fetchAllAccounts } from "@/app/lib/data/server-account-data";
 import AccountsFilter from "@/app/ui/accounts/filter";
 import { pages } from "next/dist/build/templates/app-page";
+import ResetFiltersButton from "@/app/ui/accounts/reset-filters-button";
+import ActiveFiltersBadges from "@/app/ui/accounts/active-filters-badges";
 
 export const dynamic = "force-dynamic";
 
@@ -51,11 +53,16 @@ export default async function Page({ searchParams }: PageProps) {
         <CreateAccountButton />
       </div>
 
-      <div className="flex gap-4">
-        <div className="flex-1">
-          <Search placeholder="Search accounts..." />
+      <div className="space-y-4">
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <Search placeholder="Search accounts..." />
+          </div>
+          <AccountsFilter />
+          <ResetFiltersButton />
         </div>
-        <AccountsFilter />
+
+        <ActiveFiltersBadges query={query} role={role} />
       </div>
 
       <Suspense
