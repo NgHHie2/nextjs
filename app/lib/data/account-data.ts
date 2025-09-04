@@ -82,3 +82,35 @@ export async function deleteAccount(id: number): Promise<void> {
     throw new Error("Failed to delete account.");
   }
 }
+
+export async function changePasswordByAdmin(
+  id: number,
+  passwordData: {
+    newPassword: string;
+    confirmPassword: string;
+  }
+): Promise<boolean> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/accounts/${id}/change-password`,
+      {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passwordData),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to change password");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to change password.");
+  }
+}

@@ -25,7 +25,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Save, X } from "lucide-react";
+import { Loader2, Save, X, Key } from "lucide-react";
 
 export default function EditAccountForm({ account }: { account: Account }) {
   const router = useRouter();
@@ -228,21 +228,30 @@ export default function EditAccountForm({ account }: { account: Account }) {
           </div>
         </CardContent>
 
-        <CardFooter className="flex justify-end gap-4">
-          <Button type="button" variant="outline" asChild>
-            <Link href="/dashboard/accounts">Cancel</Link>
+        <CardFooter className="flex justify-between">
+          <Button type="button" variant="secondary" asChild>
+            <Link href={`/dashboard/accounts/${account.id}/change-password`}>
+              <Key className="h-4 w-4 mr-2" />
+              Change Password
+            </Link>
           </Button>
 
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Updating...
-              </>
-            ) : (
-              <>Update Account</>
-            )}
-          </Button>
+          <div className="flex gap-4">
+            <Button type="button" variant="outline" asChild>
+              <Link href="/dashboard/accounts">Cancel</Link>
+            </Button>
+
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                <>Update Account</>
+              )}
+            </Button>
+          </div>
         </CardFooter>
       </Card>
     </form>
