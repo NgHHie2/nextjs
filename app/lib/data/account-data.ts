@@ -39,6 +39,34 @@ export async function createAccount(
   }
 }
 
+export async function updateAccount(
+  id: number,
+  accountData: Account
+): Promise<Account> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/accounts/${id}`, {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...accountData,
+        birthDay: new Date(accountData.birthDay).toISOString(),
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update account");
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to update account.");
+  }
+}
+
 export async function deleteAccount(id: number): Promise<void> {
   try {
     const response = await fetch(`${API_BASE_URL}/api/accounts/${id}`, {
