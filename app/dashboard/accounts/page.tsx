@@ -55,6 +55,7 @@ export default async function Page({ searchParams }: PageProps) {
         <div className="flex-1">
           <Search placeholder="Search accounts..." />
         </div>
+        <AccountsFilter />
       </div>
 
       <Suspense
