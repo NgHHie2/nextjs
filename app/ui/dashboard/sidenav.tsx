@@ -12,6 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 import NavLink from "./nav-links";
 import { SimpleThemeToggle } from "@/components/theme-toggle";
+import { BookText } from "lucide-react";
 
 const links = [
   {
@@ -25,6 +26,12 @@ const links = [
     href: "/dashboard/accounts",
     icon: UserGroupIcon,
     roles: ["ADMIN"], // Chỉ admin mới thấy
+  },
+  {
+    name: "Documents",
+    href: "/dashboard/documents",
+    icon: BookText,
+    roles: ["ADMIN", "TEACHER"], // Admin và Teacher thấy
   },
   {
     name: "Subjects",

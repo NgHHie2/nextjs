@@ -1,3 +1,33 @@
+export type Document = {
+  id: number;
+  name: string;
+  code: string;
+  documentNumber: string;
+  format: "PDF" | "VIDEO";
+  description: string;
+  size: number;
+  pages: number;
+  minutes: number;
+  catalogs: Catalog[];
+  tags: Tag[];
+};
+
+export type Tag = {
+  id: number;
+  name: string;
+};
+
+export type Catalog = {
+  id: number;
+  positionId: number;
+};
+
+export type DocumentsPageResponse = {
+  content: Document[];
+  totalPages: number;
+  totalElements: number;
+};
+
 export type Account = {
   id: number;
   username: string;

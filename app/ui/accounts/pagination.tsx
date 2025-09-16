@@ -62,7 +62,7 @@ export default function AccountsPagination({
           <span className="font-medium">
             {startItem}-{endItem}
           </span>{" "}
-          of <span className="font-medium">{totalElements}</span> accounts
+          of <span className="font-medium">{totalElements}</span> items
         </p>
 
         <div className="flex items-center gap-2">
