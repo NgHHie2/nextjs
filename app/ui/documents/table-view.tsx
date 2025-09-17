@@ -1,8 +1,7 @@
-// app/ui/documents/table.tsx
+// app/ui/documents/table-view.tsx
 import Link from "next/link";
-import { Eye, Pencil, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { Eye, Pencil } from "lucide-react";
 import { Document } from "@/app/lib/definitions";
-import { fetchAllDocuments } from "@/app/lib/data/server-document-data";
 import { DeleteDocumentButton } from "@/app/ui/documents/buttons";
 import {
   Table,
@@ -13,36 +12,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import SortableHeader from "@/app/ui/accounts/sortable-header";
 
-interface DocumentsTableProps {
-  query: string;
-  currentPage?: number;
-  currentSize?: number;
-  format?: string;
+interface DocumentsTableViewProps {
+  documents: Document[];
   sortBy?: string;
   sortDir?: string;
 }
 
-export default async function DocumentsTable({
-  query,
-  currentPage = 1,
-  currentSize = 10,
-  format,
+export default function DocumentsTableView({
+  documents,
   sortBy,
   sortDir,
-}: DocumentsTableProps) {
-  const data = await fetchAllDocuments(
-    query,
-    format,
-    currentPage,
-    currentSize,
-    sortBy,
-    sortDir
-  );
-
+}: DocumentsTableViewProps) {
   const formatFileSize = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(0)} kB`;
@@ -50,7 +33,7 @@ export default async function DocumentsTable({
     return `${(bytes / 1024 ** 3).toFixed(2)} GB`;
   };
 
-  if (data.content.length === 0) {
+  if (documents.length === 0) {
     return (
       <Card>
         <CardContent className="text-center py-8">
@@ -108,7 +91,7 @@ export default async function DocumentsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.content.map((document, index) => (
+            {documents.map((document, index) => (
               <TableRow
                 key={document.id}
                 className={index % 2 === 0 ? "bg-background" : "bg-muted/20"}

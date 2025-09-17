@@ -20,19 +20,19 @@ import {
 } from "@/components/ui/select";
 import { generatePagination } from "@/app/lib/utils";
 
-interface AccountsPaginationProps {
+interface DocumentsPaginationProps {
   currentPage: number;
   totalPages: number;
   totalElements: number;
   pageSize: number;
 }
 
-export default function AccountsPagination({
+export default function DocumentsPagination({
   currentPage,
   totalPages,
   totalElements,
   pageSize,
-}: AccountsPaginationProps) {
+}: DocumentsPaginationProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -62,7 +62,7 @@ export default function AccountsPagination({
           <span className="font-medium">
             {startItem}-{endItem}
           </span>{" "}
-          of <span className="font-medium">{totalElements}</span> accounts
+          of <span className="font-medium">{totalElements}</span> documents
         </p>
 
         <div className="flex items-center gap-2">
@@ -75,10 +75,10 @@ export default function AccountsPagination({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="5">5</SelectItem>
-              <SelectItem value="10">10</SelectItem>
+              <SelectItem value="8">8</SelectItem>
+              <SelectItem value="12">12</SelectItem>
               <SelectItem value="20">20</SelectItem>
-              <SelectItem value="50">50</SelectItem>
+              <SelectItem value="40">40</SelectItem>
             </SelectContent>
           </Select>
         </div>
