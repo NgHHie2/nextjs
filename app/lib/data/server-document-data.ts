@@ -60,3 +60,17 @@ export async function fetchAllDocuments(
     throw new Error("Failed to fetch documents data.");
   }
 }
+
+export async function fetchDocumentByCode(code: string) {
+  try {
+    const url = `${API_BASE_URL}/api/documents/${code}/detail`;
+    const response = await createRequestWithCookies(url, {
+      cache: "no-store",
+    });
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching document:", error);
+    throw error;
+  }
+}

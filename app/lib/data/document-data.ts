@@ -17,3 +17,7 @@ export async function deleteDocument(code: string): Promise<void> {
     throw new Error("Failed to delete document.");
   }
 }
+
+export function getDocumentDownloadUrl(code: string): string {
+  return `${API_BASE_URL}/api/documents/${code}/download`;
+}

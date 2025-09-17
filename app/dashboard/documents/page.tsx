@@ -29,7 +29,7 @@ interface PageProps {
 function DocumentsGridSkeleton() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-      {Array.from({ length: 10 }).map((_, i) => (
+      {Array.from({ length: 12 }).map((_, i) => (
         <div key={i} className="bg-gray-50 animate-pulse rounded-lg h-80" />
       ))}
     </div>
@@ -42,7 +42,7 @@ export default async function Page({ searchParams }: PageProps) {
   const currentPage = Number(resolvedSearchParams?.page) || 1;
 
   // Use fixed page size - view mode doesn't affect server-side pagination
-  const pageSize = Number(resolvedSearchParams?.size) || 10;
+  const pageSize = Number(resolvedSearchParams?.size) || 12;
 
   const format = resolvedSearchParams?.format || "";
   const sortBy = resolvedSearchParams?.sortBy || "";

@@ -64,7 +64,7 @@ export default function DocumentCard({ document }: DocumentCardProps) {
     const fetchPreview = async () => {
       setLoading(document.code, true);
       try {
-        const response = await fetch(`/api/documents/preview/${document.code}`);
+        const response = await fetch(`/api/documents/${document.code}/preview`);
         if (response.ok) {
           const blob = await response.blob();
           const imageUrl = URL.createObjectURL(blob);
