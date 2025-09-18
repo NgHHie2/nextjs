@@ -16,15 +16,16 @@ export default function Breadcrumbs({
   breadcrumbs: BreadcrumbItem[];
 }) {
   return (
-    <nav aria-label="Breadcrumb" className="mb-6">
+    <nav aria-label="Breadcrumb" className="mb-6 w-full">
       <ol
         className={cn(
           lusitana.className,
-          "flex items-center space-x-2 text-xl md:text-2xl"
+          // luôn 1 dòng, có thể cuộn ngang
+          "flex items-center text-xl md:text-2xl w-full overflow-x-auto whitespace-nowrap scrollbar-thin"
         )}
       >
         {breadcrumbs.map((breadcrumb, index) => (
-          <li key={breadcrumb.href} className="flex items-center">
+          <li key={breadcrumb.href} className="flex items-center flex-shrink-0">
             {breadcrumb.active ? (
               <span className="font-medium text-foreground">
                 {breadcrumb.label}
@@ -38,7 +39,7 @@ export default function Breadcrumbs({
               </Link>
             )}
             {index < breadcrumbs.length - 1 && (
-              <ChevronRightIcon className="mx-2 h-4 w-4 text-muted-foreground" />
+              <ChevronRightIcon className="mx-2 h-4 w-4 text-muted-foreground flex-shrink-0" />
             )}
           </li>
         ))}

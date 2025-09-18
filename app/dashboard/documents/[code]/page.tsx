@@ -8,6 +8,9 @@ import { lusitana } from "@/app/ui/fonts";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import BackButton from "@/app/ui/documents/back-button";
+import VideoViewer from "@/app/ui/documents/video-viewer";
+import Breadcrumbs from "@/app/ui/breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -45,19 +48,28 @@ export default async function DocumentViewPage({ params }: PageProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/dashboard/documents">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Documents
-            </Link>
-          </Button>
+          <BackButton />
           <h1 className={`${lusitana.className} text-xl md:text-2xl`}>
             {document.name}
           </h1>
         </div>
-      </div>
+      </div> */}
+      <Breadcrumbs
+        breadcrumbs={[
+          { label: "Documents", href: "/dashboard/documents/" },
+          {
+            label: "View Document",
+            href: `/dashboard/documents/${document.code}`,
+          },
+          {
+            label: document.name,
+            href: `/dashboard/documents/${document.code}/`,
+            active: true,
+          },
+        ]}
+      />
 
       {/* Main Content */}
       <Suspense fallback={<DocumentSkeleton />}>
@@ -66,20 +78,14 @@ export default async function DocumentViewPage({ params }: PageProps) {
           <div className="flex-1 min-w-0">
             {document.format === "PDF" ? (
               <PDFViewer document={document} />
+            ) : document.format === "VIDEO" ? (
+              <VideoViewer videoDoc={document} />
             ) : (
               <div className="h-full bg-gray-50 rounded-lg flex items-center justify-center">
                 <div className="text-center">
                   <p className="text-gray-500">
                     This document format is not supported for viewing.
                   </p>
-                  <Button className="mt-4" asChild>
-                    <a
-                      href={`/api/documents/${document.code}/download`}
-                      download
-                    >
-                      Download Document
-                    </a>
-                  </Button>
                 </div>
               </div>
             )}

@@ -51,7 +51,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = () => {
     setUser(null);
-    // Không cần gọi API logout ở đây vì đã gọi ở component khác
   };
 
   const refreshUser = async () => {

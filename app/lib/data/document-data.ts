@@ -21,3 +21,7 @@ export async function deleteDocument(code: string): Promise<void> {
 export function getDocumentDownloadUrl(code: string): string {
   return `${API_BASE_URL}/api/documents/${code}/download`;
 }
+
+export function getVideoStreamUrl(code: string): string {
+  return `${API_BASE_URL}/api/documents/${code}/video`;
+}
