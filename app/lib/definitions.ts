@@ -20,6 +20,7 @@ export type Tag = {
 export type Catalog = {
   id: number;
   positionId: number;
+  positionName?: string;
 };
 
 export type DocumentsPageResponse = {
@@ -116,4 +117,10 @@ export type DashboardCardData = {
   totalSubjects: number;
   totalParticipations: number;
   activeSubjects: number;
+};
+
+export type Position = {
+  id: number;
+  name: string;
+  description: string;
 };

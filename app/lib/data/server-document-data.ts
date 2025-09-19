@@ -61,7 +61,7 @@ export async function fetchAllDocuments(
   }
 }
 
-export async function fetchDocumentByCode(code: string) {
+export async function fetchDocumentByCode(code: string): Promise<Document> {
   try {
     const url = `${API_BASE_URL}/api/documents/${code}/detail`;
     const response = await createRequestWithCookies(url, {

@@ -1,6 +1,7 @@
 // app/dashboard/documents/[code]/page.tsx
 import { Suspense } from "react";
 import { fetchDocumentByCode } from "@/app/lib/data/server-document-data";
+import { fetchPositionByIds } from "@/app/lib/data/server-position-data";
 import { notFound } from "next/navigation";
 import PDFViewer from "@/app/ui/documents/pdf-viewer";
 import DocumentInfo from "@/app/ui/documents/document-info";
@@ -20,7 +21,7 @@ interface PageProps {
 
 function DocumentSkeleton() {
   return (
-    <div className="flex h-[calc(100vh-120px)] gap-4">
+    <div className="flex h-[calc(100vh-120px)] gap-6">
       {/* PDF Viewer Skeleton */}
       <div className="flex-1 bg-gray-100 animate-pulse rounded-lg"></div>
 
@@ -36,7 +37,16 @@ export default async function DocumentViewPage({ params }: PageProps) {
   let document;
   try {
     document = await fetchDocumentByCode(code);
-    console.log(document);
+    if (document) {
+      const positionIds = Array.from(
+        new Set((document.catalogs || []).map((c) => c.positionId))
+      );
+      const positions = await fetchPositionByIds(positionIds);
+      const positionMap = new Map(positions.map((p) => [p.id, p]));
+      (document.catalogs || []).forEach((c) => {
+        c.positionName = positionMap.get(c.positionId)?.name;
+      });
+    }
   } catch (error) {
     notFound();
   }
@@ -47,15 +57,7 @@ export default async function DocumentViewPage({ params }: PageProps) {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      {/* <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <BackButton />
-          <h1 className={`${lusitana.className} text-xl md:text-2xl`}>
-            {document.name}
-          </h1>
-        </div>
-      </div> */}
+      {/* Breadcrumbs */}
       <Breadcrumbs
         breadcrumbs={[
           { label: "Documents", href: "/dashboard/documents/" },
@@ -74,7 +76,7 @@ export default async function DocumentViewPage({ params }: PageProps) {
       {/* Main Content */}
       <Suspense fallback={<DocumentSkeleton />}>
         <div className="flex h-[calc(100vh-160px)] gap-6">
-          {/* PDF Viewer */}
+          {/* PDF/Video Viewer - Flexible width */}
           <div className="flex-1 min-w-0">
             {document.format === "PDF" ? (
               <PDFViewer document={document} />
@@ -91,10 +93,8 @@ export default async function DocumentViewPage({ params }: PageProps) {
             )}
           </div>
 
-          {/* Document Info Panel */}
-          <div className="w-80 flex-shrink-0">
-            <DocumentInfo document={document} />
-          </div>
+          {/* Document Info Panel - Dynamic width */}
+          <DocumentInfo document={document} />
         </div>
       </Suspense>
     </div>

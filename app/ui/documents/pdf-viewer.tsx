@@ -251,21 +251,24 @@ export default function PDFViewer({ document }: PDFViewerProps) {
           </div>
         </div>
       </div>
+
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center justify-between p-4 border-b border-border bg-card">
-        <div className="flex items-center gap-2">
-          {/* Zoom */}
+      <div className="relative flex items-center justify-between p-4 border-t border-border bg-card min-h-[72px]">
+        {/* Left Controls - Fixed width container */}
+        <div className="flex items-center gap-2 min-w-0 flex-shrink-0">
+          {/* Zoom Controls */}
           <div className="flex items-center gap-1 border border-border rounded-md">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setZoom((prev) => Math.max(prev - 0.25, 0.5))}
               disabled={zoom <= 0.5 || isLoading}
-              className="border-0 rounded-r-none"
+              className="border-0 rounded-r-none h-8 w-8 p-0"
             >
               <ZoomOut className="h-4 w-4" />
             </Button>
-            <span className="text-sm font-medium min-w-[60px] text-center px-2 py-1 bg-muted">
+            {/* Hide zoom percentage on small screens */}
+            <span className="hidden lg:inline text-sm font-medium min-w-[60px] text-center px-2 py-1 bg-muted whitespace-nowrap">
               {Math.round(zoom * 100)}%
             </span>
             <Button
@@ -273,7 +276,7 @@ export default function PDFViewer({ document }: PDFViewerProps) {
               size="sm"
               onClick={() => setZoom((prev) => Math.min(prev + 0.25, 3))}
               disabled={zoom >= 3 || isLoading}
-              className="border-0 rounded-l-none"
+              className="border-0 rounded-l-none h-8 w-8 p-0"
             >
               <ZoomIn className="h-4 w-4" />
             </Button>
@@ -285,69 +288,83 @@ export default function PDFViewer({ document }: PDFViewerProps) {
             size="sm"
             onClick={() => setRotation((prev) => (prev + 90) % 360)}
             disabled={isLoading}
+            className="h-8 w-8 p-0"
           >
             <RotateCw className="h-4 w-4" />
           </Button>
         </div>
 
-        {/* Page Navigation */}
+        {/* Center - Page Navigation (absolutely centered) */}
         {totalPages > 1 && (
-          <div className="flex items-center gap-2 mr-40">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(1)}
-              disabled={currentPage === 1 || isLoading}
-            >
-              <SkipBack className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1 || isLoading}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
+          <div className="absolute left-1/2 transform -translate-x-1/2">
+            <div className="flex items-center gap-2">
+              {/* Hide first/last page buttons on small screens */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(1)}
+                disabled={currentPage === 1 || isLoading}
+                className="h-8 w-8 p-0 hidden lg:flex"
+              >
+                <SkipBack className="h-3 w-3" />
+              </Button>
 
-            <form
-              onSubmit={handlePageInputSubmit}
-              className="flex items-center gap-1"
-            >
-              <Input
-                type="text"
-                value={pageInput}
-                onChange={(e) => setPageInput(e.target.value)}
-                className="w-16 h-8 text-center text-sm"
-                disabled={isLoading}
-              />
-              <span className="text-sm text-muted-foreground">
-                / {totalPages}
-              </span>
-            </form>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1 || isLoading}
+                className="h-8 w-8 p-0"
+              >
+                <ChevronLeft className="h-3 w-3" />
+              </Button>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages || isLoading}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(totalPages)}
-              disabled={currentPage === totalPages || isLoading}
-            >
-              <SkipForward className="h-4 w-4" />
-            </Button>
+              <form
+                onSubmit={handlePageInputSubmit}
+                className="flex items-center gap-1"
+              >
+                <Input
+                  type="text"
+                  value={pageInput}
+                  onChange={(e) => setPageInput(e.target.value)}
+                  className="w-12 h-8 text-center text-sm p-1"
+                  disabled={isLoading}
+                />
+                <span className="text-sm text-muted-foreground whitespace-nowrap">
+                  / {totalPages}
+                </span>
+              </form>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages || isLoading}
+                className="h-8 w-8 p-0"
+              >
+                <ChevronRight className="h-3 w-3" />
+              </Button>
+
+              {/* Hide first/last page buttons on small screens */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(totalPages)}
+                disabled={currentPage === totalPages || isLoading}
+                className="h-8 w-8 p-0 hidden lg:flex"
+              >
+                <SkipForward className="h-3 w-3" />
+              </Button>
+            </div>
           </div>
         )}
 
-        {/* Info */}
-        <div className="text-sm text-muted-foreground">
-          {document.format} • {totalPages} pages
+        {/* Right Info - Fixed width container */}
+        <div className="text-sm text-muted-foreground whitespace-nowrap min-w-0 flex-shrink-0">
+          <span className="hidden sm:inline">{document.format} • </span>
+          <span>
+            {totalPages} {totalPages === 1 ? "page" : "pages"}
+          </span>
         </div>
       </div>
     </div>

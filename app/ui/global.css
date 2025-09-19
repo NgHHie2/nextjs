@@ -87,6 +87,17 @@ html {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
+/* Vertical text for collapsed panel */
+.writing-mode-vertical {
+  writing-mode: vertical-lr;
+  text-orientation: mixed;
+}
+
+/* Custom utility for smooth transitions */
+.transition-width {
+  transition: width 0.3s ease-in-out;
+}
+
 @layer base {
   :root {
     /* Blue Theme Variables */
