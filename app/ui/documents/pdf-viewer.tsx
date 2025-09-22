@@ -188,11 +188,6 @@ export default function PDFViewer({ document }: PDFViewerProps) {
           <p className="text-muted-foreground mb-4">
             Failed to load PDF viewer
           </p>
-          <Button variant="outline" asChild>
-            <a href={pdfUrl} target="_blank">
-              Download PDF
-            </a>
-          </Button>
         </div>
       </div>
     );

@@ -20,15 +20,7 @@ interface PageProps {
 }
 
 function DocumentSkeleton() {
-  return (
-    <div className="flex h-[calc(100vh-120px)] gap-6">
-      {/* PDF Viewer Skeleton */}
-      <div className="flex-1 bg-gray-100 animate-pulse rounded-lg"></div>
-
-      {/* Info Panel Skeleton */}
-      <div className="w-80 bg-gray-100 animate-pulse rounded-lg"></div>
-    </div>
-  );
+  return <div className="flex h-[calc(100vh-120px)] gap-6"></div>;
 }
 
 export default async function DocumentViewPage({ params }: PageProps) {

@@ -24,6 +24,9 @@ async function createRequestWithCookies(
 }
 
 export async function fetchPositionByIds(ids: number[]): Promise<Position[]> {
+  if (!ids || ids.length === 0) {
+    return [];
+  }
   try {
     const params = new URLSearchParams();
     ids.forEach((id) => params.append("id", id.toString()));

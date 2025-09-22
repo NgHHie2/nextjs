@@ -26,6 +26,7 @@ import { getDocumentDownloadUrl } from "@/app/lib/data/document-data";
 import { useAuth } from "@/app/lib/auth/auth-context";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import EditCatalogsDialog from "./edit-catalogs-dialog";
 
 interface DocumentInfoProps {
   document: Document;
@@ -34,6 +35,7 @@ interface DocumentInfoProps {
 export default function DocumentInfo({ document }: DocumentInfoProps) {
   const { isAdmin, isTeacher } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [currentDocument, setCurrentDocument] = useState(document);
 
   const formatFileSize = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
@@ -51,7 +53,16 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
       : `${hours}h`;
   };
 
-  const downloadUrl = getDocumentDownloadUrl(document.code);
+  const downloadUrl = getDocumentDownloadUrl(currentDocument.code);
+
+  const handleCatalogsUpdated = (
+    newCatalogs: { id: number; positionId: number; positionName?: string }[]
+  ) => {
+    setCurrentDocument((prev) => ({
+      ...prev,
+      catalogs: newCatalogs,
+    }));
+  };
 
   return (
     <div
@@ -104,7 +115,7 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
                     Name
                   </label>
                   <p className="text-sm mt-1 break-words font-medium">
-                    {document.name}
+                    {currentDocument.name}
                   </p>
                 </div>
 
@@ -114,7 +125,7 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
                     Document Number
                   </label>
                   <p className="text-sm mt-1 font-mono">
-                    {document.documentNumber || "-"}
+                    {currentDocument.documentNumber || "-"}
                   </p>
                 </div>
 
@@ -126,10 +137,12 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
                   <div className="mt-1">
                     <Badge
                       variant={
-                        document.format === "PDF" ? "default" : "destructive"
+                        currentDocument.format === "PDF"
+                          ? "default"
+                          : "destructive"
                       }
                     >
-                      {document.format}
+                      {currentDocument.format}
                     </Badge>
                   </div>
                 </div>
@@ -140,36 +153,40 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
                     File Size
                   </label>
                   <p className="text-sm mt-1 font-mono">
-                    {formatFileSize(document.size)}
+                    {formatFileSize(currentDocument.size)}
                   </p>
                 </div>
 
                 {/* Document-specific metrics */}
-                {document.format === "PDF" && document.pages > 0 && (
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                      <Hash className="h-3 w-3" />
-                      Pages
-                    </label>
-                    <p className="text-sm mt-1">{document.pages} pages</p>
-                  </div>
-                )}
+                {currentDocument.format === "PDF" &&
+                  currentDocument.pages > 0 && (
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                        <Hash className="h-3 w-3" />
+                        Pages
+                      </label>
+                      <p className="text-sm mt-1">
+                        {currentDocument.pages} pages
+                      </p>
+                    </div>
+                  )}
 
-                {document.format === "VIDEO" && document.minutes > 0 && (
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                      <Hash className="h-3 w-3" />
-                      Duration
-                    </label>
-                    <p className="text-sm mt-1">
-                      {formatDuration(document.minutes)}
-                    </p>
-                  </div>
-                )}
+                {currentDocument.format === "VIDEO" &&
+                  currentDocument.minutes > 0 && (
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                        <Hash className="h-3 w-3" />
+                        Duration
+                      </label>
+                      <p className="text-sm mt-1">
+                        {formatDuration(currentDocument.minutes)}
+                      </p>
+                    </div>
+                  )}
               </div>
 
               {/* Description */}
-              {document.description && (
+              {currentDocument.description && (
                 <>
                   <div>
                     <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
@@ -177,7 +194,7 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
                       Description
                     </label>
                     <p className="text-sm mt-1 text-muted-foreground leading-relaxed">
-                      {document.description}
+                      {currentDocument.description}
                     </p>
                   </div>
                 </>
@@ -190,8 +207,8 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
                   Tags
                 </label>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {document.tags && document.tags.length > 0 ? (
-                    document.tags.map((tag) => (
+                  {currentDocument.tags && currentDocument.tags.length > 0 ? (
+                    currentDocument.tags.map((tag) => (
                       <span
                         key={tag.id}
                         className="px-2 py-1 text-sm rounded bg-muted text-foreground"
@@ -207,14 +224,23 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
 
               {/* Catalogs/Positions */}
               <div>
-                <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                  <Hash className="h-3 w-3" />
-                  Catalogs
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                    <Hash className="h-3 w-3" />
+                    Catalogs
+                  </label>
+                  {(isAdmin || isTeacher) && (
+                    <EditCatalogsDialog
+                      document={currentDocument}
+                      onCatalogsUpdated={handleCatalogsUpdated}
+                    />
+                  )}
+                </div>
                 <div className="mt-2">
-                  {document.catalogs && document.catalogs.length > 0 ? (
+                  {currentDocument.catalogs &&
+                  currentDocument.catalogs.length > 0 ? (
                     <div className="flex flex-wrap gap-1">
-                      {document.catalogs.map((catalog) => (
+                      {currentDocument.catalogs.map((catalog) => (
                         <span
                           key={catalog.id}
                           className="px-2 py-1 text-sm rounded bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 font-mono"
@@ -236,7 +262,9 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
                 <div>
                   <div className="flex gap-2">
                     <Button asChild size="sm" className="flex-1">
-                      <Link href={`/dashboard/documents/${document.code}/edit`}>
+                      <Link
+                        href={`/dashboard/documents/${currentDocument.code}/edit`}
+                      >
                         <Edit className="h-4 w-4 mr-2" />
                         Edit
                       </Link>

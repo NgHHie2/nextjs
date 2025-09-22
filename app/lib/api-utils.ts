@@ -5,11 +5,15 @@ import { NextRequest } from "next/server";
  * Bao gồm JWT cookie và custom headers
  */
 export function createForwardHeaders(
-  request: NextRequest
+  request: NextRequest,
+  isFormData: boolean = false
 ): Record<string, string> {
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
+  const headers: Record<string, string> = {};
+
+  // Chỉ set Content-Type nếu không phải FormData
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
 
   // Forward cookies (bao gồm JWT)
   const cookie = request.headers.get("cookie");
@@ -49,12 +53,16 @@ export async function forwardToBackend(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<Response> {
-  const { headers: optionsHeaders, ...otherOptions } = options;
+  const { headers: optionsHeaders, body, ...otherOptions } = options;
+
+  // Detect if body is FormData
+  const isFormData = body instanceof FormData;
 
   return fetch(endpoint, {
     ...otherOptions,
+    body,
     headers: {
-      ...createForwardHeaders(request),
+      ...createForwardHeaders(request, isFormData),
       ...optionsHeaders,
     },
   });
