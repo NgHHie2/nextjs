@@ -1,17 +1,16 @@
-import { NEXT_BASE_URL } from "@/app/lib/api-config";
+import { API_BASE_URL } from "@/app/lib/api-config";
 import { Position } from "../definitions";
-
-const API_BASE_URL = NEXT_BASE_URL;
 
 export async function deleteDocument(code: string): Promise<void> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/documents/${code}`, {
+    const response = await fetch(`${API_BASE_URL}/document/${code}`, {
       method: "DELETE",
       credentials: "include",
     });
 
     if (!response.ok) {
-      throw new Error("Failed to delete document");
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to delete document");
     }
   } catch (error) {
     console.error("Database Error:", error);
@@ -20,24 +19,25 @@ export async function deleteDocument(code: string): Promise<void> {
 }
 
 export function getDocumentDownloadUrl(code: string): string {
-  return `${API_BASE_URL}/api/documents/${code}/download`;
+  return `${API_BASE_URL}/document/download/${code}`;
 }
 
 export function getVideoStreamUrl(code: string): string {
-  return `${API_BASE_URL}/api/documents/${code}/video`;
+  return `${API_BASE_URL}/document/stream/${code}`;
 }
 
 // Fetch all positions for the current user
 export async function fetchAllPositions(): Promise<Position[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/positions/all`, {
+    const response = await fetch(`${API_BASE_URL}/document/position`, {
       method: "GET",
       credentials: "include",
       cache: "no-store",
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch positions");
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to fetch positions");
     }
 
     return await response.json();
@@ -54,7 +54,7 @@ export async function updateDocumentCatalogs(
 ): Promise<{ catalogs: number[] }> {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/api/documents/${documentCode}/catalogs`,
+      `${API_BASE_URL}/document/catalog/${documentCode}`,
       {
         method: "PUT",
         headers: {
@@ -80,7 +80,7 @@ export async function updateDocumentCatalogs(
 // Upload document
 export async function uploadDocument(formData: FormData): Promise<any> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/documents/upload`, {
+    const response = await fetch(`${API_BASE_URL}/document/upload`, {
       method: "POST",
       credentials: "include",
       body: formData,
@@ -109,17 +109,14 @@ export async function updateDocumentInfo(
   }
 ): Promise<any> {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/documents/${code}/update`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(data),
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/document/${code}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
