@@ -34,11 +34,17 @@ const links = [
     roles: ["ADMIN", "TEACHER"], // Admin và Teacher thấy
   },
   {
-    name: "Subjects",
-    href: "/dashboard/splitter",
+    name: "Courses",
+    href: "/dashboard/courses",
     icon: AcademicCapIcon,
-    roles: ["ADMIN", "TEACHER"], // Admin và Teacher thấy
+    roles: ["ADMIN", "TEACHER", "STUDENT"],
   },
+  // {
+  //   name: "Subjects",
+  //   href: "/dashboard/splitter",
+  //   icon: AcademicCapIcon,
+  //   roles: ["ADMIN", "TEACHER"], // Admin và Teacher thấy
+  // },
 ];
 
 export default async function SideNav() {

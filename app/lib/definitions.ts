@@ -1,3 +1,20 @@
+export type Course = {
+  id: number;
+  name: string;
+  startDate: string;
+  endDate: string;
+  totalAccounts: number;
+  totalDocuments: number;
+  createdAt: string;
+  createdBy: number;
+};
+
+export type CoursesPageResponse = {
+  content: Course[];
+  totalPages: number;
+  totalElements: number;
+};
+
 export type Document = {
   id: number;
   name: string;
