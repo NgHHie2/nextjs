@@ -11,16 +11,17 @@ export async function GET(request: NextRequest) {
     const backendParams = new URLSearchParams();
 
     const keyword = searchParams.get("keyword");
-    const startYear = searchParams.get("startYear");
-    const endYear = searchParams.get("endYear");
+    const startYear = searchParams.get("startYear"); // Frontend gửi startYear
+    const endYear = searchParams.get("endYear"); // Frontend gửi endYear
     const page = searchParams.get("page") || "0";
     const size = searchParams.get("size") || "10";
     const sortBy = searchParams.get("sortBy");
     const sortDir = searchParams.get("sortDir");
 
+    // Map parameters correctly to backend
     if (keyword) backendParams.set("keyword", keyword);
-    if (startYear) backendParams.set("startYear", startYear);
-    if (endYear) backendParams.set("endYear", endYear);
+    if (startYear) backendParams.set("startYear", startYear); // Backend cũng expect startYear
+    if (endYear) backendParams.set("endYear", endYear); // Backend cũng expect endYear
     if (sortBy) backendParams.set("sort", `${sortBy},${sortDir || "asc"}`);
     backendParams.set("page", page);
     backendParams.set("size", size);
@@ -55,10 +56,14 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const response = await forwardToBackend(request, `${API_BASE_URL}/course`, {
-      method: "POST",
-      body: JSON.stringify(body),
-    });
+    const response = await forwardToBackend(
+      request,
+      `${API_BASE_URL}/semester`,
+      {
+        method: "POST",
+        body: JSON.stringify(body),
+      }
+    );
 
     if (!response.ok) {
       const errorData = await response.json();

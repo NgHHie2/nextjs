@@ -1,16 +1,15 @@
 // app/dashboard/courses/page.tsx
 import { Suspense } from "react";
 import CoursesTable from "@/app/ui/courses/table";
-// import AccountsPagination from "@/app/ui/accounts/pagination";
+import CoursesPagination from "@/app/ui/courses/pagination";
 import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
 import Search from "@/app/ui/search";
 import { lusitana } from "@/app/ui/fonts";
-// import { CreateCourseButton } from "@/app/ui/accounts/buttons";
+import { CreateCourseButton } from "@/app/ui/courses/buttons";
 import { fetchAllCourses } from "@/app/lib/data/server-course-data";
-// import AccountsFilter from "@/app/ui/accounts/filter";
-import { pages } from "next/dist/build/templates/app-page";
-import ResetFiltersButton from "@/app/ui/accounts/reset-filters-button";
-// import ActiveFiltersBadges from "@/app/ui/accounts/active-filters-badges";
+import CoursesFilter from "@/app/ui/courses/filter";
+import ResetFiltersButton from "@/app/ui/courses/reset-filters-button";
+import ActiveFiltersBadges from "@/app/ui/courses/active-filters-badges";
 
 export const dynamic = "force-dynamic";
 
@@ -19,8 +18,8 @@ interface PageProps {
     query?: string;
     page?: string;
     size?: string;
-    startYear?: number;
-    endYear?: number;
+    startYear?: string;
+    endYear?: string;
     sortBy?: string;
     sortDir?: string;
   }>;
@@ -31,8 +30,12 @@ export default async function Page({ searchParams }: PageProps) {
   const query = resolvedSearchParams?.query || "";
   const currentPage = Number(resolvedSearchParams?.page) || 1;
   const pageSize = Number(resolvedSearchParams?.size) || 10;
-  const startYear = resolvedSearchParams?.startYear || undefined;
-  const endYear = resolvedSearchParams?.endYear || undefined;
+  const startYear = resolvedSearchParams?.startYear
+    ? Number(resolvedSearchParams.startYear)
+    : undefined;
+  const endYear = resolvedSearchParams?.endYear
+    ? Number(resolvedSearchParams.endYear)
+    : undefined;
   const sortBy = resolvedSearchParams?.sortBy || "";
   const sortDir = resolvedSearchParams?.sortDir || "";
 
@@ -53,7 +56,7 @@ export default async function Page({ searchParams }: PageProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className={`${lusitana.className} text-2xl`}>Courses</h1>
-        {/* <CreateAccountButton /> */}
+        <CreateCourseButton />
       </div>
 
       <div className="space-y-4">
@@ -61,11 +64,15 @@ export default async function Page({ searchParams }: PageProps) {
           <div className="flex-1">
             <Search placeholder="Search courses..." />
           </div>
-          {/* <AccountsFilter /> */}
+          <CoursesFilter />
           <ResetFiltersButton />
         </div>
 
-        {/* <ActiveFiltersBadges query={query} role={role} /> */}
+        <ActiveFiltersBadges
+          query={query}
+          startYear={startYear}
+          endYear={endYear}
+        />
       </div>
 
       <Suspense
@@ -83,14 +90,14 @@ export default async function Page({ searchParams }: PageProps) {
         />
       </Suspense>
 
-      {/* {totalPages > 1 && (
-        <AccountsPagination
+      {totalPages > 1 && (
+        <CoursesPagination
           currentPage={currentPage}
           totalPages={totalPages}
           totalElements={totalElements}
           pageSize={pageSize}
         />
-      )} */}
+      )}
     </div>
   );
 }

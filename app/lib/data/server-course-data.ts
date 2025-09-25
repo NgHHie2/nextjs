@@ -36,8 +36,8 @@ export async function fetchAllCourses(
     const params = new URLSearchParams();
 
     if (query) params.set("keyword", query);
-    if (startYear) params.set("startDate", startYear.toString());
-    if (endYear) params.set("endDate", endYear.toString());
+    if (startYear) params.set("startYear", startYear.toString());
+    if (endYear) params.set("endYear", endYear.toString());
     if (sortBy) params.set("sortBy", sortBy);
     if (sortDir) params.set("sortDir", sortDir);
     if (currentPage) params.set("page", (currentPage - 1).toString());

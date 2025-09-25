@@ -19,12 +19,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export function CreateAccountButton() {
+export function CreateCourseButton() {
   return (
     <Button asChild>
-      <Link href="/dashboard/accounts/create">
+      <Link href="/dashboard/courses/create">
         <PlusIcon className="h-4 w-4 mr-2" />
-        Create Account
+        Create Course
       </Link>
     </Button>
   );
