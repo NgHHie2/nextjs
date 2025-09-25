@@ -1,7 +1,7 @@
 // app/ui/documents/document-info.tsx
 "use client";
 
-import { Document } from "@/app/lib/definitions";
+import { Document, Position } from "@/app/lib/definitions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,6 @@ import { getDocumentDownloadUrl } from "@/app/lib/data/document-data";
 import { useAuth } from "@/app/lib/auth/auth-context";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import EditCatalogsDialog from "./edit-catalogs-dialog";
 
 interface DocumentInfoProps {
   document: Document;
@@ -56,7 +55,7 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
   const downloadUrl = getDocumentDownloadUrl(currentDocument.code);
 
   const handleCatalogsUpdated = (
-    newCatalogs: { id: number; positionId: number; positionName?: string }[]
+    newCatalogs: { id: number; position: Position }[]
   ) => {
     setCurrentDocument((prev) => ({
       ...prev,
@@ -106,84 +105,82 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
               </div>
             </CardHeader>
 
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4">
               {/* Basic Info */}
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                    <Hash className="h-3 w-3" />
-                    Name
-                  </label>
-                  <p className="text-sm mt-1 break-words font-medium">
-                    {currentDocument.name}
-                  </p>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                    <Hash className="h-3 w-3" />
-                    Document Number
-                  </label>
-                  <p className="text-sm mt-1 font-mono">
-                    {currentDocument.documentNumber || "-"}
-                  </p>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                    <Hash className="h-3 w-3" />
-                    Format
-                  </label>
-                  <div className="mt-1">
-                    <Badge
-                      variant={
-                        currentDocument.format === "PDF"
-                          ? "default"
-                          : "destructive"
-                      }
-                    >
-                      {currentDocument.format}
-                    </Badge>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                    <Hash className="h-3 w-3" />
-                    File Size
-                  </label>
-                  <p className="text-sm mt-1 font-mono">
-                    {formatFileSize(currentDocument.size)}
-                  </p>
-                </div>
-
-                {/* Document-specific metrics */}
-                {currentDocument.format === "PDF" &&
-                  currentDocument.pages > 0 && (
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                        <Hash className="h-3 w-3" />
-                        Pages
-                      </label>
-                      <p className="text-sm mt-1">
-                        {currentDocument.pages} pages
-                      </p>
-                    </div>
-                  )}
-
-                {currentDocument.format === "VIDEO" &&
-                  currentDocument.minutes > 0 && (
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                        <Hash className="h-3 w-3" />
-                        Duration
-                      </label>
-                      <p className="text-sm mt-1">
-                        {formatDuration(currentDocument.minutes)}
-                      </p>
-                    </div>
-                  )}
+              <div>
+                <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                  <Hash className="h-3 w-3" />
+                  Name
+                </label>
+                <p className="text-sm mt-1 break-words font-medium">
+                  {currentDocument.name}
+                </p>
               </div>
+
+              <div>
+                <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                  <Hash className="h-3 w-3" />
+                  Document Number
+                </label>
+                <p className="text-sm mt-1 font-mono">
+                  {currentDocument.documentNumber || "-"}
+                </p>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                  <Hash className="h-3 w-3" />
+                  Format
+                </label>
+                <div className="mt-1">
+                  <Badge
+                    variant={
+                      currentDocument.format === "PDF"
+                        ? "default"
+                        : "destructive"
+                    }
+                  >
+                    {currentDocument.format}
+                  </Badge>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                  <Hash className="h-3 w-3" />
+                  File Size
+                </label>
+                <p className="text-sm mt-1 font-mono">
+                  {formatFileSize(currentDocument.size)}
+                </p>
+              </div>
+
+              {/* Document-specific metrics */}
+              {currentDocument.format === "PDF" &&
+                currentDocument.pages > 0 && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                      <Hash className="h-3 w-3" />
+                      Pages
+                    </label>
+                    <p className="text-sm mt-1">
+                      {currentDocument.pages} pages
+                    </p>
+                  </div>
+                )}
+
+              {currentDocument.format === "VIDEO" &&
+                currentDocument.minutes > 0 && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                      <Hash className="h-3 w-3" />
+                      Duration
+                    </label>
+                    <p className="text-sm mt-1">
+                      {formatDuration(currentDocument.minutes)}
+                    </p>
+                  </div>
+                )}
 
               {/* Description */}
               {currentDocument.description && (
@@ -204,7 +201,7 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
               <div>
                 <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
                   <Hash className="h-3 w-3" />
-                  Tags
+                  Catalogs
                 </label>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {currentDocument.tags && currentDocument.tags.length > 0 ? (
@@ -227,14 +224,8 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
                     <Hash className="h-3 w-3" />
-                    Catalogs
+                    Positions
                   </label>
-                  {(isAdmin || isTeacher) && (
-                    <EditCatalogsDialog
-                      document={currentDocument}
-                      onCatalogsUpdated={handleCatalogsUpdated}
-                    />
-                  )}
                 </div>
                 <div className="mt-2">
                   {currentDocument.catalogs &&
@@ -245,13 +236,13 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
                           key={catalog.id}
                           className="px-2 py-1 text-sm rounded bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 font-mono"
                         >
-                          {catalog.positionName ?? "No name"}
+                          {catalog.position.name ?? "No name"}
                         </span>
                       ))}
                     </div>
                   ) : (
                     <p className="text-sm text-muted-foreground">
-                      No catalog assignments
+                      No position assignments
                     </p>
                   )}
                 </div>

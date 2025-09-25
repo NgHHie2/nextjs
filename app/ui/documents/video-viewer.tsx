@@ -263,6 +263,23 @@ export default function VideoViewer({ videoDoc }: VideoViewerProps) {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
   }, []);
 
+  useEffect(() => {
+    cleanup();
+    setIsLoading(true);
+    setHasError(false);
+    setRetryCount(0);
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setDuration(0);
+    setIsVideoReady(false);
+
+    // Force reload with cache busting
+    if (videoRef.current) {
+      videoRef.current.src = `${videoUrl}?t=${Date.now()}`;
+      videoRef.current.load();
+    }
+  }, [videoDoc.code, cleanup, videoUrl]);
+
   // Reset states when document changes
   useEffect(() => {
     cleanup();
@@ -377,11 +394,6 @@ export default function VideoViewer({ videoDoc }: VideoViewerProps) {
             <div className="text-center">
               <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
               <p>Loading video...</p>
-              {retryCount > 0 && (
-                <p className="text-sm text-gray-500 mt-2">
-                  Retry attempt {retryCount}/{maxRetries}
-                </p>
-              )}
             </div>
           </div>
         )}

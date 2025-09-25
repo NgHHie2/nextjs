@@ -19,8 +19,7 @@ export type Tag = {
 
 export type Catalog = {
   id: number;
-  positionId: number;
-  positionName?: string;
+  position: Position;
 };
 
 export type DocumentsPageResponse = {
@@ -122,5 +121,5 @@ export type DashboardCardData = {
 export type Position = {
   id: number;
   name: string;
-  description: string;
+  description?: string;
 };

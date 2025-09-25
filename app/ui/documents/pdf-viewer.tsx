@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { getDocumentDownloadUrl } from "@/app/lib/data/document-data";
 import { useTheme } from "next-themes";
+import { url } from "inspector";
 
 interface PDFViewerProps {
   document: Document;
@@ -90,7 +91,10 @@ export default function PDFViewer({ document }: PDFViewerProps) {
     const loadPdf = async () => {
       try {
         setIsLoading(true);
-        const loadingTask = window.pdfjsLib.getDocument(pdfUrl);
+        const loadingTask = window.pdfjsLib.getDocument({
+          url: pdfUrl,
+          withCredentials: true,
+        });
         const pdf = await loadingTask.promise;
         setPdfDoc(pdf);
         setIsLoading(false);

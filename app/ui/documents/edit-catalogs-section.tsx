@@ -9,16 +9,15 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Search,
   Loader2,
   Save,
   RotateCcw,
-  Users,
   AlertCircle,
   CheckCircle2,
+  X,
 } from "lucide-react";
 import {
   fetchAllPositions,
@@ -29,10 +28,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface EditDocumentCatalogsSectionProps {
   document: Document;
-  allPositions?: Position[]; // Pass positions from parent
-  onCatalogsUpdated: (
-    catalogs: { id: number; positionId: number; positionName?: string }[]
-  ) => void;
+  allPositions?: Position[];
+  onCatalogsUpdated: (catalogs: { id: number; position: Position }[]) => void;
 }
 
 export default function EditDocumentCatalogsSection({
@@ -47,9 +44,6 @@ export default function EditDocumentCatalogsSection({
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPositionIds, setSelectedPositionIds] = useState<number[]>([]);
   const [originalPositionIds, setOriginalPositionIds] = useState<number[]>([]);
-  const [currentCatalogs, setCurrentCatalogs] = useState(
-    document.catalogs || []
-  );
   const [isLoading, setIsLoading] = useState(allPositions.length === 0);
   const [isSaving, setIsSaving] = useState(false);
   const [hasLoadError, setHasLoadError] = useState(false);
@@ -58,12 +52,10 @@ export default function EditDocumentCatalogsSection({
   useEffect(() => {
     setIsClient(true);
     const currentPositionIds =
-      document.catalogs?.map((c) => c.positionId) || [];
+      document.catalogs?.map((c) => c.position.id) || [];
     setOriginalPositionIds(currentPositionIds);
     setSelectedPositionIds([...currentPositionIds]);
-    setCurrentCatalogs(document.catalogs || []);
 
-    // Only load if positions not provided
     if (allPositions.length === 0) {
       loadPositions();
     } else {
@@ -105,6 +97,10 @@ export default function EditDocumentCatalogsSection({
     );
   };
 
+  const handleRemoveSelected = (positionId: number) => {
+    setSelectedPositionIds((prev) => prev.filter((id) => id !== positionId));
+  };
+
   const handleClearAll = () => {
     setSelectedPositionIds([]);
   };
@@ -129,22 +125,17 @@ export default function EditDocumentCatalogsSection({
         selectedPositionIds
       );
 
-      // Create updated catalogs with position names
+      // Create updated catalogs with position objects
       const positionMap = new Map(positions.map((p) => [p.id, p]));
       const updatedCatalogs = result.catalogs.map(
         (positionId: number, index: number) => ({
-          id: index + 1, // Temporary ID since backend doesn't return it
-          positionId,
-          positionName: positionMap.get(positionId)?.name,
+          id: index + 1,
+          position: positionMap.get(positionId)!,
         })
       );
 
-      // Update parent component với data mới
       onCatalogsUpdated(updatedCatalogs);
-
-      // Cập nhật local state
       setOriginalPositionIds([...selectedPositionIds]);
-      setCurrentCatalogs(updatedCatalogs);
 
       toast({
         title: "Success",
@@ -193,10 +184,9 @@ export default function EditDocumentCatalogsSection({
   }
 
   return (
-    <div className="space-y-6">
-      {/* Position Selection */}
+    <div className="space-y-2">
+      {/* Search */}
       <div className="space-y-4">
-        {/* Search */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -207,129 +197,126 @@ export default function EditDocumentCatalogsSection({
           />
         </div>
 
-        {/* Selection Controls */}
+        {/* Selection summary and controls */}
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">
             {getFilteredSelectedCount()}/{filteredPositions.length} visible
             positions selected
           </span>
-          <div className="flex gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleClearAll}
-              className="h-6 px-2 text-xs"
-              disabled={isLoading || selectedPositionIds.length === 0}
-            >
-              Clear All
-            </Button>
-          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleClearAll}
+            className="h-6 px-2 text-xs"
+            disabled={isLoading || selectedPositionIds.length === 0}
+          >
+            Clear All
+          </Button>
         </div>
+      </div>
 
-        {/* Positions List */}
-        <Card>
-          <ScrollArea className="h-64">
-            {isLoading ? (
-              <div className="flex items-center justify-center h-32">
-                <Loader2 className="h-6 w-6 animate-spin" />
-              </div>
-            ) : filteredPositions.length === 0 ? (
-              <div className="flex items-center justify-center h-32 text-muted-foreground">
-                {searchQuery ? "No positions found" : "No positions available"}
-              </div>
-            ) : (
-              <div className="p-4 space-y-1">
-                {filteredPositions.map((position, index) => (
-                  <div
-                    key={`position-${position.id}-${index}`}
-                    className="flex items-start space-x-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => handlePositionToggle(position.id)}
-                  >
-                    <Checkbox
-                      checked={selectedPositionIds.includes(position.id)}
-                      onChange={() => handlePositionToggle(position.id)}
-                      className="mt-0.5"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-sm">
-                          {position.name}
-                        </span>
-                        {originalPositionIds.includes(position.id) && (
-                          <Badge variant="outline" className="text-xs">
-                            Current
-                          </Badge>
-                        )}
-                      </div>
-                      {position.description && (
-                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                          {position.description}
-                        </p>
+      {/* Positions List */}
+      <Card>
+        <ScrollArea className="h-64">
+          {isLoading ? (
+            <div className="flex items-center justify-center h-32">
+              <Loader2 className="h-6 w-6 animate-spin" />
+            </div>
+          ) : filteredPositions.length === 0 ? (
+            <div className="flex items-center justify-center h-32 text-muted-foreground">
+              {searchQuery ? "No positions found" : "No positions available"}
+            </div>
+          ) : (
+            <div className="p-4 space-y-1">
+              {filteredPositions.map((position) => (
+                <div
+                  key={position.id}
+                  className="flex items-start space-x-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
+                  onClick={() => handlePositionToggle(position.id)}
+                >
+                  <Checkbox
+                    checked={selectedPositionIds.includes(position.id)}
+                    onChange={() => handlePositionToggle(position.id)}
+                    className="mt-0.5"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-sm">
+                        {position.name}
+                      </span>
+                      {originalPositionIds.includes(position.id) && (
+                        <Badge variant="outline" className="text-xs">
+                          Current
+                        </Badge>
                       )}
                     </div>
+                    {position.description && (
+                      <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                        {position.description}
+                      </p>
+                    )}
                   </div>
-                ))}
-              </div>
-            )}
-          </ScrollArea>
-        </Card>
+                </div>
+              ))}
+            </div>
+          )}
+        </ScrollArea>
+      </Card>
 
-        {/* Selected Positions Summary */}
-        {selectedPositionIds.length > 0 && (
-          <div className="space-y-2">
+      {/* Selected positions with badges (like dialog) */}
+      {selectedPositionIds.length > 0 && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
             <Label className="text-sm font-medium">
               Selected Positions ({selectedPositionIds.length})
             </Label>
-            <div className="p-3 bg-muted/30 rounded-lg max-h-24 overflow-y-auto">
-              <div className="flex flex-wrap gap-1">
-                {getSelectedPositions().map((position, index) => (
-                  <Badge
-                    key={`selected-${position.id}-${index}`}
-                    variant={
-                      originalPositionIds.includes(position.id)
-                        ? "default"
-                        : "secondary"
-                    }
-                    className="text-xs"
-                  >
-                    {position.name}
-                  </Badge>
-                ))}
-              </div>
-            </div>
           </div>
-        )}
-
-        {/* Change Summary */}
-        {hasChanges() && (
-          <Alert>
-            <CheckCircle2 className="h-4 w-4" />
-            <AlertDescription>
-              You have unsaved changes to the access permissions.
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {/* Actions */}
-        <div className="flex gap-4 pt-4 justify-end">
-          <Button
-            variant="outline"
-            onClick={handleReset}
-            disabled={isSaving || !hasChanges()}
-          >
-            Reset
-          </Button>
-          <Button onClick={handleSave} disabled={isSaving || !hasChanges()}>
-            {isSaving ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Saving...
-              </>
-            ) : (
-              <>Save Changes</>
-            )}
-          </Button>
+          <div className="flex flex-wrap gap-2 rounded-lg max-h-32 overflow-y-auto">
+            {getSelectedPositions().map((position) => (
+              <Badge
+                key={position.id}
+                variant={
+                  originalPositionIds.includes(position.id)
+                    ? "default"
+                    : "secondary"
+                }
+                className="gap-1"
+              >
+                {position.name}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveSelected(position.id);
+                  }}
+                  className="ml-1 hover:bg-muted-foreground/20 rounded-full p-0.5"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            ))}
+          </div>
         </div>
+      )}
+
+      {/* Actions */}
+      <div className="flex gap-4 pt-4 justify-end">
+        <Button
+          variant="outline"
+          onClick={handleReset}
+          disabled={isSaving || !hasChanges()}
+        >
+          Reset
+        </Button>
+        <Button onClick={handleSave} disabled={isSaving || !hasChanges()}>
+          {isSaving ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            <>Save Changes</>
+          )}
+        </Button>
       </div>
     </div>
   );

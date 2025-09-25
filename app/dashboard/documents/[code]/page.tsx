@@ -1,7 +1,6 @@
 // app/dashboard/documents/[code]/page.tsx
 import { Suspense } from "react";
 import { fetchDocumentByCode } from "@/app/lib/data/server-document-data";
-import { fetchPositionByIds } from "@/app/lib/data/server-position-data";
 import { notFound } from "next/navigation";
 import PDFViewer from "@/app/ui/documents/pdf-viewer";
 import DocumentInfo from "@/app/ui/documents/document-info";
@@ -29,16 +28,6 @@ export default async function DocumentViewPage({ params }: PageProps) {
   let document;
   try {
     document = await fetchDocumentByCode(code);
-    if (document) {
-      const positionIds = Array.from(
-        new Set((document.catalogs || []).map((c) => c.positionId))
-      );
-      const positions = await fetchPositionByIds(positionIds);
-      const positionMap = new Map(positions.map((p) => [p.id, p]));
-      (document.catalogs || []).forEach((c) => {
-        c.positionName = positionMap.get(c.positionId)?.name;
-      });
-    }
   } catch (error) {
     notFound();
   }

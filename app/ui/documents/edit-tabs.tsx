@@ -52,7 +52,7 @@ export default function EditDocumentTabs({ document }: EditDocumentTabsProps) {
   };
 
   const handleCatalogsUpdated = (
-    newCatalogs: { id: number; positionId: number; positionName?: string }[]
+    newCatalogs: { id: number; position: Position }[]
   ) => {
     if (currentDocument) {
       setCurrentDocument((prev) =>
@@ -86,7 +86,7 @@ export default function EditDocumentTabs({ document }: EditDocumentTabsProps) {
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <div>
+              <div className="space-y-1.5">
                 <CardTitle>Document Information</CardTitle>
                 <p className="text-sm text-muted-foreground">
                   Update the basic information for this document.

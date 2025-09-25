@@ -1,7 +1,6 @@
 // app/dashboard/documents/[code]/edit/page.tsx
 import { Suspense } from "react";
 import { fetchDocumentByCode } from "@/app/lib/data/server-document-data";
-import { fetchPositionByIds } from "@/app/lib/data/server-position-data";
 import { notFound } from "next/navigation";
 import { lusitana } from "@/app/ui/fonts";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
@@ -23,16 +22,6 @@ export default async function EditDocumentPage({ params }: PageProps) {
   let document;
   try {
     document = await fetchDocumentByCode(code);
-    if (document) {
-      const positionIds = Array.from(
-        new Set((document.catalogs || []).map((c) => c.positionId))
-      );
-      const positions = await fetchPositionByIds(positionIds);
-      const positionMap = new Map(positions.map((p) => [p.id, p]));
-      (document.catalogs || []).forEach((c) => {
-        c.positionName = positionMap.get(c.positionId)?.name;
-      });
-    }
   } catch (error) {
     notFound();
   }

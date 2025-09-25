@@ -22,22 +22,3 @@ async function createRequestWithCookies(
     },
   });
 }
-
-export async function fetchPositionByIds(ids: number[]): Promise<Position[]> {
-  if (!ids || ids.length === 0) {
-    return [];
-  }
-  try {
-    const params = new URLSearchParams();
-    ids.forEach((id) => params.append("id", id.toString()));
-    const url = `${API_BASE_URL}/api/positions?${params.toString()}`;
-    const response = await createRequestWithCookies(url, {
-      cache: "no-store",
-    });
-
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching position:", error);
-    throw error;
-  }
-}

@@ -65,11 +65,11 @@ export default function CreateDocumentForm() {
     }
 
     // Validate file size (100MB max)
-    const maxSize = 100 * 1024 * 1024;
+    const maxSize = 300 * 1024 * 1024;
     if (file.size > maxSize) {
       setErrors((prev) => ({
         ...prev,
-        file: "File size must be less than 100MB",
+        file: "File size must be less than 300MB",
       }));
       return;
     }
@@ -165,11 +165,16 @@ export default function CreateDocumentForm() {
       // Simulate progress (since we can't track real progress with fetch)
       const progressInterval = setInterval(() => {
         setUploadProgress((prev) => {
-          if (prev >= 90) {
+          if (prev >= 95) {
+            // dừng ở 95%, phần còn lại do backend báo về
             clearInterval(progressInterval);
             return prev;
           }
-          return prev + Math.random() * 15;
+
+          const increment = Math.random() * 10; // tăng nhỏ hơn
+          const next = prev + increment;
+
+          return next > 95 ? 95 : next; // không vượt quá 95
         });
       }, 200);
 

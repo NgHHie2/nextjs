@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   try {
     const response = await forwardToBackend(
       request,
-      `${API_BASE_URL}/account/position`,
+      `${API_BASE_URL}/document/position`,
       {
         method: "GET",
         cache: "no-store",
