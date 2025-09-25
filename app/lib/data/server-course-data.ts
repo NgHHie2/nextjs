@@ -76,7 +76,21 @@ export async function fetchCourseById(id: number): Promise<Course | null> {
       return null;
     }
 
-    return response.json();
+    const data = await response.json();
+
+    // The backend now returns the full Semester object with nested data
+    return {
+      id: data.id,
+      name: data.name,
+      startDate: data.startDate,
+      endDate: data.endDate,
+      semesterDocuments: data.semesterDocuments || [],
+      semesterAccounts: data.semesterAccounts || [],
+      createdAt: data.createdAt,
+      createdBy: data.createdBy,
+      totalAccounts: data.semesterAccounts?.length || 0,
+      totalDocuments: data.semesterDocuments?.length || 0,
+    };
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch course.");

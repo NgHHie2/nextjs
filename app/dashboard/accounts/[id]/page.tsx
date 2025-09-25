@@ -59,7 +59,7 @@ export default async function Page({
             <CardTitle>Personal Information</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="divide-y divide-gray-200">
+            <div className="divide-y">
               <div className="grid grid-cols-2 gap-4 py-2">
                 <span className="text-gray-500 font-medium">Username</span>
                 <span>{account.username}</span>

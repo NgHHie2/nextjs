@@ -3,10 +3,23 @@ export type Course = {
   name: string;
   startDate: string;
   endDate: string;
-  totalAccounts: number;
-  totalDocuments: number;
+  semesterDocuments: SemesterDocument[];
+  semesterAccounts: SemesterAccount[];
   createdAt: string;
   createdBy: number;
+  totalAccounts?: number;
+  totalDocuments?: number;
+};
+
+export type SemesterDocument = {
+  id: number;
+  document: Document;
+};
+
+export type SemesterAccount = {
+  id: number;
+  accountId: number;
+  position: Position;
 };
 
 export type CoursesPageResponse = {
