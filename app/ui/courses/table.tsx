@@ -1,8 +1,9 @@
-// app/ui/accounts/table.tsx
+// app/ui/courses/table.tsx
 import Link from "next/link";
 import { Eye, Pencil, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
-import { Course } from "@/app/lib/definitions";
+import { Course, Account } from "@/app/lib/definitions";
 import { fetchAllCourses } from "@/app/lib/data/server-course-data";
+import { fetchAccountsByIds } from "@/app/lib/data/server-account-data";
 import { DeleteCourseButton } from "@/app/ui/courses/buttons";
 import {
   Table,
@@ -44,6 +45,28 @@ export default async function CoursesTable({
     currentSize,
     sortBy,
     sortDir
+  );
+
+  // Get unique creator IDs
+  const creatorIds = [
+    ...new Set(data.content.map((course) => course.createdBy)),
+  ].filter((id) => id != null);
+
+  // Fetch creator information
+  let creators: Account[] = [];
+  try {
+    creators = await fetchAccountsByIds(creatorIds);
+  } catch (error) {
+    console.warn("Failed to fetch creator information:", error);
+    // creators will remain empty array, so we'll show "-" for creator names
+  }
+
+  // Create a map for quick lookup
+  const creatorMap = new Map(
+    creators.map((creator) => [
+      creator.id,
+      `${creator.lastName} ${creator.firstName}`,
+    ])
   );
 
   if (data.content.length === 0) {
@@ -98,6 +121,16 @@ export default async function CoursesTable({
                   End
                 </SortableHeader>
               </TableHead>
+
+              <TableHead className="min-w-[200px] font-semibold text-foreground">
+                <SortableHeader
+                  field="createdBy"
+                  currentSort={sortBy}
+                  currentDir={sortDir}
+                >
+                  Creator
+                </SortableHeader>
+              </TableHead>
               <TableHead className="font-semibold text-foreground text-center">
                 <SortableHeader
                   field="totalAccounts"
@@ -105,15 +138,6 @@ export default async function CoursesTable({
                   currentDir={sortDir}
                 >
                   Total accounts
-                </SortableHeader>
-              </TableHead>
-              <TableHead className="font-semibold text-foreground">
-                <SortableHeader
-                  field="createdBy"
-                  currentSort={sortBy}
-                  currentDir={sortDir}
-                >
-                  Creator
                 </SortableHeader>
               </TableHead>
               <TableHead className="font-semibold text-foreground text-center">
@@ -157,16 +181,19 @@ export default async function CoursesTable({
                     <span className="text-muted-foreground">-</span>
                   )}
                 </TableCell>
+
+                <TableCell className="font-medium">
+                  <div className="flex flex-col">
+                    <span className="font-semibold">
+                      {creatorMap.get(course.createdBy) || "-"}
+                    </span>
+                  </div>
+                </TableCell>
                 <TableCell className="font-medium text-center">
                   <div className="flex flex-col">
                     <span className="font-semibold">
                       {course.totalAccounts}
                     </span>
-                  </div>
-                </TableCell>
-                <TableCell className="font-medium">
-                  <div className="flex flex-col">
-                    <span className="font-semibold">{course.createdBy}</span>
                   </div>
                 </TableCell>
                 <TableCell className="text-right">

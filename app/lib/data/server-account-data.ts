@@ -112,3 +112,39 @@ export async function fetchParticipationsByAccount(
     return [];
   }
 }
+
+export async function fetchAccountsByIds(ids: number[]): Promise<Account[]> {
+  try {
+    if (!ids || ids.length === 0) {
+      return [];
+    }
+
+    // Remove duplicates and filter out invalid IDs
+    const uniqueIds = [...new Set(ids)].filter(
+      (id) => id != null && !isNaN(Number(id))
+    );
+
+    if (uniqueIds.length === 0) {
+      return [];
+    }
+
+    // Use comma-separated format for cleaner URL
+    const idsParam = uniqueIds.join(",");
+    const url = `${API_BASE_URL}/api/accounts/bulk?ids=${idsParam}`;
+
+    const response = await createRequestWithCookies(url, {
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      console.warn("Failed to fetch accounts:", response.status);
+      return [];
+    }
+
+    const data = await response.json();
+    return data.accounts || [];
+  } catch (error) {
+    console.error("Error fetching accounts:", error);
+    return []; // Return empty array on error so table can still render
+  }
+}
