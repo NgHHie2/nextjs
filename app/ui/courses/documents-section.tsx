@@ -23,6 +23,7 @@ import AssignDocumentDialog from "./assign-document-dialog";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { DeleteDocumentFromSemesterButton } from "./buttons";
+import { useAuth } from "@/app/lib/auth/auth-context";
 
 export default function DocumentsSection({
   documents,
@@ -31,6 +32,7 @@ export default function DocumentsSection({
   documents: any[];
   semesterId: number;
 }) {
+  const { isAdmin, isTeacher } = useAuth();
   const router = useRouter();
 
   const handleDocumentUpdate = () => {
@@ -110,10 +112,12 @@ export default function DocumentsSection({
                               <Eye className="h-4 w-4" />
                             </Link>
                           </Button>
-                          <DeleteDocumentFromSemesterButton
-                            id={semesterId}
-                            code={semDoc.document.code}
-                          />
+                          {(isAdmin || isTeacher) && (
+                            <DeleteDocumentFromSemesterButton
+                              id={semesterId}
+                              code={semDoc.document.code}
+                            />
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>

@@ -111,8 +111,8 @@ export default function AssignDocumentDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm">
-          <Plus className="h-4 w-4 mr-2" />
+        <Button size="sm" className="w-[140px]">
+          <Plus className="h-4 w-4" />
           Assign Document
         </Button>
       </DialogTrigger>
