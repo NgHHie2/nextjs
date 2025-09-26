@@ -33,11 +33,34 @@ export async function deleteDocumentFromCourse(
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to delete course");
+      throw new Error(errorData.message || "Failed to unassign document");
     }
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to delete course.");
+    throw new Error("Failed to unassign document.");
+  }
+}
+
+export async function deleteAccountFromCourse(
+  id: number,
+  accountId: number
+): Promise<void> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/semester/${id}/accounts/${accountId}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to unassign account");
+    }
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to unassign account.");
   }
 }
 
@@ -71,6 +94,69 @@ export async function assignDocumentsToCourse(
     return await response.json();
   } catch (error) {
     console.error("Assign Error:", error);
+    throw error;
+  }
+}
+
+// Assign accounts to course
+export async function assignAccountsToCourse(
+  semesterId: number,
+  accountAssignments: { accountId: number; positionId: number }[]
+): Promise<any> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/semester/${semesterId}/accounts`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          accountAssignments,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Failed to assign accounts to course"
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Assign Error:", error);
+    throw error;
+  }
+}
+
+// Search account by username or CCCD
+export async function searchAccountByCccd(cccd: string): Promise<any> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/account/cccd/${encodeURIComponent(cccd)}`,
+      {
+        method: "GET",
+        credentials: "include",
+        cache: "no-store",
+      }
+    );
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error("No accounts found");
+      }
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to search accounts");
+    }
+
+    const data = await response.json();
+    // Assuming the response has a content array
+    return data.content || data;
+  } catch (error) {
+    console.error("Search Error:", error);
     throw error;
   }
 }

@@ -81,9 +81,9 @@ export default async function Page({
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Course Information</CardTitle>
-            <Button size={"sm"} asChild>
+            <Button size={"sm"} className="w-[140px]" asChild>
               <Link href={`/dashboard/courses/${id}/edit`}>
-                <Edit className="h-4 w-4 mr-2" />
+                <Edit className="h-4 w-4" />
                 Edit Course
               </Link>
             </Button>
@@ -149,6 +149,7 @@ export default async function Page({
       <AccountsSection
         semesterAccounts={course.semesterAccounts || []}
         accountMap={accountMap}
+        semesterId={course.id}
       />
     </main>
   );

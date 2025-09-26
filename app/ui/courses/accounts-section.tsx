@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Collapsible,
   CollapsibleContent,
@@ -16,29 +18,51 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Users, Eye, ChevronDown } from "lucide-react";
 import { Account } from "@/app/lib/definitions";
+import AssignAccountDialog from "./assign-account-dialog";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/lib/auth/auth-context";
+import { DeleteAccountFromSemesterButton } from "./buttons";
 
 type AccountsSectionProps = {
   semesterAccounts: any[];
   accountMap: Map<number, Account>;
+  semesterId: number;
 };
 
 export default function AccountsSection({
   semesterAccounts,
   accountMap,
+  semesterId,
 }: AccountsSectionProps) {
+  const { isAdmin, isTeacher } = useAuth();
+  const router = useRouter();
+
+  const handleAccountUpdate = () => {
+    router.refresh();
+  };
+
   const totalAccounts = semesterAccounts?.length || 0;
+  const existingAccountIds = semesterAccounts?.map((sa) => sa.accountId) || [];
 
   return (
     <Collapsible className="group">
       <Card>
         <CardHeader>
-          <CollapsibleTrigger asChild>
-            <CardTitle className="flex items-center gap-2 cursor-pointer">
-              <ChevronDown className="h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
-              <Users className="h-5 w-5" />
-              Participants ({totalAccounts})
-            </CardTitle>
-          </CollapsibleTrigger>
+          <div className="flex items-center justify-between">
+            <CollapsibleTrigger asChild>
+              <CardTitle className="flex items-center gap-2 cursor-pointer">
+                <ChevronDown className="h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                <Users className="h-5 w-5" />
+                Participants ({totalAccounts})
+              </CardTitle>
+            </CollapsibleTrigger>
+
+            <AssignAccountDialog
+              semesterId={semesterId}
+              existingAccountIds={existingAccountIds}
+              onAccountAssigned={handleAccountUpdate}
+            />
+          </div>
         </CardHeader>
 
         <CollapsibleContent>
@@ -82,11 +106,17 @@ export default function AccountsSection({
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="flex justify-center flex-wrap gap-1">
-                            <Button variant="ghost" size="sm">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                          </div>
+                          {(isAdmin || isTeacher) && account && (
+                            <div className="flex justify-center flex-wrap gap-1">
+                              <Button variant="ghost" size="sm">
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <DeleteAccountFromSemesterButton
+                                id={semesterId}
+                                accountId={account.id}
+                              />
+                            </div>
+                          )}
                         </TableCell>
                       </TableRow>
                     );
