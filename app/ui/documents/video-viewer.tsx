@@ -19,9 +19,13 @@ import { getVideoStreamUrl } from "@/app/lib/data/document-data";
 
 interface VideoViewerProps {
   videoDoc: Document;
+  semesterId?: number;
 }
 
-export default function VideoViewer({ videoDoc }: VideoViewerProps) {
+export default function VideoViewer({
+  videoDoc,
+  semesterId,
+}: VideoViewerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -43,7 +47,7 @@ export default function VideoViewer({ videoDoc }: VideoViewerProps) {
   const [bufferedTime, setBufferedTime] = useState(0);
   const [isVideoReady, setIsVideoReady] = useState(false);
 
-  const videoUrl = getVideoStreamUrl(videoDoc.code);
+  const videoUrl = getVideoStreamUrl(videoDoc.code, { semesterId });
   const maxRetries = 3;
 
   // Cleanup function

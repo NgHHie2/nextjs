@@ -1,3 +1,6 @@
+"use client";
+
+// app/ui/courses/documents-section.tsx
 import {
   Collapsible,
   CollapsibleContent,
@@ -16,21 +19,42 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FileText, Eye, ChevronDown } from "lucide-react";
 import { Catalog } from "@/app/lib/definitions";
+import AssignDocumentDialog from "./assign-document-dialog";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-export default function DocumentsSection({ documents }: { documents: any[] }) {
+export default function DocumentsSection({
+  documents,
+  semesterId,
+}: {
+  documents: any[];
+  semesterId: number;
+}) {
+  const router = useRouter();
+
+  const handleDocumentUpdate = () => {
+    router.refresh();
+  };
   const totalDocuments = documents?.length || 0;
 
   return (
     <Collapsible className="group">
       <Card>
         <CardHeader>
-          <CollapsibleTrigger asChild>
-            <CardTitle className="flex items-center gap-2 cursor-pointer">
-              <ChevronDown className="h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
-              <FileText className="h-5 w-5" />
-              Documents ({totalDocuments})
-            </CardTitle>
-          </CollapsibleTrigger>
+          <div className="flex items-center justify-between">
+            <CollapsibleTrigger asChild>
+              <CardTitle className="flex items-center gap-2 cursor-pointer">
+                <ChevronDown className="h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                <FileText className="h-5 w-5" />
+                Documents ({totalDocuments})
+              </CardTitle>
+            </CollapsibleTrigger>
+
+            <AssignDocumentDialog
+              semesterId={semesterId}
+              onDocumentAssigned={handleDocumentUpdate}
+            />
+          </div>
         </CardHeader>
 
         <CollapsibleContent>
@@ -39,7 +63,10 @@ export default function DocumentsSection({ documents }: { documents: any[] }) {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-1/2">Document</TableHead>
+                    <TableHead className="w-[37.5%]">Document</TableHead>
+                    <TableHead className="w-[12.5% text-center">
+                      Number
+                    </TableHead>
                     <TableHead className="w-[37.5%] text-center">
                       Access
                     </TableHead>
@@ -53,6 +80,12 @@ export default function DocumentsSection({ documents }: { documents: any[] }) {
                     <TableRow key={semDoc.id}>
                       <TableCell className="font-medium">
                         {semDoc.document.name}
+                      </TableCell>
+
+                      <TableCell>
+                        <div className="flex flex-wrap justify-center">
+                          {semDoc.document.documentNumber ?? "-"}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex justify-center flex-wrap gap-1">
@@ -70,7 +103,11 @@ export default function DocumentsSection({ documents }: { documents: any[] }) {
                       <TableCell>
                         <div className="flex justify-center flex-wrap gap-1">
                           <Button variant="ghost" size="sm">
-                            <Eye className="h-4 w-4" />
+                            <Link
+                              href={`/dashboard/courses/${semesterId}/document/${semDoc.document.code}`}
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Link>
                           </Button>
                         </div>
                       </TableCell>

@@ -18,11 +18,21 @@ export async function deleteDocument(code: string): Promise<void> {
   }
 }
 
-export function getDocumentDownloadUrl(code: string): string {
+export function getDocumentDownloadUrl(
+  code: string,
+  options?: { semesterId?: number }
+): string {
+  if (options?.semesterId)
+    return `${API_BASE_URL}/semester/${options.semesterId}/download/${code}`;
   return `${API_BASE_URL}/document/download/${code}`;
 }
 
-export function getVideoStreamUrl(code: string): string {
+export function getVideoStreamUrl(
+  code: string,
+  options?: { semesterId?: number }
+): string {
+  if (options?.semesterId)
+    return `${API_BASE_URL}/semester/${options.semesterId}/stream/${code}`;
   return `${API_BASE_URL}/document/stream/${code}`;
 }
 
@@ -126,6 +136,35 @@ export async function updateDocumentInfo(
     return await response.json();
   } catch (error) {
     console.error("Update Error:", error);
+    throw error;
+  }
+}
+
+// Search document by document number
+export async function searchDocumentByNumber(
+  documentNumber: string
+): Promise<any> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/document/number/${encodeURIComponent(documentNumber)}`,
+      {
+        method: "GET",
+        credentials: "include",
+        cache: "no-store",
+      }
+    );
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error("Document not found with this number");
+      }
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to search document");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Search Error:", error);
     throw error;
   }
 }

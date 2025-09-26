@@ -80,8 +80,8 @@ export default async function Page({
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-xl">Course Information</CardTitle>
-            <Button asChild>
+            <CardTitle>Course Information</CardTitle>
+            <Button size={"sm"} asChild>
               <Link href={`/dashboard/courses/${id}/edit`}>
                 <Edit className="h-4 w-4 mr-2" />
                 Edit Course
@@ -94,50 +94,57 @@ export default async function Page({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-1">
-                <span className="text-gray-500 font-medium block">
+                <span className="text-gray-500 text-sm font-medium block">
                   Course Name:
                 </span>
-                <span className="font-semibold">{course.name}</span>
+                <span className="font-semibold text-sm">{course.name}</span>
               </div>
               <div className="grid grid-cols-2 gap-1">
-                <span className="text-gray-500 font-medium block">
+                <span className="text-gray-500 text-sm font-medium block">
                   Start Date:
                 </span>
-                <span>{formatDate(course.startDate)}</span>
+                <span className="font-semibold text-sm">
+                  {formatDate(course.startDate)}
+                </span>
               </div>
               <div className="grid grid-cols-2 gap-1">
-                <span className="text-gray-500 font-medium block">
+                <span className="text-gray-500 text-sm font-medium block">
                   End Date:
                 </span>
-                <span>{formatDate(course.endDate)}</span>
+                <span className="font-semibold text-sm">
+                  {formatDate(course.endDate)}
+                </span>
               </div>
             </div>
 
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-1">
-                <span className="text-gray-500 font-medium block">
+                <span className="text-gray-500 text-sm font-medium block">
                   Course ID:
                 </span>
-                <span>{course.id}</span>
+                <span className="font-semibold text-sm">{course.id}</span>
               </div>
               <div className="grid grid-cols-2 gap-1">
-                <span className="text-gray-500 font-medium block">
+                <span className="text-gray-500 text-sm font-medium block">
                   Total Documents:
                 </span>
-                <span>{totalDocuments}</span>
+                <span className="font-semibold text-sm">{totalDocuments}</span>
               </div>
               <div className="grid grid-cols-2 gap-1">
-                <span className="text-gray-500 font-medium block">
+                <span className="text-gray-500 text-sm font-medium block">
                   Total Accounts:
                 </span>
-                <span>{totalAccounts}</span>
+                <span className="font-semibold text-sm">{totalAccounts}</span>
               </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <DocumentsSection documents={course.semesterDocuments || []} />
+      <DocumentsSection
+        documents={course.semesterDocuments || []}
+        semesterId={course.id}
+      />
 
       <AccountsSection
         semesterAccounts={course.semesterAccounts || []}

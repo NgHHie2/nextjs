@@ -21,6 +21,7 @@ import { url } from "inspector";
 
 interface PDFViewerProps {
   document: Document;
+  semesterId?: number;
 }
 
 declare global {
@@ -29,7 +30,7 @@ declare global {
   }
 }
 
-export default function PDFViewer({ document }: PDFViewerProps) {
+export default function PDFViewer({ document, semesterId }: PDFViewerProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [zoom, setZoom] = useState(1);
@@ -44,7 +45,7 @@ export default function PDFViewer({ document }: PDFViewerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hiddenCanvasRef = useRef<HTMLCanvasElement>(null); // For double buffering
   const { resolvedTheme } = useTheme();
-  const pdfUrl = getDocumentDownloadUrl(document.code);
+  const pdfUrl = getDocumentDownloadUrl(document.code, { semesterId });
   const totalPages = document.pages || 1;
 
   // Prevent hydration mismatch
