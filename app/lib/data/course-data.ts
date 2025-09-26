@@ -195,3 +195,35 @@ export async function updateCourse(
     throw new Error("Failed to update course.");
   }
 }
+
+export async function createCourse(courseData: {
+  name: string;
+  startDate: string;
+  endDate: string;
+  description?: string;
+}): Promise<Course> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/semester`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: courseData.name,
+        startDate: new Date(courseData.startDate).toISOString(),
+        endDate: new Date(courseData.endDate).toISOString(),
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to create course");
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to create course.");
+  }
+}
