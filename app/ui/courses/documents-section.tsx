@@ -22,6 +22,7 @@ import { Catalog } from "@/app/lib/definitions";
 import AssignDocumentDialog from "./assign-document-dialog";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { DeleteDocumentFromSemesterButton } from "./buttons";
 
 export default function DocumentsSection({
   documents,
@@ -109,6 +110,10 @@ export default function DocumentsSection({
                               <Eye className="h-4 w-4" />
                             </Link>
                           </Button>
+                          <DeleteDocumentFromSemesterButton
+                            id={semesterId}
+                            code={semDoc.document.code}
+                          />
                         </div>
                       </TableCell>
                     </TableRow>

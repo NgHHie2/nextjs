@@ -15,14 +15,15 @@ import Breadcrumbs from "@/app/ui/breadcrumbs";
 export const dynamic = "force-dynamic";
 
 interface PageProps {
-  params: { semesterId: number; code: string };
+  params: { id: number; code: string };
 }
 function DocumentSkeleton() {
   return <div className="flex h-[calc(100vh-120px)] gap-6"></div>;
 }
 
 export default async function DocumentViewPage({ params }: PageProps) {
-  const { semesterId, code } = await params;
+  const { id, code } = await params;
+  const semesterId = id;
 
   let document;
   try {
@@ -35,19 +36,25 @@ export default async function DocumentViewPage({ params }: PageProps) {
     notFound();
   }
 
+  console.log(semesterId);
+
   return (
     <div className="space-y-6">
       {/* Breadcrumbs */}
       <Breadcrumbs
         breadcrumbs={[
-          { label: "Documents", href: "/dashboard/documents/" },
+          { label: "Courses", href: "/dashboard/courses/" },
           {
-            label: "View Document",
-            href: `/dashboard/documents/${document.code}`,
+            label: "Course Details",
+            href: `/dashboard/courses/${semesterId}`,
+          },
+          {
+            label: "Documents",
+            href: `/dashboard/courses/${semesterId}/`,
           },
           {
             label: document.name,
-            href: `/dashboard/documents/${document.code}/`,
+            href: `/dashboard/courses/${document.code}`,
             active: true,
           },
         ]}
