@@ -74,11 +74,11 @@ export default async function AccountsTable({
             <TableRow className="border-b bg-muted/50">
               <TableHead className="font-semibold text-foreground">
                 <SortableHeader
-                  field="id"
+                  field="stt"
                   currentSort={sortBy}
                   currentDir={sortDir}
                 >
-                  ID
+                  CCCD
                 </SortableHeader>
               </TableHead>
               <TableHead className="font-semibold text-foreground">
@@ -140,7 +140,7 @@ export default async function AccountsTable({
                 <TableCell className="font-medium">
                   <div className="flex flex-col">
                     <span className="text-sm text-muted-foreground">
-                      {account.id}
+                      {account.cccd}
                     </span>
                   </div>
                 </TableCell>

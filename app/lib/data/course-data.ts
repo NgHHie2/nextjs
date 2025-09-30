@@ -86,12 +86,8 @@ export async function assignDocumentsToCourse(
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(
-        errorData.message || "Failed to assign documents to course"
-      );
+      throw new Error("Failed to assign documents to course");
     }
-
-    return await response.json();
   } catch (error) {
     console.error("Assign Error:", error);
     throw error;
@@ -124,19 +120,72 @@ export async function assignAccountsToCourse(
         errorData.message || "Failed to assign accounts to course"
       );
     }
-
-    return await response.json();
   } catch (error) {
     console.error("Assign Error:", error);
     throw error;
   }
 }
 
-// Search account by username or CCCD
+// Assign accounts to course
+export async function assignTeachersToCourse(
+  semesterId: number,
+  teacherIds: number[]
+): Promise<any> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/semester/${semesterId}/teachers`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          teacherIds,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Failed to assign teachers to course"
+      );
+    }
+  } catch (error) {
+    console.error("Assign Error:", error);
+    throw error;
+  }
+}
+
+export async function deleteTeacherFromCourse(
+  id: number,
+  teacherId: number
+): Promise<void> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/semester/${id}/teachers/${teacherId}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to unassign teacher");
+    }
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to unassign teacher.");
+  }
+}
+
+// Search account by CCCD
 export async function searchAccountByCccd(cccd: string): Promise<any> {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/account/cccd/${encodeURIComponent(cccd)}`,
+      `${API_BASE_URL}/account/account/${encodeURIComponent(cccd)}`,
       {
         method: "GET",
         credentials: "include",
@@ -150,6 +199,64 @@ export async function searchAccountByCccd(cccd: string): Promise<any> {
       }
       const errorData = await response.json();
       throw new Error(errorData.message || "Failed to search accounts");
+    }
+
+    const data = await response.json();
+    // Assuming the response has a content array
+    return data.content || data;
+  } catch (error) {
+    console.error("Search Error:", error);
+    throw error;
+  }
+}
+
+// Search account by CCCD
+export async function searchStudentByCccd(cccd: string): Promise<any> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/account/student/${encodeURIComponent(cccd)}`,
+      {
+        method: "GET",
+        credentials: "include",
+        cache: "no-store",
+      }
+    );
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error("No students found");
+      }
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to search students");
+    }
+
+    const data = await response.json();
+    // Assuming the response has a content array
+    return data.content || data;
+  } catch (error) {
+    console.error("Search Error:", error);
+    throw error;
+  }
+}
+
+// Search account by CCCD
+export async function searchTeacherByCccd(cccd: string): Promise<any> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/account/teacher/${encodeURIComponent(cccd)}`,
+      {
+        method: "GET",
+        credentials: "include",
+        cache: "no-store",
+      }
+    );
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error("No teachers found");
+      }
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to search teachers");
     }
 
     const data = await response.json();

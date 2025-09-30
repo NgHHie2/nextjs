@@ -24,8 +24,8 @@ import {
 import { Plus, Search, Loader2, X, UserCheck } from "lucide-react";
 import { fetchAllPositions } from "@/app/lib/data/document-data";
 import {
-  searchStudentByCccd,
-  assignAccountsToCourse,
+  searchTeacherByCccd,
+  assignTeachersToCourse,
 } from "@/app/lib/data/course-data";
 import { Position, Account } from "@/app/lib/definitions";
 import {
@@ -38,28 +38,23 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 
-interface AssignAccountDialogProps {
+interface AssignTeacherDialogProps {
   semesterId: number;
-  existingAccountIds: number[];
-  onAccountAssigned?: () => void;
+  existingTeacherIds: number[];
+  onTeacherAssigned?: () => void;
 }
 
 interface PendingAssignment {
   account: Account;
-  positionId: number;
-  positionName: string;
 }
 
-export default function AssignAccountDialog({
+export default function AssignTeacherDialog({
   semesterId,
-  existingAccountIds,
-  onAccountAssigned,
-}: AssignAccountDialogProps) {
+  existingTeacherIds,
+  onTeacherAssigned,
+}: AssignTeacherDialogProps) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedPositionId, setSelectedPositionId] = useState<string>("");
-  const [positions, setPositions] = useState<Position[]>([]);
-  const [isLoadingPositions, setIsLoadingPositions] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isAssigning, setIsAssigning] = useState(false);
   const [foundAccounts, setFoundAccounts] = useState<Account[]>([]);
@@ -68,33 +63,9 @@ export default function AssignAccountDialog({
   >([]);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  // Load positions when dialog opens
-  useEffect(() => {
-    if (open) {
-      loadPositions();
-    }
-  }, [open]);
-
-  const loadPositions = async () => {
-    setIsLoadingPositions(true);
-    try {
-      const positionsData = await fetchAllPositions();
-      setPositions(positionsData);
-    } catch (error) {
-      console.error("Failed to load positions:", error);
-    } finally {
-      setIsLoadingPositions(false);
-    }
-  };
-
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
       setSearchError("Please enter a search query");
-      return;
-    }
-
-    if (!selectedPositionId) {
-      setSearchError("Please select a position first");
       return;
     }
 
@@ -103,7 +74,7 @@ export default function AssignAccountDialog({
     setFoundAccounts([]);
 
     try {
-      const accounts = await searchStudentByCccd(searchQuery.trim());
+      const accounts = await searchTeacherByCccd(searchQuery.trim());
       setFoundAccounts(Array.isArray(accounts) ? accounts : [accounts]);
     } catch (error) {
       console.error("Search error:", error);
@@ -118,13 +89,8 @@ export default function AssignAccountDialog({
   };
 
   const handleAddToPending = (account: Account) => {
-    const positionId = parseInt(selectedPositionId);
-    const position = positions.find((p) => p.id === positionId);
-
-    if (!position) return;
-
     // Check if this account is already in the course
-    const isAlreadyInCourse = existingAccountIds.includes(account.id);
+    const isAlreadyInCourse = existingTeacherIds.includes(account.id);
     if (isAlreadyInCourse) {
       setSearchError("This account is already in the course");
       return;
@@ -142,8 +108,6 @@ export default function AssignAccountDialog({
 
     const newAssignment: PendingAssignment = {
       account,
-      positionId,
-      positionName: position.name,
     };
 
     setPendingAssignments((prev) => [...prev, newAssignment]);
@@ -166,24 +130,22 @@ export default function AssignAccountDialog({
     setSearchError(null);
 
     try {
-      const accountAssignments = pendingAssignments.map((assignment) => ({
-        accountId: assignment.account.id,
-        positionId: assignment.positionId,
-      }));
-
-      await assignAccountsToCourse(semesterId, accountAssignments);
+      const teacherIds: number[] = pendingAssignments.map(
+        (assignment) => assignment.account.id
+      );
+      await assignTeachersToCourse(semesterId, teacherIds);
 
       // Reset form and close dialog
       handleClose();
 
       // Notify parent component
-      onAccountAssigned?.();
+      onTeacherAssigned?.();
     } catch (error) {
       console.error("Assign error:", error);
       if (error instanceof Error) {
         setSearchError(error.message);
       } else {
-        setSearchError("Failed to assign accounts");
+        setSearchError("Failed to assign teachers");
       }
     } finally {
       setIsAssigning(false);
@@ -193,7 +155,6 @@ export default function AssignAccountDialog({
   const handleClose = () => {
     setOpen(false);
     setSearchQuery("");
-    setSelectedPositionId("");
     setFoundAccounts([]);
     setPendingAssignments([]);
     setSearchError(null);
@@ -205,49 +166,23 @@ export default function AssignAccountDialog({
     }
   };
 
-  const selectedPosition = positions.find(
-    (p) => p.id === parseInt(selectedPositionId)
-  );
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size="sm" className="w-[140px]">
           <Plus className="h-4 w-4" />
-          Assign Account
+          Assign Teacher
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Assign Accounts To This Course</DialogTitle>
+          <DialogTitle>Assign Teachers To This Course</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Position Selection */}
-          <div className="space-y-2">
-            <Label htmlFor="position">Select Position</Label>
-            <Select
-              value={selectedPositionId}
-              onValueChange={setSelectedPositionId}
-              disabled={isLoadingPositions}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Choose a position..." />
-              </SelectTrigger>
-              <SelectContent>
-                {positions.map((position) => (
-                  <SelectItem key={position.id} value={position.id.toString()}>
-                    {position.name}
-                    {position.description && ` - ${position.description}`}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
           {/* Search Section */}
           <div className="space-y-2">
-            <Label htmlFor="searchQuery">Search Accounts</Label>
+            <Label htmlFor="searchQuery">Search Teachers</Label>
             <div className="flex gap-2">
               <Input
                 id="searchQuery"
@@ -255,13 +190,11 @@ export default function AssignAccountDialog({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleKeyPress}
-                disabled={isSearching || !selectedPositionId}
+                disabled={isSearching}
               />
               <Button
                 onClick={handleSearch}
-                disabled={
-                  isSearching || !searchQuery.trim() || !selectedPositionId
-                }
+                disabled={isSearching || !searchQuery.trim()}
               >
                 {isSearching ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -272,12 +205,12 @@ export default function AssignAccountDialog({
             </div>
           </div>
 
-          {/* Found Accounts */}
+          {/* Found Teachers */}
           <div className="space-y-2">
-            <Label>Found Accounts</Label>
+            <Label>Found Teachers</Label>
             <div className="border rounded-lg bg-accent/50 h-24 overflow-y-auto">
               {searchError ? (
-                <span className="text-sm text-red-500">No student found</span>
+                <span className="text-sm text-red-500">No teacher found</span>
               ) : (
                 <Table>
                   <TableHeader>
@@ -289,7 +222,7 @@ export default function AssignAccountDialog({
                   </TableHeader>
                   <TableBody>
                     {foundAccounts.map((account) => {
-                      const isAlreadyInCourse = existingAccountIds.includes(
+                      const isAlreadyInCourse = existingTeacherIds.includes(
                         account.id
                       );
                       const isAlreadyAdded = pendingAssignments.some(
@@ -341,7 +274,7 @@ export default function AssignAccountDialog({
           {/* Pending Assignments */}
 
           <div className="space-y-2">
-            <Label>Accounts to be Assigned ({pendingAssignments.length})</Label>
+            <Label>Teachers to be Assigned ({pendingAssignments.length})</Label>
             <div className="border rounded-lg bg-accent/50 h-48 overflow-y-auto">
               <Table>
                 <TableHeader>
@@ -394,7 +327,7 @@ export default function AssignAccountDialog({
             ) : (
               <UserCheck className="h-4 w-4 mr-2" />
             )}
-            Assign {pendingAssignments.length} Account
+            Assign {pendingAssignments.length} Teacher
             {pendingAssignments.length > 1 ? "s" : ""}
           </Button>
         </DialogFooter>

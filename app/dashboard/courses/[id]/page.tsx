@@ -20,6 +20,7 @@ import { Edit, Users, FileText, Eye } from "lucide-react";
 import { Account } from "@/app/lib/definitions";
 import DocumentsSection from "@/app/ui/courses/documents-section";
 import AccountsSection from "@/app/ui/courses/accounts-section";
+import TeachersSection from "@/app/ui/courses/teachers-section";
 
 export const dynamic = "force-dynamic";
 
@@ -36,21 +37,42 @@ export default async function Page({
     notFound();
   }
 
-  // Get account IDs from semesterAccounts
-  const accountIds = course.semesterAccounts?.map((sa) => sa.accountId) || [];
+  // Gộp accountId từ semesterAccounts và semesterTeachers
+  const accountIds = [
+    ...(course.semesterAccounts?.map((sa) => sa.accountId) || []),
+    ...(course.semesterTeachers?.map((st) => st.teacherId) || []),
+  ];
 
-  // Fetch account information
+  // Loại bỏ trùng lặp
+  const uniqueAccountIds = Array.from(new Set(accountIds));
+
+  // Fetch account information 1 lần
   let accounts: Account[] = [];
   try {
-    if (accountIds.length > 0) {
-      accounts = await fetchAccountsByIds(accountIds);
+    if (uniqueAccountIds.length > 0) {
+      accounts = await fetchAccountsByIds(uniqueAccountIds);
     }
   } catch (error) {
     console.warn("Failed to fetch account information:", error);
   }
 
-  // Create account map for quick lookup
+  // Tạo map account cho lookup nhanh
   const accountMap = new Map(accounts.map((acc) => [acc.id, acc]));
+
+  // Tách lại thành 2 map theo loại
+  const semesterAccountMap = new Map<number, Account>(
+    (course.semesterAccounts || []).map((sa) => [
+      sa.accountId,
+      accountMap.get(sa.accountId)!,
+    ])
+  );
+
+  const semesterTeacherMap = new Map(
+    (course.semesterTeachers || []).map((st) => [
+      st.teacherId,
+      accountMap.get(st.teacherId)!,
+    ])
+  );
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString();
@@ -141,6 +163,12 @@ export default async function Page({
         </CardContent>
       </Card>
 
+      <TeachersSection
+        semesterTeachers={course.semesterTeachers || []}
+        accountMap={semesterTeacherMap}
+        semesterId={course.id}
+      />
+
       <DocumentsSection
         documents={course.semesterDocuments || []}
         semesterId={course.id}
@@ -148,7 +176,7 @@ export default async function Page({
 
       <AccountsSection
         semesterAccounts={course.semesterAccounts || []}
-        accountMap={accountMap}
+        accountMap={semesterAccountMap}
         semesterId={course.id}
       />
     </main>

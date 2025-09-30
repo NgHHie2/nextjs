@@ -47,27 +47,27 @@ export default async function CoursesTable({
     sortDir
   );
 
-  // Get unique creator IDs
-  const creatorIds = [
-    ...new Set(data.content.map((course) => course.createdBy)),
-  ].filter((id) => id != null);
+  // // Get unique creator IDs
+  // const creatorIds = [
+  //   ...new Set(data.content.map((course) => course.createdBy)),
+  // ].filter((id) => id != null);
 
-  // Fetch creator information
-  let creators: Account[] = [];
-  try {
-    creators = await fetchAccountsByIds(creatorIds);
-  } catch (error) {
-    console.warn("Failed to fetch creator information:", error);
-    // creators will remain empty array, so we'll show "-" for creator names
-  }
+  // // Fetch creator information
+  // let creators: Account[] = [];
+  // try {
+  //   creators = await fetchAccountsByIds(creatorIds);
+  // } catch (error) {
+  //   console.warn("Failed to fetch creator information:", error);
+  //   // creators will remain empty array, so we'll show "-" for creator names
+  // }
 
-  // Create a map for quick lookup
-  const creatorMap = new Map(
-    creators.map((creator) => [
-      creator.id,
-      `${creator.lastName} ${creator.firstName}`,
-    ])
-  );
+  // // Create a map for quick lookup
+  // const creatorMap = new Map(
+  //   creators.map((creator) => [
+  //     creator.id,
+  //     `${creator.lastName} ${creator.firstName}`,
+  //   ])
+  // );
 
   if (data.content.length === 0) {
     return (
@@ -87,11 +87,11 @@ export default async function CoursesTable({
             <TableRow className="border-b bg-muted/50">
               <TableHead className="font-semibold text-foreground">
                 <SortableHeader
-                  field="id"
+                  field="stt"
                   currentSort={sortBy}
                   currentDir={sortDir}
                 >
-                  ID
+                  STT
                 </SortableHeader>
               </TableHead>
               <TableHead className="min-w-[250px] max-w-[350px] font-semibold text-foreground">
@@ -122,15 +122,15 @@ export default async function CoursesTable({
                 </SortableHeader>
               </TableHead>
 
-              <TableHead className="min-w-[200px] font-semibold text-foreground">
+              {/* <TableHead className="min-w-[200px] font-semibold text-foreground">
                 <SortableHeader
                   field="createdBy"
                   currentSort={sortBy}
                   currentDir={sortDir}
                 >
-                  Creator
+                  Teacher
                 </SortableHeader>
-              </TableHead>
+              </TableHead> */}
               <TableHead className="font-semibold text-foreground text-center">
                 <SortableHeader
                   field="totalAccounts"
@@ -154,7 +154,7 @@ export default async function CoursesTable({
                 <TableCell className="font-medium">
                   <div className="flex flex-col">
                     <span className="text-sm text-muted-foreground">
-                      {course.id}
+                      {index + 1}
                     </span>
                   </div>
                 </TableCell>
@@ -182,13 +182,13 @@ export default async function CoursesTable({
                   )}
                 </TableCell>
 
-                <TableCell className="font-medium">
+                {/* <TableCell className="font-medium">
                   <div className="flex flex-col">
                     <span className="font-semibold">
                       {creatorMap.get(course.createdBy) || "-"}
                     </span>
                   </div>
-                </TableCell>
+                </TableCell> */}
                 <TableCell className="font-medium text-center">
                   <div className="flex flex-col">
                     <span className="font-semibold">

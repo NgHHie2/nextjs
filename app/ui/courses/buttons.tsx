@@ -9,6 +9,7 @@ import {
   deleteAccountFromCourse,
   deleteCourse,
   deleteDocumentFromCourse,
+  deleteTeacherFromCourse,
 } from "@/app/lib/data/course-data";
 import { Button } from "@/components/ui/button";
 import {
@@ -148,6 +149,59 @@ export function DeleteAccountFromSemesterButton({
     setIsDeleting(true);
     try {
       await deleteAccountFromCourse(id, accountId);
+      router.refresh();
+    } catch (error) {
+      console.error("Error deleting course:", error);
+      alert("Failed to delete course. Please try again.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="ghost" size="sm">
+          <Trash2 className="h-4 w-4 text-destructive" />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete Course</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete the
+            account.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {isDeleting ? "Deleting..." : "Delete"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+export function DeleteTeacherFromSemesterButton({
+  id,
+  teacherId,
+}: {
+  id: number;
+  teacherId: number;
+}) {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await deleteTeacherFromCourse(id, teacherId);
       router.refresh();
     } catch (error) {
       console.error("Error deleting course:", error);

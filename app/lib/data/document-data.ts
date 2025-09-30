@@ -60,7 +60,7 @@ export async function fetchAllPositions(): Promise<Position[]> {
 // Update document catalogs
 export async function updateDocumentCatalogs(
   documentCode: string,
-  catalogs: number[]
+  positions: number[]
 ): Promise<{ catalogs: number[] }> {
   try {
     const response = await fetch(
@@ -71,13 +71,13 @@ export async function updateDocumentCatalogs(
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ catalogs }),
+        body: JSON.stringify({ positions }),
       }
     );
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to update catalogs");
+      throw new Error(errorData.message || "Failed to update positions");
     }
 
     return await response.json();

@@ -5,6 +5,7 @@ export type Course = {
   endDate: string;
   semesterDocuments: SemesterDocument[];
   semesterAccounts: SemesterAccount[];
+  semesterTeachers: SemesterTeacher[];
   createdAt: string;
   createdBy: number;
   totalAccounts?: number;
@@ -20,6 +21,11 @@ export type SemesterAccount = {
   id: number;
   accountId: number;
   position: Position;
+};
+
+export type SemesterTeacher = {
+  id: number;
+  teacherId: number;
 };
 
 export type CoursesPageResponse = {

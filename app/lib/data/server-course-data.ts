@@ -86,6 +86,7 @@ export async function fetchCourseById(id: number): Promise<Course | null> {
       endDate: data.endDate,
       semesterDocuments: data.semesterDocuments || [],
       semesterAccounts: data.semesterAccounts || [],
+      semesterTeachers: data.semesterTeachers || [],
       createdAt: data.createdAt,
       createdBy: data.createdBy,
       totalAccounts: data.semesterAccounts?.length || 0,
