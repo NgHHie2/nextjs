@@ -1,7 +1,7 @@
+// app/layout.tsx
 import "@/app/ui/global.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
-import { AuthProvider } from "@/app/lib/auth/auth-context";
 
 export default function RootLayout({
   children,
@@ -17,10 +17,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>
-            {children}
-            <Toaster />
-          </AuthProvider>
+          {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

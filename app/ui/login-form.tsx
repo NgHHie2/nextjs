@@ -11,13 +11,13 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "./button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/lib/auth/auth-context";
+// import { useAuth } from "@/app/lib/auth/auth-context";
 
 export default function LoginForm() {
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { login } = useAuth(); // Sử dụng login method từ context
+  // const { login } = useAuth(); // Sử dụng login method từ context
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -42,25 +42,25 @@ export default function LoginForm() {
 
       const data = await response.json();
 
-      if (response.ok) {
-        console.log("Login successful:", data);
+      // if (response.ok) {
+      //   console.log("Login successful:", data);
 
-        // Fetch user data sau khi login thành công
-        const userResponse = await fetch("/api/auth/me", {
-          credentials: "include",
-        });
+      //   // Fetch user data sau khi login thành công
+      //   const userResponse = await fetch("/api/auth/me", {
+      //     credentials: "include",
+      //   });
 
-        if (userResponse.ok) {
-          const userData = await userResponse.json();
-          // Update context với user data
-          login(userData);
-        }
+      //   if (userResponse.ok) {
+      //     const userData = await userResponse.json();
+      //     // Update context với user data
+      //     login(userData);
+      //   }
 
-        // Redirect to dashboard
-        router.push("/dashboard");
-      } else {
-        setError(data.error || "Login failed. Please try again.");
-      }
+      // Redirect to dashboard
+      router.push("/dashboard");
+      // } else {
+      //   setError(data.error || "Login failed. Please try again.");
+      // }
     } catch (error) {
       console.error("Login error:", error);
       setError("Network error. Please check your connection and try again.");
@@ -85,7 +85,7 @@ export default function LoginForm() {
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md border border-border bg-background py-[9px] pl-10 text-sm outline-2 placeholder:text-muted-foreground text-foreground focus:border-primary focus:outline-primary"
+                className="peer block w-full rounded-md border border-border bg-background py-[9px] pl-10 text-sm placeholder:text-muted-foreground text-foreground focus:border-muted-foreground"
                 id="username"
                 type="text"
                 name="username"
@@ -107,7 +107,7 @@ export default function LoginForm() {
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md border border-border bg-background py-[9px] pl-10 text-sm outline-2 placeholder:text-muted-foreground text-foreground focus:border-primary focus:outline-primary"
+                className="peer block w-full rounded-md border border-border bg-background py-[9px] pl-10 text-sm outline-2 placeholder:text-muted-foreground text-foreground focus:border-muted-foreground"
                 id="password"
                 type="password"
                 name="password"
