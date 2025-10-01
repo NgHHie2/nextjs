@@ -8,6 +8,7 @@ import { Document } from "@/app/lib/definitions";
 import DocumentsTableView from "./table-view";
 import DocumentsGridView from "./grid-view";
 import { PreviewCacheProvider } from "./preview-cache-context";
+import clsx from "clsx";
 
 interface DocumentsViewProps {
   documents: Document[];
@@ -74,26 +75,31 @@ export default function DocumentsView({
       <div className="space-y-4">
         {/* View Toggle */}
         <div className="flex justify-end">
-          <div className="flex border rounded-md">
+          <div className="flex border rounded-md bg-card">
             <Button
-              variant={viewMode === "list" ? "default" : "ghost"}
+              variant="secondary"
               size="sm"
               onClick={() => handleViewChange("list")}
-              className="rounded-none rounded-l-md border-0"
+              className={clsx(
+                "rounded-none rounded-l-md border-0",
+                viewMode === "list" && "bg-ghost"
+              )}
             >
               <List className="h-4 w-4" />
             </Button>
             <Button
-              variant={viewMode === "grid" ? "default" : "ghost"}
+              variant="secondary"
               size="sm"
               onClick={() => handleViewChange("grid")}
-              className="rounded-none rounded-r-md border-0 border-l"
+              className={clsx(
+                "rounded-none rounded-r-md border-0 border-l",
+                viewMode === "grid" && "bg-ghost"
+              )}
             >
               <Grid2X2 className="h-4 w-4" />
             </Button>
           </div>
         </div>
-
         {/* Content */}
         {viewMode === "grid" ? (
           <DocumentsGridView documents={documents} />

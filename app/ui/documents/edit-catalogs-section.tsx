@@ -278,7 +278,7 @@ export default function EditDocumentCatalogsSection({
                 variant={
                   originalPositionIds.includes(position.id)
                     ? "default"
-                    : "secondary"
+                    : "outline"
                 }
                 className="gap-1"
               >

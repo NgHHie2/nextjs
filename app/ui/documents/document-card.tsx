@@ -105,7 +105,7 @@ export default function DocumentCard({ document }: DocumentCardProps) {
   };
 
   return (
-    <Card className="group transition-all duration-200 hover:shadow-xl hover:border-primary hover:scale-[1.02]">
+    <Card className="group transition-all duration-200 hover:shadow-xl hover:border-muted-foreground hover:scale-[1.02] border-transparent">
       <CardHeader className="p-4 pb-2">
         {/* Document Preview */}
         <div className="relative w-full aspect-[3/2] bg-muted rounded-md overflow-hidden mb-3">
@@ -135,7 +135,7 @@ export default function DocumentCard({ document }: DocumentCardProps) {
           {/* Format Badge */}
           <div className="absolute top-2 right-2">
             <Badge
-              variant={document.format === "PDF" ? "default" : "destructive"}
+              variant={document.format === "PDF" ? "destructive" : "default"}
             >
               {document.format}
             </Badge>
@@ -178,7 +178,7 @@ export default function DocumentCard({ document }: DocumentCardProps) {
                 <Tooltip.Content
                   side="top"
                   sideOffset={5}
-                  className="rounded bg-gray-800 px-2 py-1 text-xs text-white shadow"
+                  className="rounded bg-gray-800 px-2 py-1 text-xs text-white shadow pointer-events-none"
                 >
                   See more
                   <Tooltip.Arrow className="fill-gray-800" />

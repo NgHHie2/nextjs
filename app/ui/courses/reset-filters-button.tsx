@@ -19,7 +19,6 @@ export default function ResetFiltersButton() {
       onClick={handleReset}
       className="whitespace-nowrap"
     >
-      <RotateCcw className="h-4 w-4 mr-2" />
       Reset filters
     </Button>
   );

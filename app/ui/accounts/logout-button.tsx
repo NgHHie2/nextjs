@@ -27,7 +27,7 @@ export default function SignoutButton() {
     <Button
       onClick={handleSignout}
       variant="ghost"
-      className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-white dark:bg-gray-800 p-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-gray-700 dark:hover:text-white md:flex-none md:justify-start md:p-2 md:px-3 transition-all duration-200 shadow-sm dark:shadow-none"
+      className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-sidebar-item p-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-sidebar-item-hover hover:text-gray-900 dark:hover:text-white md:flex-none md:justify-start md:p-2 md:px-3 transition-all duration-200 shadow-sm"
     >
       <PowerIcon className="w-6" />
       <div className="hidden md:block">Sign Out</div>

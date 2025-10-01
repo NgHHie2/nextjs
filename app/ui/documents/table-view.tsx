@@ -44,7 +44,7 @@ export default function DocumentsTableView({
   }
 
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardContent className="p-0">
         <Table>
           <TableHeader>

@@ -25,13 +25,13 @@ const links = [
     name: "Accounts",
     href: "/dashboard/accounts",
     icon: UserGroupIcon,
-    roles: ["ADMIN"], // Chỉ admin mới thấy
+    roles: ["ADMIN"],
   },
   {
     name: "Documents",
     href: "/dashboard/documents",
     icon: BookText,
-    roles: ["ADMIN", "TEACHER"], // Admin và Teacher thấy
+    roles: ["ADMIN", "TEACHER"],
   },
   {
     name: "Courses",
@@ -39,12 +39,6 @@ const links = [
     icon: AcademicCapIcon,
     roles: ["ADMIN", "TEACHER", "STUDENT"],
   },
-  // {
-  //   name: "Subjects",
-  //   href: "/dashboard/splitter",
-  //   icon: AcademicCapIcon,
-  //   roles: ["ADMIN", "TEACHER"], // Admin và Teacher thấy
-  // },
 ];
 
 export default async function SideNav() {
@@ -54,13 +48,12 @@ export default async function SideNav() {
     redirect("/login");
   }
 
-  // Filter links dựa trên role của user
   const visibleLinks = links.filter((link) => link.roles.includes(user.role));
 
   return (
-    <div className="flex h-full flex-col px-3 py-4 md:px-2 bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-full flex-col px-3 py-4 md:px-2 bg-sidebar">
       <Link
-        className="mb-2 flex h-20 items-end justify-start rounded-md bg-blue-600 p-4 md:h-40"
+        className="mb-2 flex h-20 items-end justify-start rounded-md bg-primary p-4 md:h-40"
         href="/dashboard"
       >
         <div className="w-32 text-white md:w-40">
@@ -68,11 +61,11 @@ export default async function SideNav() {
         </div>
       </Link>
       {/* User info section */}
-      <div className="hidden mb-2 md:block p-3 text-sm bg-white dark:bg-gray-800 rounded-md">
-        <div className="font-medium text-gray-900 dark:text-white">
+      <div className="hidden mb-2 md:block p-3 text-sm bg-sidebar-item rounded-md shadow-sm">
+        <div className="font-medium text-gray-900 dark:text-gray-100">
           {user.firstName} {user.lastName}
         </div>
-        <div className="text-xs text-gray-500 dark:text-gray-400">
+        <div className="text-xs text-gray-600 dark:text-gray-400">
           {user.role}
         </div>
       </div>
@@ -88,7 +81,7 @@ export default async function SideNav() {
           );
         })}
 
-        <div className="hidden h-auto w-full grow rounded-md bg-white dark:bg-gray-800 md:block"></div>
+        <div className="hidden h-auto w-full grow rounded-md bg-sidebar-item md:block shadow-sm"></div>
 
         <div className="flex justify-center md:justify-start mb-2">
           <SimpleThemeToggle />

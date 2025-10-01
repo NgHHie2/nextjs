@@ -67,7 +67,7 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
     <div
       className={cn(
         "transition-[width] duration-200 ease-in-out ",
-        isCollapsed ? "w-12" : "w-80"
+        isCollapsed ? "w-12" : "w-52 lg:w-80"
       )}
     >
       {/* Collapsed State - Minimal Tab */}
@@ -87,7 +87,7 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
 
       {/* Expanded State - Full Panel */}
       {!isCollapsed && (
-        <div className="overflow-y-auto">
+        <div className="overflow-y-auto w-full">
           <Card className="">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
@@ -136,8 +136,8 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
                   <Badge
                     variant={
                       currentDocument.format === "PDF"
-                        ? "default"
-                        : "destructive"
+                        ? "destructive"
+                        : "default"
                     }
                   >
                     {currentDocument.format}
@@ -206,12 +206,9 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
                 <div className="mt-2 flex flex-wrap gap-2">
                   {currentDocument.tags && currentDocument.tags.length > 0 ? (
                     currentDocument.tags.map((tag) => (
-                      <span
-                        key={tag.id}
-                        className="px-2 py-1 text-sm rounded bg-muted text-foreground"
-                      >
+                      <Badge key={tag.id} variant="outline">
                         {tag.name}
-                      </span>
+                      </Badge>
                     ))
                   ) : (
                     <p className="text-sm text-muted-foreground">No tags</p>
@@ -232,12 +229,9 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
                   currentDocument.catalogs.length > 0 ? (
                     <div className="flex flex-wrap gap-1">
                       {currentDocument.catalogs.map((catalog) => (
-                        <span
-                          key={catalog.id}
-                          className="px-2 py-1 text-sm rounded bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 font-mono"
-                        >
-                          {catalog.position.name ?? "No name"}
-                        </span>
+                        <Badge key={catalog.id} variant="outline">
+                          {catalog.position?.name ?? "No name"}
+                        </Badge>
                       ))}
                     </div>
                   ) : (

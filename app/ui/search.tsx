@@ -45,7 +45,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
         placeholder={placeholder}
         value={searchTerm}
         onChange={(e) => handleInputChange(e.target.value)}
-        className="pl-10"
+        className="pl-10 hover:border-muted focus:border-muted"
       />
     </div>
   );

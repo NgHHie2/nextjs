@@ -19,11 +19,11 @@ import {
 export const description = "A pie chart with a legend";
 
 const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--chart-1)" },
-  { browser: "safari", visitors: 200, fill: "var(--chart-2)" },
-  { browser: "firefox", visitors: 187, fill: "var(--chart-3)" },
-  { browser: "edge", visitors: 173, fill: "var(--chart-4)" },
-  { browser: "other", visitors: 90, fill: "var(--chart-5)" },
+  { browser: "chrome", visitors: 275, fill: "hsl(var(--chart-1))" },
+  { browser: "safari", visitors: 200, fill: "hsl(var(--chart-2))" },
+  { browser: "firefox", visitors: 187, fill: "hsl(var(--chart-3))" },
+  { browser: "edge", visitors: 173, fill: "hsl(var(--chart-4))" },
+  { browser: "other", visitors: 90, fill: "hsl(var(--chart-5))" },
 ];
 
 const chartConfig = {
@@ -32,23 +32,23 @@ const chartConfig = {
   },
   chrome: {
     label: "Chrome",
-    color: "var(--chart-1)",
+    color: "hsl(var(--chart-1))",
   },
   safari: {
     label: "Safari",
-    color: "var(--chart-2)",
+    color: "hsl(var(--chart-2))",
   },
   firefox: {
     label: "Firefox",
-    color: "var(--chart-3)",
+    color: "hsl(var(--chart-3))",
   },
   edge: {
     label: "Edge",
-    color: "var(--chart-4)",
+    color: "hsl(var(--chart-4))",
   },
   other: {
     label: "Other",
-    color: "var(--chart-5)",
+    color: "hsl(var(--chart-5))",
   },
 } satisfies ChartConfig;
 

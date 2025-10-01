@@ -199,7 +199,7 @@ export default function PDFViewer({ document, semesterId }: PDFViewerProps) {
   }
 
   return (
-    <div className="h-full flex flex-col bg-background border border-border rounded-lg shadow-sm">
+    <div className="h-full flex flex-col bg-background border border-border rounded-xl shadow-sm overflow-hidden">
       {/* PDF Content */}
       <div className="flex-1 relative overflow-hidden">
         {isLoading && (
@@ -211,23 +211,10 @@ export default function PDFViewer({ document, semesterId }: PDFViewerProps) {
           </div>
         )}
 
-        <div
-          className="h-full overflow-auto flex items-center justify-center p-4"
-          style={{
-            backgroundColor: mounted
-              ? isDarkMode
-                ? "#1f2937"
-                : "#f9fafb"
-              : "#f9fafb",
-            transition: "background-color 0.3s ease",
-          }}
-        >
+        <div className="h-full overflow-auto flex items-center justify-center p-4 bg-muted transition-colors">
           {/* Layer này chỉ để scroll */}
-          <div className="max-h-full ">
-            <div
-              className="shadow-lg rounded-lg overflow-hidden"
-              style={{ backgroundColor: "hsl(var(--muted))" }}
-            >
+          <div className="max-h-full">
+            <div className="shadow-lg rounded-lg overflow-hidden bg-card">
               {/* Visible canvas */}
               <canvas
                 ref={canvasRef}
@@ -254,7 +241,7 @@ export default function PDFViewer({ document, semesterId }: PDFViewerProps) {
 
       {/* Toolbar */}
       <div className="relative flex items-center justify-between p-4 border-t border-border bg-card min-h-[72px]">
-        {/* Left Controls - Fixed width container */}
+        {/* Left Controls */}
         <div className="flex items-center gap-2 min-w-0 flex-shrink-0">
           {/* Zoom Controls */}
           <div className="flex items-center gap-1 border border-border rounded-md">
@@ -267,10 +254,12 @@ export default function PDFViewer({ document, semesterId }: PDFViewerProps) {
             >
               <ZoomOut className="h-4 w-4" />
             </Button>
+
             {/* Hide zoom percentage on small screens */}
-            <span className="hidden lg:inline text-sm font-medium min-w-[60px] text-center px-2 py-1 bg-muted whitespace-nowrap">
+            <span className="hidden lg:inline text-sm font-medium min-w-[60px] text-center px-2 py-1 text-foreground whitespace-nowrap">
               {Math.round(zoom * 100)}%
             </span>
+
             <Button
               variant="ghost"
               size="sm"
@@ -288,23 +277,22 @@ export default function PDFViewer({ document, semesterId }: PDFViewerProps) {
             size="sm"
             onClick={() => setRotation((prev) => (prev + 90) % 360)}
             disabled={isLoading}
-            className="h-8 w-8 p-0"
+            className="h-8 w-8 p-0 border-border bg-card"
           >
             <RotateCw className="h-4 w-4" />
           </Button>
         </div>
 
-        {/* Center - Page Navigation (absolutely centered) */}
+        {/* Center Controls - Page Navigation */}
         {totalPages > 1 && (
           <div className="absolute left-1/2 transform -translate-x-1/2">
             <div className="flex items-center gap-2">
-              {/* Hide first/last page buttons on small screens */}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => handlePageChange(1)}
                 disabled={currentPage === 1 || isLoading}
-                className="h-8 w-8 p-0 hidden lg:flex"
+                className="h-8 w-8 p-0 hidden lg:flex  border-border bg-card"
               >
                 <SkipBack className="h-3 w-3" />
               </Button>
@@ -314,7 +302,7 @@ export default function PDFViewer({ document, semesterId }: PDFViewerProps) {
                 size="sm"
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1 || isLoading}
-                className="h-8 w-8 p-0"
+                className="h-8 w-8 p-0  border-border bg-card"
               >
                 <ChevronLeft className="h-3 w-3" />
               </Button>
@@ -327,7 +315,7 @@ export default function PDFViewer({ document, semesterId }: PDFViewerProps) {
                   type="text"
                   value={pageInput}
                   onChange={(e) => setPageInput(e.target.value)}
-                  className="w-12 h-8 text-center text-sm p-1"
+                  className="w-8 lg:w-12 h-8 text-center text-sm p-1 focus:border-foreground"
                   disabled={isLoading}
                 />
                 <span className="text-sm text-muted-foreground whitespace-nowrap">
@@ -340,18 +328,17 @@ export default function PDFViewer({ document, semesterId }: PDFViewerProps) {
                 size="sm"
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages || isLoading}
-                className="h-8 w-8 p-0"
+                className="h-8 w-8 p-0 border-border bg-card"
               >
                 <ChevronRight className="h-3 w-3" />
               </Button>
 
-              {/* Hide first/last page buttons on small screens */}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => handlePageChange(totalPages)}
                 disabled={currentPage === totalPages || isLoading}
-                className="h-8 w-8 p-0 hidden lg:flex"
+                className="h-8 w-8 p-0 hidden lg:flex border-border bg-card"
               >
                 <SkipForward className="h-3 w-3" />
               </Button>
@@ -359,7 +346,7 @@ export default function PDFViewer({ document, semesterId }: PDFViewerProps) {
           </div>
         )}
 
-        {/* Right Info - Fixed width container */}
+        {/* Right Info */}
         <div className="text-sm text-muted-foreground whitespace-nowrap min-w-0 flex-shrink-0">
           <span className="hidden sm:inline">{document.format} • </span>
           <span>

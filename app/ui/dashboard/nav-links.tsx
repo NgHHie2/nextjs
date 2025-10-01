@@ -1,4 +1,3 @@
-// app/ui/dashboard/client-nav-link.tsx
 "use client";
 
 import Link from "next/link";
@@ -25,14 +24,15 @@ export default function ClientNavLink({
     <Link
       href={href}
       className={clsx(
-        "flex h-[48px] grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium transition-all duration-200 shadow-sm md:flex-none md:justify-start md:p-2 md:px-3",
+        "flex h-[48px] grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium transition-all duration-200 shadow-sm md:flex-none md:justify-start md:p-2 md:px-3 focus:outline-none focus-visible:ring-0 active:outline-none select-none",
         {
-          "bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-blue-200 hover:text-blue-700 dark:hover:bg-gray-700 dark:hover:text-white":
+          "bg-sidebar-item text-gray-700 dark:text-gray-300 hover:bg-sidebar-item-hover hover:text-gray-900 dark:hover:text-white":
             !isActive,
-          "bg-blue-600 text-white dark:bg-blue-600 dark:text-white": isActive,
+          "bg-muted-foreground text-white dark:text-gray-700": isActive,
         },
         className
       )}
+      style={{ WebkitTapHighlightColor: "transparent" }}
     >
       {children}
     </Link>

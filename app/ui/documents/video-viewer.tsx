@@ -16,6 +16,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { getVideoStreamUrl } from "@/app/lib/data/document-data";
+import { cn } from "@/lib/utils";
 
 interface VideoViewerProps {
   videoDoc: Document;
@@ -390,24 +391,24 @@ export default function VideoViewer({
   }, [showControlsAndCursor]);
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm border">
+    <div className="h-full flex flex-col rounded-xl shadow-sm border bg-card text-card-foreground overflow-hidden">
       {/* Video Container */}
       <div className="flex-1 relative overflow-hidden">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="absolute inset-0 flex items-center justify-center z-10 bg-background/80">
             <div className="text-center">
-              <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
-              <p>Loading video...</p>
+              <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+              <p className="text-muted-foreground">Loading video...</p>
             </div>
           </div>
         )}
 
         {hasError ? (
-          <div className="h-full flex items-center justify-center bg-gray-50">
+          <div className="h-full flex items-center justify-center bg-muted">
             <div className="text-center">
-              <AlertCircle className="h-12 w-12 mx-auto mb-4 text-red-500" />
-              <p className="text-gray-600 mb-2">Failed to load video</p>
-              <p className="text-sm text-gray-500 mb-4">
+              <AlertCircle className="h-12 w-12 mx-auto mb-4 text-destructive" />
+              <p className="text-foreground mb-2">Failed to load video</p>
+              <p className="text-sm text-muted-foreground mb-4">
                 The video might be corrupted or not supported.
               </p>
               <Button
@@ -429,20 +430,20 @@ export default function VideoViewer({
         ) : (
           <div
             ref={containerRef}
-            className={`relative h-full bg-black ${
+            className={cn(
+              "relative h-full bg-background",
               isFullscreen && !showCursor ? "cursor-none" : ""
-            }`}
+            )}
             onClick={handleContainerClick}
             onMouseMove={handleMouseMove}
           >
             <video
               ref={videoRef}
-              className="w-full h-full object-contain"
-              style={{ backgroundColor: "hsl(var(--muted))" }}
+              className="w-full h-full object-contain bg-muted"
               crossOrigin="use-credentials"
               preload="metadata"
-              playsInline // Prevent iOS from opening in fullscreen
-              controls={false} // Use custom controls
+              playsInline
+              controls={false}
             >
               <source src={videoUrl} type="video/mp4" />
               Your browser does not support the video tag.
@@ -450,9 +451,10 @@ export default function VideoViewer({
 
             {/* Custom Controls Overlay */}
             <div
-              className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent transition-opacity duration-300 ${
+              className={cn(
+                "absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background/90 to-transparent transition-opacity duration-300",
                 showControls ? "opacity-100" : "opacity-0"
-              }`}
+              )}
             >
               <div className="p-4 space-y-2">
                 {/* Progress Bar */}
@@ -467,7 +469,7 @@ export default function VideoViewer({
                   />
                   {/* Buffer indicator */}
                   <div
-                    className="absolute top-1/2 left-0 h-1 bg-gray-400 rounded-full -translate-y-1/2 pointer-events-none"
+                    className="absolute top-1/2 left-0 h-1 bg-muted-foreground/50 rounded-full -translate-y-1/2 pointer-events-none"
                     style={{
                       width:
                         duration > 0
@@ -478,13 +480,13 @@ export default function VideoViewer({
                 </div>
 
                 {/* Controls Row */}
-                <div className="flex items-center justify-between text-white">
+                <div className="flex items-center justify-between text-foreground">
                   <div className="flex items-center gap-2">
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={togglePlay}
-                      className="text-white hover:bg-white/20"
+                      className="hover:bg-accent focus:ring-0 focus:outline-none"
                       disabled={isLoading || hasError || !isVideoReady}
                     >
                       {isPlaying ? (
@@ -499,7 +501,7 @@ export default function VideoViewer({
                         variant="ghost"
                         size="sm"
                         onClick={toggleMute}
-                        className="text-white hover:bg-white/20"
+                        className="hover:bg-accent focus:ring-0 focus:outline-none"
                         disabled={isLoading || hasError}
                       >
                         {isMuted ? (
@@ -519,7 +521,7 @@ export default function VideoViewer({
                       </div>
                     </div>
 
-                    <span className="text-sm">
+                    <span className="text-sm text-muted-foreground">
                       {formatTime(currentTime)} / {formatTime(duration)}
                     </span>
                   </div>
@@ -528,7 +530,7 @@ export default function VideoViewer({
                     variant="ghost"
                     size="sm"
                     onClick={toggleFullscreen}
-                    className="text-white hover:bg-white/20"
+                    className="hover:bg-accent focus:ring-0 focus:outline-none"
                     disabled={isLoading || hasError}
                   >
                     {isFullscreen ? (
