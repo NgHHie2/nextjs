@@ -5,7 +5,7 @@ import { forwardToBackend } from "@/app/lib/api-utils";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
   try {
     const { code } = await params;

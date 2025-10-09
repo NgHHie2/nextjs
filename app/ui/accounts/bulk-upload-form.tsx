@@ -78,13 +78,8 @@ export default function BulkUploadForm() {
         const account = updatedAccounts[i];
         await createAccount({
           cccd: account.cccd,
-          username: account.username,
-          password: account.password,
           firstName: account.firstName,
           lastName: account.lastName,
-          email: account.email,
-          phoneNumber: account.phoneNumber,
-          birthDay: account.birthDay,
         });
         updatedAccounts[i].status = "success";
       } catch (error) {
@@ -168,22 +163,18 @@ export default function BulkUploadForm() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Username</TableHead>
+                  <TableHead>CCCD</TableHead>
                   <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Phone</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {bulkAccounts.map((account) => (
                   <TableRow key={account.id}>
-                    <TableCell>{account.username}</TableCell>
+                    <TableCell>{account.cccd}</TableCell>
                     <TableCell>
                       {account.firstName} {account.lastName}
                     </TableCell>
-                    <TableCell>{account.email}</TableCell>
-                    <TableCell>{account.phoneNumber}</TableCell>
                     <TableCell>
                       <Badge
                         variant={

@@ -14,14 +14,15 @@ import Breadcrumbs from "@/app/ui/breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
-interface PageProps {
-  params: { id: number; code: string };
-}
 function DocumentSkeleton() {
   return <div className="flex h-[calc(100vh-120px)] gap-6"></div>;
 }
 
-export default async function DocumentViewPage({ params }: PageProps) {
+export default async function DocumentViewPage({
+  params,
+}: {
+  params: Promise<{ id: number; code: string }>;
+}) {
   const { id, code } = await params;
   const semesterId = id;
 

@@ -21,6 +21,7 @@ import { Account } from "@/app/lib/definitions";
 import DocumentsSection from "@/app/ui/courses/documents-section";
 import AccountsSection from "@/app/ui/courses/accounts-section";
 import TeachersSection from "@/app/ui/courses/teachers-section";
+import { EditCourseButton2 } from "@/app/ui/courses/buttons";
 
 export const dynamic = "force-dynamic";
 
@@ -103,12 +104,7 @@ export default async function Page({
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Course Information</CardTitle>
-            <Button size={"sm"} className="w-[140px]" asChild>
-              <Link href={`/dashboard/courses/${id}/edit`}>
-                <Edit className="h-4 w-4" />
-                Edit Course
-              </Link>
-            </Button>
+            <EditCourseButton2 id={id} />
           </div>
         </CardHeader>
 

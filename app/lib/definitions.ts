@@ -74,7 +74,7 @@ export type Account = {
   birthDay: string;
   phoneNumber: string;
   email: string;
-  role: "ADMIN" | "TEACHER" | "STUDENT";
+  role: "ADMIN" | "TEACHER" | "STUDENT" | "";
 };
 
 export type AccountsPageResponse = {
@@ -84,13 +84,13 @@ export type AccountsPageResponse = {
 };
 
 export type AccountForm = {
-  username: string;
-  password: string;
+  // username: string;
+  // password: string;
   firstName: string;
   lastName: string;
-  birthDay: string;
-  phoneNumber: string;
-  email: string;
+  // birthDay: string;
+  // phoneNumber: string;
+  // email: string;
   cccd: string;
 };
 

@@ -1,9 +1,6 @@
 import { lusitana } from "@/app/ui/fonts";
-import DashboardCardWrapper from "@/app/ui/dashboard/cards";
-import ParticipationChart from "@/app/ui/dashboard/participation-chart";
-import LatestActivities from "@/app/ui/dashboard/latest-activities";
-import { Suspense } from "react";
-import { ChartPieLegend } from "@/app/ui/statistics/document-stats";
+import { DocumentStatsChart } from "@/app/ui/statistics/document-stats-chart";
+import { AccountStatsChart } from "@/app/ui/statistics/account-stats-chart";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +10,11 @@ export default async function Page() {
       <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
         Learning Dashboard
       </h1>
-      <ChartPieLegend></ChartPieLegend>
+
+      <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
+        <AccountStatsChart />
+        <DocumentStatsChart />
+      </div>
     </main>
   );
 }

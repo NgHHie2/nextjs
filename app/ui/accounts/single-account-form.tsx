@@ -25,12 +25,12 @@ export default function SingleAccountForm() {
   const form = useForm<AccountForm>({
     defaultValues: {
       cccd: "",
-      password: "",
+      // password: "",
       firstName: "",
       lastName: "",
-      birthDay: "",
-      phoneNumber: "",
-      email: "",
+      // birthDay: "",
+      // phoneNumber: "",
+      // email: "",
     },
   });
 
@@ -65,7 +65,7 @@ export default function SingleAccountForm() {
           )}
         />
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="password"
           render={({ field }) => (
@@ -81,7 +81,7 @@ export default function SingleAccountForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <div className="grid grid-cols-2 gap-4">
           <FormField
@@ -113,7 +113,7 @@ export default function SingleAccountForm() {
           />
         </div>
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
@@ -139,9 +139,9 @@ export default function SingleAccountForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="birthDay"
           render={({ field }) => (
@@ -153,7 +153,7 @@ export default function SingleAccountForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <div className="flex justify-end gap-4">
           <Button variant="outline" asChild>

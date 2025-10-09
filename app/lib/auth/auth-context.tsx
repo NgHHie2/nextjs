@@ -3,6 +3,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { Account } from "@/app/lib/definitions";
+import { API_BASE_URL } from "@/app/lib/api-config";
 
 interface AuthContextType {
   user: Account | null;
@@ -23,9 +24,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUser = async () => {
     try {
-      const response = await fetch("/api/auth/me", {
+      const response = await fetch(`${API_BASE_URL}/account/me`, {
         credentials: "include",
       });
+      console.log("hmm");
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);

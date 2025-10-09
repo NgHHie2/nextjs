@@ -4,7 +4,7 @@ import { Eye, Pencil, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { Course, Account } from "@/app/lib/definitions";
 import { fetchAllCourses } from "@/app/lib/data/server-course-data";
 import { fetchAccountsByIds } from "@/app/lib/data/server-account-data";
-import { DeleteCourseButton } from "@/app/ui/courses/buttons";
+import { DeleteCourseButton, EditCourseButton } from "@/app/ui/courses/buttons";
 import {
   Table,
   TableBody,
@@ -203,11 +203,8 @@ export default async function CoursesTable({
                         <Eye className="h-4 w-4" />
                       </Link>
                     </Button>
-                    <Button variant="ghost" size="sm" asChild>
-                      <Link href={`/dashboard/courses/${course.id}/edit`}>
-                        <Pencil className="h-4 w-4" />
-                      </Link>
-                    </Button>
+
+                    <EditCourseButton id={course.id} />
                     <DeleteCourseButton id={course.id} />
                   </div>
                 </TableCell>

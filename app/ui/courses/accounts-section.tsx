@@ -53,7 +53,7 @@ export default function AccountsSection({
               <CardTitle className="flex items-center gap-2 cursor-pointer">
                 <ChevronDown className="h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
                 <Users className="h-5 w-5" />
-                Participants ({totalAccounts})
+                Students ({totalAccounts})
               </CardTitle>
             </CollapsibleTrigger>
 
@@ -126,7 +126,7 @@ export default function AccountsSection({
             ) : (
               <div className="text-center py-8">
                 <p className="text-muted-foreground">
-                  No participants in this course.
+                  No students in this course.
                 </p>
               </div>
             )}

@@ -41,13 +41,13 @@ export default function EditAccountForm({ account }: { account: Account }) {
     phoneNumber: account.phoneNumber || "",
     email: account.email || "",
     cccd: account.cccd || "",
-    role: account.role || "STUDENT",
+    role: account.role || "",
   });
 
   const handleInputChange = (field: keyof Account, value: string) => {
     setFormData((prev) => ({
       ...prev,
-      [field]: value,
+      [field]: value === "" ? null : value,
     }));
     setError(""); // Clear error when user types
   };
@@ -135,7 +135,7 @@ export default function EditAccountForm({ account }: { account: Account }) {
             <div className="space-y-2">
               <Label htmlFor="role">Role *</Label>
               <Select
-                value={formData.role}
+                value={formData.role ?? "No role"}
                 onValueChange={(value) => handleInputChange("role", value)}
               >
                 <SelectTrigger>

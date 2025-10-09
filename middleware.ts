@@ -9,8 +9,8 @@ export function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // Nếu đã đăng nhập và đang ở trang login hoặc trang chủ
-  if (isAuthenticated && (pathname === "/login" || pathname === "/")) {
+  // Nếu đã đăng nhập và đang ở /
+  if (isAuthenticated && pathname === "/") {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 

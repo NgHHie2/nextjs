@@ -101,14 +101,14 @@ export default function TeachersSection({
                         </TableCell>
 
                         <TableCell>
-                          {(isAdmin || isTeacher) && account && (
+                          {(isAdmin || isTeacher) && (
                             <div className="flex justify-center flex-wrap gap-1">
                               <Button variant="ghost" size="sm">
                                 <Eye className="h-4 w-4" />
                               </Button>
                               <DeleteTeacherFromSemesterButton
                                 id={semesterId}
-                                teacherId={account.id}
+                                teacherId={semAccount.teacherId}
                               />
                             </div>
                           )}
@@ -121,7 +121,7 @@ export default function TeachersSection({
             ) : (
               <div className="text-center py-8">
                 <p className="text-muted-foreground">
-                  No participants in this course.
+                  No teachers in this course.
                 </p>
               </div>
             )}

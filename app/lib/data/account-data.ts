@@ -51,7 +51,9 @@ export async function updateAccount(
       },
       body: JSON.stringify({
         ...accountData,
-        birthDay: new Date(accountData.birthDay).toISOString(),
+        birthDay: accountData.birthDay
+          ? new Date(accountData.birthDay).toISOString()
+          : null,
       }),
     });
 
