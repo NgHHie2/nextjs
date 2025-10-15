@@ -147,7 +147,7 @@ export default async function AccountsTable({
                 <TableCell className="font-medium">
                   <div className="flex flex-col">
                     <span className="font-semibold">
-                      {account.firstName} {account.lastName}
+                      {account.lastName} {account.firstName}
                     </span>
                   </div>
                 </TableCell>

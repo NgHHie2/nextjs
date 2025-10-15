@@ -125,7 +125,7 @@ export default function BulkUploadForm() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-2">
       <div className="flex gap-4 justify-center">
         <Button
           variant="outline"

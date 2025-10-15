@@ -105,7 +105,7 @@ export default function DocumentsSection({
                       </TableCell>
                       <TableCell>
                         <div className="flex justify-center flex-wrap gap-1">
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" asChild>
                             <Link
                               href={`/dashboard/courses/${semesterId}/document/${semDoc.document.code}`}
                             >

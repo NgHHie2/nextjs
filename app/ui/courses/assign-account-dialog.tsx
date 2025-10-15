@@ -283,7 +283,7 @@ export default function AssignAccountDialog({
               <Label>Found Accounts</Label>
               <div className="border rounded-lg bg-accent/50 h-24 overflow-y-auto">
                 {searchError ? (
-                  <span className="text-sm text-red-500">No student found</span>
+                  <span className="text-sm text-primary">No student found</span>
                 ) : (
                   <Table>
                     <TableHeader>

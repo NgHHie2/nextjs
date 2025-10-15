@@ -60,6 +60,13 @@ export async function fetchAllAccounts(
       cache: "no-store",
     });
 
+    if (response.status == 404)
+      return {
+        content: [],
+        totalPages: 0,
+        totalElements: 0,
+      };
+
     if (!response.ok) {
       throw new Error("Failed to fetch accounts");
     }

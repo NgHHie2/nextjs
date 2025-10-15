@@ -248,7 +248,7 @@ export default function PDFViewer({ document, semesterId }: PDFViewerProps) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setZoom((prev) => Math.max(prev - 0.25, 0.5))}
+              onClick={() => setZoom((prev) => Math.max(prev - 0.1, 0.5))}
               disabled={zoom <= 0.5 || isLoading}
               className="border-0 rounded-r-none h-8 w-8 p-0"
             >
@@ -263,7 +263,7 @@ export default function PDFViewer({ document, semesterId }: PDFViewerProps) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setZoom((prev) => Math.min(prev + 0.25, 3))}
+              onClick={() => setZoom((prev) => Math.min(prev + 0.1, 3))}
               disabled={zoom >= 3 || isLoading}
               className="border-0 rounded-l-none h-8 w-8 p-0"
             >
@@ -277,7 +277,7 @@ export default function PDFViewer({ document, semesterId }: PDFViewerProps) {
             size="sm"
             onClick={() => setRotation((prev) => (prev + 90) % 360)}
             disabled={isLoading}
-            className="h-8 w-8 p-0 border-border bg-card"
+            className="hidden lg:flex items-center justify-center  h-8 w-8 p-0 border-border bg-card"
           >
             <RotateCw className="h-4 w-4" />
           </Button>
@@ -318,7 +318,7 @@ export default function PDFViewer({ document, semesterId }: PDFViewerProps) {
                   className="w-8 lg:w-12 h-8 text-center text-sm p-1 focus:border-foreground"
                   disabled={isLoading}
                 />
-                <span className="text-sm text-muted-foreground whitespace-nowrap">
+                <span className="hidden lg:inline text-sm text-muted-foreground whitespace-nowrap">
                   / {totalPages}
                 </span>
               </form>
@@ -348,7 +348,7 @@ export default function PDFViewer({ document, semesterId }: PDFViewerProps) {
 
         {/* Right Info */}
         <div className="text-sm text-muted-foreground whitespace-nowrap min-w-0 flex-shrink-0">
-          <span className="hidden sm:inline">{document.format} • </span>
+          <span className="hidden lg:inline">{document.format} • </span>
           <span>
             {totalPages} {totalPages === 1 ? "page" : "pages"}
           </span>

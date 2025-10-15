@@ -42,25 +42,14 @@ export default function LoginForm() {
 
       const data = await response.json();
 
-      // if (response.ok) {
-      //   console.log("Login successful:", data);
-
-      //   // Fetch user data sau khi login thành công
-      //   const userResponse = await fetch("/api/auth/me", {
-      //     credentials: "include",
-      //   });
-
-      //   if (userResponse.ok) {
-      //     const userData = await userResponse.json();
-      //     // Update context với user data
-      //     login(userData);
-      //   }
-
-      // Redirect to dashboard
-      router.push("/dashboard");
-      // } else {
-      //   setError(data.error || "Login failed. Please try again.");
-      // }
+      if (response.ok) {
+        setError("");
+        setIsLoading(false);
+        window.location.href = "/dashboard";
+      } else {
+        setError(data.error || "Login failed. Please try again.");
+        setIsLoading(false);
+      }
     } catch (error) {
       console.error("Login error:", error);
       setError("Network error. Please check your connection and try again.");

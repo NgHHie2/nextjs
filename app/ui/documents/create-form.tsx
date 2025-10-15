@@ -234,7 +234,7 @@ export default function CreateDocumentForm() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     {formData.file.type === "application/pdf" ? (
-                      <FileText className="h-8 w-8 text-red-500" />
+                      <FileText className="h-8 w-8 text-primary" />
                     ) : (
                       <Video className="h-8 w-8 text-blue-500" />
                     )}

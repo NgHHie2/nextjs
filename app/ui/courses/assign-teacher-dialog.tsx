@@ -213,7 +213,7 @@ export default function AssignTeacherDialog({
               <Label>Found Teachers</Label>
               <div className="border rounded-lg bg-accent/50 h-24 overflow-y-auto">
                 {searchError ? (
-                  <span className="text-sm text-red-500">No teacher found</span>
+                  <span className="text-sm text-primary">No teacher found</span>
                 ) : (
                   <Table>
                     <TableHeader>

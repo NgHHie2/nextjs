@@ -105,10 +105,10 @@ export default function CreateCourseForm() {
                 },
               })}
               placeholder="Enter course name (e.g., Toán học, Văn học)"
-              className={errors.name ? "border-red-500" : ""}
+              className={errors.name ? "border-primary" : ""}
             />
             {errors.name && (
-              <p className="text-sm text-red-500">{errors.name.message}</p>
+              <p className="text-sm text-primary">{errors.name.message}</p>
             )}
           </div>
 
@@ -122,10 +122,10 @@ export default function CreateCourseForm() {
                 {...register("startDate", {
                   required: "Start date is required",
                 })}
-                className={errors.startDate ? "border-red-500" : ""}
+                className={errors.startDate ? "border-primary" : ""}
               />
               {errors.startDate && (
-                <p className="text-sm text-red-500">
+                <p className="text-sm text-primary">
                   {errors.startDate.message}
                 </p>
               )}
@@ -140,10 +140,10 @@ export default function CreateCourseForm() {
                   required: "End date is required",
                 })}
                 min={startDate}
-                className={errors.endDate ? "border-red-500" : ""}
+                className={errors.endDate ? "border-primary" : ""}
               />
               {errors.endDate && (
-                <p className="text-sm text-red-500">{errors.endDate.message}</p>
+                <p className="text-sm text-primary">{errors.endDate.message}</p>
               )}
               {startDate && (
                 <p className="text-xs text-muted-foreground">

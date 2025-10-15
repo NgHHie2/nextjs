@@ -63,7 +63,7 @@ export default async function SideNav() {
       {/* User info section */}
       <div className="hidden mb-2 md:block p-3 text-sm bg-sidebar-item rounded-md shadow-sm">
         <div className="font-medium text-gray-900 dark:text-gray-100">
-          {user.firstName} {user.lastName}
+          {user.lastName} {user.firstName}
         </div>
         <div className="text-xs text-gray-600 dark:text-gray-400">
           {user.role}

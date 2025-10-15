@@ -1,5 +1,11 @@
 // app/ui/accounts/create-form.tsx
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SingleAccountForm from "@/app/ui/accounts/single-account-form";
 import BulkUploadForm from "@/app/ui/accounts/bulk-upload-form";
@@ -7,7 +13,7 @@ import BulkUploadForm from "@/app/ui/accounts/bulk-upload-form";
 export default function CreateAccountForm() {
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pb-4">
         <CardTitle>Create Accounts</CardTitle>
       </CardHeader>
       <CardContent>
