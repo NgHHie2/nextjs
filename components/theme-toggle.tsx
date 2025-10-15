@@ -52,7 +52,6 @@ export function SimpleThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-      className="bg-sidebar-item hover:bg-sidebar-item-hover focus:outline-none focus-visible:ring-0 shadow-sm"
       style={{ WebkitTapHighlightColor: "transparent" }}
     >
       <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />

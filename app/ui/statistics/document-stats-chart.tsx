@@ -117,7 +117,7 @@ export function DocumentStatsChart() {
 
   return (
     isAdmin && (
-      <Card className="flex flex-col">
+      <Card className="flex flex-col border-none">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />

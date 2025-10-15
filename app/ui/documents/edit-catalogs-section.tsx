@@ -216,7 +216,7 @@ export default function EditDocumentCatalogsSection({
       </div>
 
       {/* Positions List */}
-      <Card>
+      <Card className="border-2">
         <ScrollArea className="h-64">
           {isLoading ? (
             <div className="flex items-center justify-center h-32">

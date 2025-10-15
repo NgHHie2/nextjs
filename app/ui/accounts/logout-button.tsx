@@ -3,9 +3,11 @@
 import { useAuth } from "@/app/lib/auth/auth-context";
 import { Button } from "@/components/ui/button";
 import { PowerIcon } from "@heroicons/react/24/outline";
+import { useSidebar } from "../dashboard/sidebar-wrapper";
 
 export default function SignoutButton() {
   const { logout } = useAuth();
+  const { isCollapsed } = useSidebar();
 
   const handleSignout = async () => {
     try {
@@ -27,10 +29,13 @@ export default function SignoutButton() {
     <Button
       onClick={handleSignout}
       variant="ghost"
-      className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-sidebar-item p-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-sidebar-item-hover hover:text-gray-900 dark:hover:text-white md:flex-none md:justify-start md:p-2 md:px-3 transition-all duration-200 shadow-sm"
+      className={`flex h-[48px] grow items-center gap-2 rounded-md bg-sidebar-item p-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-sidebar-item-hover hover:text-gray-900 dark:hover:text-white md:flex-none md:p-2 md:px-3 transition-all duration-200 shadow-sm ${
+        isCollapsed ? "md:justify-center" : "md:justify-start"
+      }`}
+      title={isCollapsed ? "Sign Out" : undefined}
     >
       <PowerIcon className="w-6" />
-      <div className="hidden md:block">Sign Out</div>
+      {!isCollapsed && <div className="hidden md:block">Sign Out</div>}
     </Button>
   );
 }

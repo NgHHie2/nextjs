@@ -199,7 +199,7 @@ export default function PDFViewer({ document, semesterId }: PDFViewerProps) {
   }
 
   return (
-    <div className="h-full flex flex-col bg-background border border-border rounded-xl shadow-sm overflow-hidden">
+    <div className="h-full flex flex-col bg-background  rounded-xl shadow-sm overflow-hidden">
       {/* PDF Content */}
       <div className="flex-1 relative overflow-hidden">
         {isLoading && (
@@ -240,7 +240,7 @@ export default function PDFViewer({ document, semesterId }: PDFViewerProps) {
       </div>
 
       {/* Toolbar */}
-      <div className="relative flex items-center justify-between p-4 border-t border-border bg-card min-h-[72px]">
+      <div className="relative flex items-center justify-between p-2  bg-card min-h-[30px]">
         {/* Left Controls */}
         <div className="flex items-center gap-2 min-w-0 flex-shrink-0">
           {/* Zoom Controls */}

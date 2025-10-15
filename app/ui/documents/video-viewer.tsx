@@ -93,13 +93,13 @@ export default function VideoViewer({
       if (isPlaying) {
         setShowControls(false);
       }
-    }, 3000);
+    }, 2000);
 
     mouseMoveTimeoutRef.current = setTimeout(() => {
       if (isPlaying) {
         setShowCursor(false);
       }
-    }, 3000);
+    }, 2000);
   }, [isPlaying, cleanup]);
 
   const showControlsAndCursor = useCallback(() => {
@@ -391,7 +391,7 @@ export default function VideoViewer({
   }, [showControlsAndCursor]);
 
   return (
-    <div className="h-full flex flex-col rounded-xl shadow-sm border bg-card text-card-foreground overflow-hidden">
+    <div className="h-full flex flex-col rounded-xl shadow-sm bg-card text-card-foreground overflow-hidden">
       {/* Video Container */}
       <div className="flex-1 relative overflow-hidden">
         {isLoading && (
@@ -452,11 +452,11 @@ export default function VideoViewer({
             {/* Custom Controls Overlay */}
             <div
               className={cn(
-                "absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background/90 to-transparent transition-opacity duration-300",
+                "absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background/90 to-transparent transition-opacity duration-300 h-[60px]",
                 showControls ? "opacity-100" : "opacity-0"
               )}
             >
-              <div className="p-4 space-y-2">
+              <div className="p-4 space-y-1">
                 {/* Progress Bar */}
                 <div className="relative">
                   <Slider
@@ -486,7 +486,7 @@ export default function VideoViewer({
                       variant="ghost"
                       size="sm"
                       onClick={togglePlay}
-                      className="hover:bg-accent focus:ring-0 focus:outline-none"
+                      className="hover:bg-accent focus:ring-0 focus:outline-none p-2"
                       disabled={isLoading || hasError || !isVideoReady}
                     >
                       {isPlaying ? (
@@ -496,12 +496,16 @@ export default function VideoViewer({
                       )}
                     </Button>
 
+                    <span className="text-sm text-muted-foreground">
+                      {formatTime(currentTime)} / {formatTime(duration)}
+                    </span>
+
                     <div className="flex items-center gap-2">
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={toggleMute}
-                        className="hover:bg-accent focus:ring-0 focus:outline-none"
+                        className="hover:bg-accent focus:ring-0 focus:outline-none p-2"
                         disabled={isLoading || hasError}
                       >
                         {isMuted ? (
@@ -520,17 +524,13 @@ export default function VideoViewer({
                         />
                       </div>
                     </div>
-
-                    <span className="text-sm text-muted-foreground">
-                      {formatTime(currentTime)} / {formatTime(duration)}
-                    </span>
                   </div>
 
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={toggleFullscreen}
-                    className="hover:bg-accent focus:ring-0 focus:outline-none"
+                    className="hover:bg-accent focus:ring-0 focus:outline-none p-2"
                     disabled={isLoading || hasError}
                   >
                     {isFullscreen ? (

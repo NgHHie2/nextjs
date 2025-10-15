@@ -56,7 +56,7 @@ export default async function DocumentViewPage({ params }: PageProps) {
 
       {/* Main Content */}
       <Suspense fallback={<DocumentSkeleton />}>
-        <div className="flex h-[calc(100vh-160px)] gap-6">
+        <div className="flex h-[85vh] gap-6">
           {/* PDF/Video Viewer - Flexible width */}
           <div className="flex-1 min-w-0">
             {document.format === "PDF" ? (
