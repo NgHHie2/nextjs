@@ -28,6 +28,7 @@ interface Props {
 }
 
 export default function TestWaitingClient({ testData, user }: Props) {
+  console.log(testData);
   const router = useRouter();
   const [countdown, setCountdown] = useState<{
     days: number;

@@ -77,7 +77,7 @@ export default async function Page({ searchParams }: PageProps) {
 
       <Suspense
         key={query + currentPage + startYear + endYear + sortBy + sortDir}
-        fallback={<InvoicesTableSkeleton />}
+        // fallback={<InvoicesTableSkeleton />}
       >
         <CoursesTable
           query={query}

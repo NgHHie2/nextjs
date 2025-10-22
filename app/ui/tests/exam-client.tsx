@@ -19,6 +19,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Flag, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { start } from "repl";
 
 interface Props {
   resultId: number;
@@ -38,6 +39,10 @@ export default function ExamClient({ resultId, user }: Props) {
   const [studentAnswers, setStudentAnswers] = useState<
     Record<string, StudentAnswer>
   >({});
+  const [countdown, setCountdown] = useState<{
+    minutes: number;
+    seconds: number;
+  } | null>(null);
 
   // Load initial data
   useEffect(() => {
@@ -162,6 +167,42 @@ export default function ExamClient({ resultId, user }: Props) {
     };
   };
 
+  // Tính toán countdown
+  useEffect(() => {
+    if (!resultDetail) return;
+    const calculateCountdown = () => {
+      const now = new Date();
+      console.log(now);
+      const startTime = new Date(resultDetail.startDateTime);
+      console.log(startTime);
+      const endTime = new Date(
+        startTime.getTime() + resultDetail.minutes * 60 * 1000
+      );
+      console.log(resultDetail.minutes);
+      console.log(endTime);
+      // Kiểm tra trạng thái bài thi
+      if (now <= endTime) {
+        const diff = endTime.getTime() - now.getTime(); // thời gian còn lại (ms)
+
+        const totalMinutes = Math.floor(diff / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        setCountdown({ minutes: totalMinutes, seconds });
+        return;
+      }
+
+      if (now > endTime) {
+        setCountdown(null);
+        handleEndTest();
+      }
+    };
+
+    calculateCountdown();
+    const interval = setInterval(calculateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, [resultDetail]);
+
   if (isLoading || !resultDetail || !currentQuestion) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -176,18 +217,44 @@ export default function ExamClient({ resultId, user }: Props) {
   const totalQuestions = resultDetail.detailTest.questions.length;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background h-screen flex flex-col">
       <ExamHeader user={user} onEndTest={handleEndTest} isEnding={isEnding} />
 
-      <div className="max-w-7xl mx-auto px-6 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="flex-1 max-w-7xl mx-auto px-6 py-6  overflow-y-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
           {/* Question Navigator - Bên trái */}
-          <div className="lg:col-span-1">
+          <div className="sm:col-span-1 order-2 sm:order-1">
             <Card>
               <CardContent className="p-4">
+                {countdown && (
+                  <div className="bg-background rounded-lg p-4 mb-4">
+                    <p className="text-sm mb-4 text-center">
+                      Thời gian còn lại:
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { label: "Phút", value: countdown.minutes },
+                        { label: "Giây", value: countdown.seconds },
+                      ].map((item) => (
+                        <div
+                          key={item.label}
+                          className="bg-background rounded-lg p-4 text-center"
+                        >
+                          <div className="text-3xl font-bold">
+                            {item.value.toString().padStart(2, "0")}
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-1">
+                            {item.label}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 <h3 className="font-semibold mb-4">Danh sách câu hỏi</h3>
 
-                <div className="grid grid-cols-10 lg:grid-cols-5 gap-2">
+                <div className="grid grid-cols-10 sm:grid-cols-3 lg:grid-cols-5 gap-2">
                   {resultDetail.detailTest.questions.map((_, index) => {
                     const status = getQuestionStatus(index);
                     const isCurrent = currentIndex === index;
@@ -199,6 +266,7 @@ export default function ExamClient({ resultId, user }: Props) {
                         variant={"outline"}
                         className={cn(
                           "relative h-10",
+                          "border-0",
                           status.answered &&
                             "bg-primary/40 hover:bg-primary/80",
                           currentIndex === index && "border-2 border-ring"
@@ -207,7 +275,7 @@ export default function ExamClient({ resultId, user }: Props) {
                         {index + 1}
 
                         {status.flagged && (
-                          <span className="absolute top-1 right-1 text-xs text-foreground">
+                          <span className="absolute top-1 right-1 text-sm text-foreground">
                             ⚑
                           </span>
                         )}
@@ -238,7 +306,7 @@ export default function ExamClient({ resultId, user }: Props) {
           </div>
 
           {/* Question Content - Bên phải */}
-          <div className="lg:col-span-3">
+          <div className="sm:col-span-3 order-1 sm:order-2">
             <Card>
               <CardContent className="p-6">
                 {/* Question Header */}

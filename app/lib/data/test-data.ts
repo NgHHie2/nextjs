@@ -77,6 +77,7 @@ export interface ResultDetailDTO {
   };
   studentAnswers: Record<string, StudentAnswer>;
   trueAnswers: any;
+  minutes: number;
 }
 
 export async function getQuestion(
