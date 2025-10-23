@@ -10,6 +10,7 @@ import { fetchAllCourses } from "@/app/lib/data/server-course-data";
 import CoursesFilter from "@/app/ui/courses/filter";
 import ResetFiltersButton from "@/app/ui/courses/reset-filters-button";
 import ActiveFiltersBadges from "@/app/ui/courses/active-filters-badges";
+import { jwtDecode } from "@/app/lib/auth/token-decode";
 
 export const dynamic = "force-dynamic";
 
@@ -52,11 +53,14 @@ export default async function Page({ searchParams }: PageProps) {
   const totalPages = data.totalPages || 0;
   const totalElements = data.totalElements || 0;
 
+  const currentUser = await jwtDecode();
+  const currentUserRole = currentUser.role;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className={`${lusitana.className} text-2xl`}>Courses</h1>
-        <CreateCourseButton />
+        {currentUserRole == "ADMIN" && <CreateCourseButton />}
       </div>
 
       <div className="space-y-4">

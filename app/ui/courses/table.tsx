@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import SortableHeader from "@/app/ui/accounts/sortable-header";
+import { jwtDecode } from "@/app/lib/auth/token-decode";
 
 interface CoursesTableProps {
   query: string;
@@ -46,6 +47,9 @@ export default async function CoursesTable({
     sortBy,
     sortDir
   );
+
+  const currentUser = await jwtDecode();
+  const currentUserRole = currentUser.role;
 
   // // Get unique creator IDs
   // const creatorIds = [
@@ -204,8 +208,12 @@ export default async function CoursesTable({
                       </Link>
                     </Button>
 
-                    <EditCourseButton id={course.id} />
-                    <DeleteCourseButton id={course.id} />
+                    {currentUserRole == "ADMIN" && (
+                      <EditCourseButton id={course.id} />
+                    )}
+                    {currentUserRole == "ADMIN" && (
+                      <DeleteCourseButton id={course.id} />
+                    )}
                   </div>
                 </TableCell>
               </TableRow>

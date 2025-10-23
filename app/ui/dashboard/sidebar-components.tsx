@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "./sidebar-wrapper";
 import AcmeLogo from "@/app/ui/acme-logo";
+import { SidebarUserInfoProps } from "@/app/lib/definitions";
 
 export function SidebarToggle() {
   const { isCollapsed, toggleCollapse } = useSidebar();
@@ -64,14 +65,6 @@ export function SidebarLogo() {
       </div>
     </Link>
   );
-}
-
-interface SidebarUserInfoProps {
-  user: {
-    firstName: string;
-    lastName: string;
-    role: string;
-  };
 }
 
 export function SidebarUserInfo({ user }: SidebarUserInfoProps) {

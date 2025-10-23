@@ -17,6 +17,7 @@ import {
   SidebarUserInfo,
   SidebarControls,
 } from "./sidebar-components";
+import { SidebarUserInfoProps } from "@/app/lib/definitions";
 
 const links = [
   {
@@ -45,12 +46,12 @@ const links = [
   },
 ];
 
-export default async function SideNav() {
-  const user = await fetchCurrentUser();
+export default async function SideNav({ user }: SidebarUserInfoProps) {
+  // const user = await fetchCurrentUser();
 
-  if (!user) {
-    redirect("/login");
-  }
+  // if (!user) {
+  //   redirect("/login");
+  // }
 
   const visibleLinks = links.filter((link) => link.roles.includes(user.role));
 

@@ -18,7 +18,7 @@ import {
 import { DocumentStats } from "@/app/lib/data/stats-data";
 import { FileText } from "lucide-react";
 import { fetchDocumentStats } from "@/app/lib/data/stats-data";
-import { useAuth } from "@/app/lib/auth/auth-context";
+// import { useAuth } from "@/app/lib/auth/auth-context";
 
 const chartConfig = {
   documents: {
@@ -37,7 +37,7 @@ const chartConfig = {
 export function DocumentStatsChart() {
   const [stats, setStats] = useState<DocumentStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const { isAdmin } = useAuth();
+  // const { isAdmin } = useAuth();
 
   useEffect(() => {
     async function fetchData() {
@@ -55,41 +55,41 @@ export function DocumentStatsChart() {
 
   if (loading) {
     return (
-      isAdmin && (
-        <Card className="flex flex-col">
-          <CardHeader className="items-center pb-0">
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="h-5 w-5" />
-              Document Statistics
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 pb-0">
-            <div className="flex items-center justify-center h-[300px]">
-              <p className="text-muted-foreground">Loading...</p>
-            </div>
-          </CardContent>
-        </Card>
-      )
+      // isAdmin && (
+      <Card className="flex flex-col">
+        <CardHeader className="items-center pb-0">
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            Document Statistics
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex-1 pb-0">
+          <div className="flex items-center justify-center h-[300px]">
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
+        </CardContent>
+      </Card>
+      // )
     );
   }
 
   if (!stats) {
     return (
-      isAdmin && (
-        <Card className="flex flex-col">
-          <CardHeader className="items-center pb-0">
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="h-5 w-5" />
-              Document Statistics
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 pb-0">
-            <div className="flex items-center justify-center h-[300px]">
-              <p className="text-muted-foreground">No data available</p>
-            </div>
-          </CardContent>
-        </Card>
-      )
+      // isAdmin && (
+      <Card className="flex flex-col">
+        <CardHeader className="items-center pb-0">
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            Document Statistics
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex-1 pb-0">
+          <div className="flex items-center justify-center h-[300px]">
+            <p className="text-muted-foreground">No data available</p>
+          </div>
+        </CardContent>
+      </Card>
+      // )
     );
   }
 
@@ -116,56 +116,56 @@ export function DocumentStatsChart() {
   );
 
   return (
-    isAdmin && (
-      <Card className="flex flex-col border-none">
-        <CardHeader className="pb-4">
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            Document Statistics
-          </CardTitle>
-          <CardDescription>Last updated: {lastUpdatedDate}</CardDescription>
-        </CardHeader>
+    // isAdmin && (
+    <Card className="flex flex-col border-none">
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-2">
+          <FileText className="h-5 w-5" />
+          Document Statistics
+        </CardTitle>
+        <CardDescription>Last updated: {lastUpdatedDate}</CardDescription>
+      </CardHeader>
 
-        <CardContent className="flex-1">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Left side - Statistics */}
-            <div className="flex flex-col justify-center space-y-3">
-              {[
-                {
-                  label: "Total",
-                  value: stats.totalDocuments,
-                },
-                { label: "PDF", value: stats.totalPdf },
-                { label: "Video", value: stats.totalVideo },
-              ].map((item, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between p-3 bg-muted rounded-lg"
-                >
-                  <span className="text-sm font-medium">{item.label}</span>
-                  <span className={"text-xl font-semibold"}>{item.value}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Right side - Pie Chart */}
-            <div className="flex items-center justify-center">
-              <ChartContainer
-                config={chartConfig}
-                className="aspect-square max-h-[250px] w-full"
+      <CardContent className="flex-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Left side - Statistics */}
+          <div className="flex flex-col justify-center space-y-3">
+            {[
+              {
+                label: "Total",
+                value: stats.totalDocuments,
+              },
+              { label: "PDF", value: stats.totalPdf },
+              { label: "Video", value: stats.totalVideo },
+            ].map((item, idx) => (
+              <div
+                key={idx}
+                className="flex items-center justify-between p-3 bg-muted rounded-lg"
               >
-                <PieChart>
-                  <Pie data={chartData} dataKey="count" nameKey="type" />
-                  <ChartLegend
-                    content={<ChartLegendContent nameKey="type" />}
-                    className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
-                  />
-                </PieChart>
-              </ChartContainer>
-            </div>
+                <span className="text-sm font-medium">{item.label}</span>
+                <span className={"text-xl font-semibold"}>{item.value}</span>
+              </div>
+            ))}
           </div>
-        </CardContent>
-      </Card>
-    )
+
+          {/* Right side - Pie Chart */}
+          <div className="flex items-center justify-center">
+            <ChartContainer
+              config={chartConfig}
+              className="aspect-square max-h-[250px] w-full"
+            >
+              <PieChart>
+                <Pie data={chartData} dataKey="count" nameKey="type" />
+                <ChartLegend
+                  content={<ChartLegendContent nameKey="type" />}
+                  className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
+                />
+              </PieChart>
+            </ChartContainer>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+    // )
   );
 }

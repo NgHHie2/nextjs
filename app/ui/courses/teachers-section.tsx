@@ -20,21 +20,23 @@ import { Users, Eye, ChevronDown, GraduationCap } from "lucide-react";
 import { Account, SemesterTeacher } from "@/app/lib/definitions";
 import AssignTeacherDialog from "./assign-teacher-dialog";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/lib/auth/auth-context";
+// import { useAuth } from "@/app/lib/auth/auth-context";
 import { DeleteTeacherFromSemesterButton } from "./buttons";
 
 type TeachersSectionProps = {
   semesterTeachers: SemesterTeacher[];
   accountMap: Map<number, Account>;
   semesterId: number;
+  role: string;
 };
 
 export default function TeachersSection({
   semesterTeachers,
   accountMap,
   semesterId,
+  role,
 }: TeachersSectionProps) {
-  const { isAdmin, isTeacher } = useAuth();
+  // const { isAdmin, isTeacher } = useAuth();
   const router = useRouter();
 
   const handleTeacherUpdate = () => {
@@ -57,11 +59,13 @@ export default function TeachersSection({
               </CardTitle>
             </CollapsibleTrigger>
 
-            <AssignTeacherDialog
-              semesterId={semesterId}
-              existingTeacherIds={existingTeacherIds}
-              onTeacherAssigned={handleTeacherUpdate}
-            />
+            {role == "ADMIN" && (
+              <AssignTeacherDialog
+                semesterId={semesterId}
+                existingTeacherIds={existingTeacherIds}
+                onTeacherAssigned={handleTeacherUpdate}
+              />
+            )}
           </div>
         </CardHeader>
 
@@ -101,7 +105,7 @@ export default function TeachersSection({
                         </TableCell>
 
                         <TableCell>
-                          {(isAdmin || isTeacher) && (
+                          {(role == "ADMIN" || role == "TEACHER") && (
                             <div className="flex justify-center flex-wrap gap-1">
                               <Button variant="ghost" size="sm">
                                 <Eye className="h-4 w-4" />

@@ -20,21 +20,22 @@ import { Users, Eye, ChevronDown } from "lucide-react";
 import { Account } from "@/app/lib/definitions";
 import AssignAccountDialog from "./assign-account-dialog";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/lib/auth/auth-context";
+// import { useAuth } from "@/app/lib/auth/auth-context";
 import { DeleteAccountFromSemesterButton } from "./buttons";
 
 type AccountsSectionProps = {
   semesterAccounts: any[];
   accountMap: Map<number, Account>;
   semesterId: number;
+  role: string;
 };
 
 export default function AccountsSection({
   semesterAccounts,
   accountMap,
   semesterId,
+  role,
 }: AccountsSectionProps) {
-  const { isAdmin, isTeacher } = useAuth();
   const router = useRouter();
 
   const handleAccountUpdate = () => {
@@ -57,11 +58,13 @@ export default function AccountsSection({
               </CardTitle>
             </CollapsibleTrigger>
 
-            <AssignAccountDialog
-              semesterId={semesterId}
-              existingAccountIds={existingAccountIds}
-              onAccountAssigned={handleAccountUpdate}
-            />
+            {(role == "ADMIN" || role == "TEACHER") && (
+              <AssignAccountDialog
+                semesterId={semesterId}
+                existingAccountIds={existingAccountIds}
+                onAccountAssigned={handleAccountUpdate}
+              />
+            )}
           </div>
         </CardHeader>
 
@@ -106,17 +109,18 @@ export default function AccountsSection({
                           </div>
                         </TableCell>
                         <TableCell>
-                          {(isAdmin || isTeacher) && account && (
-                            <div className="flex justify-center flex-wrap gap-1">
-                              <Button variant="ghost" size="sm">
-                                <Eye className="h-4 w-4" />
-                              </Button>
-                              <DeleteAccountFromSemesterButton
-                                id={semesterId}
-                                accountId={account.id}
-                              />
-                            </div>
-                          )}
+                          {(role == "ADMIN" || role == "TEACHER") &&
+                            account && (
+                              <div className="flex justify-center flex-wrap gap-1">
+                                <Button variant="ghost" size="sm">
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                                <DeleteAccountFromSemesterButton
+                                  id={semesterId}
+                                  accountId={account.id}
+                                />
+                              </div>
+                            )}
                         </TableCell>
                       </TableRow>
                     );

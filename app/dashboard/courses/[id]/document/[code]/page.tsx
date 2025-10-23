@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import BackButton from "@/app/ui/documents/back-button";
 import VideoViewer from "@/app/ui/documents/video-viewer";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
+import { jwtDecode } from "@/app/lib/auth/token-decode";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,8 @@ export default async function DocumentViewPage({
   params: Promise<{ id: number; code: string }>;
 }) {
   const { id, code } = await params;
+  const currentUser = await jwtDecode();
+  const currentUserRole = currentUser.role;
   const semesterId = id;
 
   let document;
@@ -82,7 +85,7 @@ export default async function DocumentViewPage({
           </div>
 
           {/* Document Info Panel - Dynamic width */}
-          <DocumentInfo document={document} />
+          <DocumentInfo document={document} role={currentUserRole} />
         </div>
       </Suspense>
     </div>

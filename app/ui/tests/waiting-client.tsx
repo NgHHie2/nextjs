@@ -21,6 +21,10 @@ import { Badge } from "@/components/ui/badge";
 import { SimpleThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import WaitingHeader from "./waiting-header";
+import {
+  TestWaitingSocket,
+  WaitingRoomUpdate,
+} from "@/app/lib/websocket/test-waiting-socket";
 
 interface Props {
   testData: SemesterTest;
@@ -42,9 +46,31 @@ export default function TestWaitingClient({ testData, user }: Props) {
     "upcoming" | "ongoing" | "ended"
   >("upcoming");
 
-  const initials = `${user.firstName?.[0] || ""}${
-    user.lastName?.[0] || ""
-  }`.toUpperCase();
+  const [waitingRoom, setWaitingRoom] = useState<WaitingRoomUpdate | null>(
+    null
+  );
+  const [socket, setSocket] = useState<TestWaitingSocket | null>(null);
+
+  // Initialize WebSocket
+  useEffect(() => {
+    const ws = new TestWaitingSocket(
+      testData.id,
+      user.id,
+      `${user.lastName} ${user.firstName}`,
+      user.cccd
+    );
+
+    ws.connect((update) => {
+      console.log("Waiting room update:", update);
+      setWaitingRoom(update);
+    });
+
+    setSocket(ws);
+
+    return () => {
+      ws.disconnect();
+    };
+  }, [testData.id, user]);
 
   // Tính toán countdown
   useEffect(() => {
@@ -241,6 +267,30 @@ export default function TestWaitingClient({ testData, user }: Props) {
             </Button>
           </div>
         </div>
+        {/* Online Users List */}
+        {waitingRoom && waitingRoom.totalUsers > 0 && (
+          <div className="mt-6 bg-card rounded-2xl shadow-xl overflow-hidden p-6">
+            <h3 className="text-lg font-semibold mb-4">
+              Đang chờ thi ({waitingRoom.totalUsers} người)
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {Array.from(waitingRoom.users).map((userInfo) => (
+                <div
+                  key={userInfo.userId}
+                  className="flex items-center gap-3 p-3 bg-background rounded-lg"
+                >
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div>
+                    <p className="font-medium">{userInfo.fullName}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {userInfo.cccd}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

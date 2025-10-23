@@ -22,6 +22,7 @@ import DocumentsSection from "@/app/ui/courses/documents-section";
 import AccountsSection from "@/app/ui/courses/accounts-section";
 import TeachersSection from "@/app/ui/courses/teachers-section";
 import { EditCourseButton2 } from "@/app/ui/courses/buttons";
+import { jwtDecode } from "@/app/lib/auth/token-decode";
 
 export const dynamic = "force-dynamic";
 
@@ -33,6 +34,9 @@ export default async function Page({
   const resolvedParams = await params;
   const id = parseInt(resolvedParams.id);
   const course = await fetchCourseById(id);
+
+  const currentUser = await jwtDecode();
+  const currentUserRole = currentUser.role;
 
   if (!course) {
     notFound();
@@ -104,7 +108,7 @@ export default async function Page({
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Course Information</CardTitle>
-            <EditCourseButton2 id={id} />
+            {currentUserRole == "ADMIN" && <EditCourseButton2 id={id} />}
           </div>
         </CardHeader>
 
@@ -163,17 +167,20 @@ export default async function Page({
         semesterTeachers={course.semesterTeachers || []}
         accountMap={semesterTeacherMap}
         semesterId={course.id}
+        role={currentUserRole}
       />
 
       <DocumentsSection
         documents={course.semesterDocuments || []}
         semesterId={course.id}
+        role={currentUserRole}
       />
 
       <AccountsSection
         semesterAccounts={course.semesterAccounts || []}
         accountMap={semesterAccountMap}
         semesterId={course.id}
+        role={currentUserRole}
       />
     </main>
   );

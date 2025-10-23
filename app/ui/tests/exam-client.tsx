@@ -220,7 +220,7 @@ export default function ExamClient({ resultId, user }: Props) {
     <div className="bg-background h-screen flex flex-col">
       <ExamHeader user={user} onEndTest={handleEndTest} isEnding={isEnding} />
 
-      <div className="flex-1 max-w-7xl mx-auto px-6 py-6  overflow-y-auto">
+      <div className="flex-1 max-w-[1200px] mx-auto px-6 py-6  overflow-y-auto">
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
           {/* Question Navigator - Bên trái */}
           <div className="sm:col-span-1 order-2 sm:order-1">

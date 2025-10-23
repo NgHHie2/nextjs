@@ -1,3 +1,13 @@
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Table } from "lucide-react";
+
 // Loading animation
 const shimmer =
   "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent";
@@ -213,6 +223,40 @@ export function InvoicesTableSkeleton() {
           </table>
         </div>
       </div>
+    </div>
+  );
+}
+
+export function AccountsTableSkeleton({ rows = 5 }: { rows?: number }) {
+  return (
+    <div className="overflow-hidden border rounded">
+      <table className="w-full border-collapse">
+        <thead>
+          <tr className="border-b bg-muted/50">
+            <th className="px-4 py-2 text-left">-</th>
+            <th className="px-4 py-2 text-left"></th>
+            <th className="px-4 py-2 text-left"></th>
+            <th className="px-4 py-2 text-left"></th>
+            <th className="px-4 py-2 text-left"></th>
+            <th className="px-4 py-2 text-left"></th>
+            <th className="px-4 py-2 text-center"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {Array.from({ length: rows }).map((_, i) => (
+            <tr
+              key={i}
+              className={i % 2 === 0 ? "bg-background" : "bg-muted/20"}
+            >
+              {Array.from({ length: 7 }).map((_, j) => (
+                <td key={j} className="py-3 px-4">
+                  <div className="h-6 bg-muted/30 rounded animate-pulse w-full" />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

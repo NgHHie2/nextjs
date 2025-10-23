@@ -11,6 +11,7 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "./button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { API_BASE_URL } from "@/app/lib/api-config";
 // import { useAuth } from "@/app/lib/auth/auth-context";
 
 export default function LoginForm() {
@@ -29,17 +30,18 @@ export default function LoginForm() {
     const password = formData.get("password") as string;
 
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch(`${API_BASE_URL}/account/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           username,
           password,
         }),
       });
-
+      console.log(response);
       const data = await response.json();
 
       if (response.ok) {

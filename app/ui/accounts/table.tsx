@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import SortableHeader from "@/app/ui/accounts/sortable-header";
+import { jwtDecode } from "@/app/lib/auth/token-decode";
 
 interface AccountsTableProps {
   query: string;
@@ -42,6 +43,9 @@ export default async function AccountsTable({
     sortBy,
     sortDir
   );
+
+  const currentUser = await jwtDecode();
+  const currentUserRole = currentUser.role;
 
   if (data.content.length === 0) {
     return (
@@ -108,7 +112,7 @@ export default async function AccountsTable({
                   Contact
                 </SortableHeader>
               </TableHead>
-              <TableHead className="font-semibold text-foreground">
+              <TableHead className="font-semibold text-foreground text-center">
                 <SortableHeader
                   field="role"
                   currentSort={sortBy}
@@ -166,7 +170,7 @@ export default async function AccountsTable({
                     )}
                   </div>
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-center">
                   <Badge variant={getRoleBadgeVariant(account.role)}>
                     {account.role}
                   </Badge>
@@ -192,7 +196,9 @@ export default async function AccountsTable({
                         <Pencil className="h-4 w-4" />
                       </Link>
                     </Button>
-                    <DeleteAccountButton id={account.id} />
+                    {currentUserRole == "ADMIN" && (
+                      <DeleteAccountButton id={account.id} />
+                    )}
                   </div>
                 </TableCell>
               </TableRow>

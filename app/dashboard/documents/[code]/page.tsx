@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import BackButton from "@/app/ui/documents/back-button";
 import VideoViewer from "@/app/ui/documents/video-viewer";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
+import { jwtDecode } from "@/app/lib/auth/token-decode";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,8 @@ function DocumentSkeleton() {
 
 export default async function DocumentViewPage({ params }: PageProps) {
   const { code } = await params;
+  const currentUser = await jwtDecode();
+  const currentUserRole = currentUser.role;
 
   let document;
   try {
@@ -75,7 +78,7 @@ export default async function DocumentViewPage({ params }: PageProps) {
           </div>
 
           {/* Document Info Panel - Dynamic width */}
-          <DocumentInfo document={document} />
+          <DocumentInfo document={document} role={currentUserRole} />
         </div>
       </Suspense>
     </div>

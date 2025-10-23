@@ -23,16 +23,17 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { getDocumentDownloadUrl } from "@/app/lib/data/document-data";
-import { useAuth } from "@/app/lib/auth/auth-context";
+// import { useAuth } from "@/app/lib/auth/auth-context";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface DocumentInfoProps {
   document: Document;
+  role: string;
 }
 
-export default function DocumentInfo({ document }: DocumentInfoProps) {
-  const { isAdmin, isTeacher } = useAuth();
+export default function DocumentInfo({ document, role }: DocumentInfoProps) {
+  // const { isAdmin, isTeacher } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [currentDocument, setCurrentDocument] = useState(document);
 
@@ -243,7 +244,7 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
               </div>
 
               {/* Actions */}
-              {isAdmin && (
+              {role == "ADMIN" && (
                 <div>
                   <div className="flex gap-2">
                     <Button asChild size="sm" className="flex-1">

@@ -159,3 +159,21 @@ export type Position = {
   name: string;
   description?: string;
 };
+
+export interface SidebarUserInfoProps {
+  user: {
+    firstName: string;
+    lastName: string;
+    role: string;
+  };
+}
+
+export interface JwtPayload {
+  sub: string;
+  userId: number;
+  cccd: string;
+  role: "ADMIN" | "TEACHER" | "STUDENT" | "";
+  jti: string;
+  iat: number;
+  exp: number;
+}

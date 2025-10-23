@@ -2,7 +2,10 @@
 import { Suspense } from "react";
 import AccountsTable from "@/app/ui/accounts/table";
 import AccountsPagination from "@/app/ui/accounts/pagination";
-import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
+import {
+  AccountsTableSkeleton,
+  InvoicesTableSkeleton,
+} from "@/app/ui/skeletons";
 import Search from "@/app/ui/search";
 import { lusitana } from "@/app/ui/fonts";
 import { CreateAccountButton } from "@/app/ui/accounts/buttons";
@@ -11,6 +14,7 @@ import AccountsFilter from "@/app/ui/accounts/filter";
 import { pages } from "next/dist/build/templates/app-page";
 import ResetFiltersButton from "@/app/ui/accounts/reset-filters-button";
 import ActiveFiltersBadges from "@/app/ui/accounts/active-filters-badges";
+import { jwtDecode } from "@/app/lib/auth/token-decode";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +38,9 @@ export default async function Page({ searchParams }: PageProps) {
   const sortBy = resolvedSearchParams?.sortBy || "";
   const sortDir = resolvedSearchParams?.sortDir || "";
 
+  const currentUser = await jwtDecode();
+  const currentUserRole = currentUser.role;
+
   // Fetch data for pagination info
   const data = await fetchAllAccounts(
     query,
@@ -47,10 +54,10 @@ export default async function Page({ searchParams }: PageProps) {
   const totalElements = data.totalElements || 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-background">
       <div className="flex items-center justify-between">
         <h1 className={`${lusitana.className} text-2xl`}>Accounts</h1>
-        <CreateAccountButton />
+        {currentUserRole === "ADMIN" && <CreateAccountButton />}
       </div>
 
       <div className="space-y-4">
@@ -67,7 +74,7 @@ export default async function Page({ searchParams }: PageProps) {
 
       <Suspense
         key={query + currentPage + role + sortBy + sortDir}
-        // fallback={<InvoicesTableSkeleton />}
+        fallback={<AccountsTableSkeleton rows={pageSize} />}
       >
         <AccountsTable
           query={query}

@@ -24,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useAuth } from "@/app/lib/auth/auth-context";
+// import { useAuth } from "@/app/lib/auth/auth-context";
 
 interface AssignDocumentDialogProps {
   semesterId: number;
@@ -41,7 +41,7 @@ export default function AssignDocumentDialog({
   const [isAssigning, setIsAssigning] = useState(false);
   const [foundDocument, setFoundDocument] = useState<any | null>(null);
   const [searchError, setSearchError] = useState<string | null>(null);
-  const { isTeacher, isAdmin } = useAuth();
+  // const { isTeacher, isAdmin } = useAuth();
 
   const handleSearch = async () => {
     if (!documentNumber.trim()) {
@@ -111,87 +111,87 @@ export default function AssignDocumentDialog({
   };
 
   return (
-    (isAdmin || isTeacher) && (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button size="sm" className="w-[140px]">
-            <Plus className="h-4 w-4" />
-            Assign Document
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Assign Document To This Course</DialogTitle>
-          </DialogHeader>
+    // (isAdmin || isTeacher) && (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm" className="w-[140px]">
+          <Plus className="h-4 w-4" />
+          Assign Document
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>Assign Document To This Course</DialogTitle>
+        </DialogHeader>
 
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <div className="flex gap-2">
-                <Input
-                  id="documentNumber"
-                  placeholder="Enter document number"
-                  value={documentNumber}
-                  onChange={(e) => setDocumentNumber(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  disabled={isSearching}
-                />
-                <Button
-                  onClick={handleSearch}
-                  disabled={isSearching || !documentNumber.trim()}
-                >
-                  {isSearching ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Search className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <div className="flex gap-2">
+              <Input
+                id="documentNumber"
+                placeholder="Enter document number"
+                value={documentNumber}
+                onChange={(e) => setDocumentNumber(e.target.value)}
+                onKeyPress={handleKeyPress}
+                disabled={isSearching}
+              />
+              <Button
+                onClick={handleSearch}
+                disabled={isSearching || !documentNumber.trim()}
+              >
+                {isSearching ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Search className="h-4 w-4" />
+                )}
+              </Button>
             </div>
-
-            {searchError && (
-              <div className="text-sm text-destructive bg-destructive/10 p-2 rounded">
-                {searchError}
-              </div>
-            )}
-
-            {foundDocument && (
-              <div className="border rounded-lg bg-muted/50">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Number</TableHead>
-                      <TableHead className="w-[50px] text-right">
-                        Action
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>{foundDocument.name}</TableCell>
-                      <TableCell>{foundDocument.documentNumber}</TableCell>
-                      <TableCell className="text-right">
-                        <Button
-                          onClick={handleAssign}
-                          disabled={isAssigning}
-                          size="icon"
-                          variant="outline"
-                        >
-                          {isAssigning ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Plus className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
-            )}
           </div>
-        </DialogContent>
-      </Dialog>
-    )
+
+          {searchError && (
+            <div className="text-sm text-destructive bg-destructive/10 p-2 rounded">
+              {searchError}
+            </div>
+          )}
+
+          {foundDocument && (
+            <div className="border rounded-lg bg-muted/50">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Number</TableHead>
+                    <TableHead className="w-[50px] text-right">
+                      Action
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>{foundDocument.name}</TableCell>
+                    <TableCell>{foundDocument.documentNumber}</TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        onClick={handleAssign}
+                        disabled={isAssigning}
+                        size="icon"
+                        variant="outline"
+                      >
+                        {isAssigning ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Plus className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+    // )
   );
 }

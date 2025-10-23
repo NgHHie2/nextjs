@@ -21,24 +21,24 @@ import {
 import { useAuth } from "@/app/lib/auth/auth-context";
 
 export function CreateAccountButton() {
-  const { isAdmin } = useAuth();
+  // const { isAdmin } = useAuth();
 
   return (
-    isAdmin && (
-      <Button asChild>
-        <Link href="/dashboard/accounts/create">
-          <PlusIcon className="h-4 w-4 mr-2" />
-          Create Account
-        </Link>
-      </Button>
-    )
+    // isAdmin && (
+    <Button asChild>
+      <Link href="/dashboard/accounts/create">
+        <PlusIcon className="h-4 w-4 mr-2" />
+        Create Account
+      </Link>
+    </Button>
+    // )
   );
 }
 
 export function DeleteAccountButton({ id }: { id: number }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
-  const { isAdmin } = useAuth();
+  // const { isAdmin } = useAuth();
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -54,33 +54,33 @@ export function DeleteAccountButton({ id }: { id: number }) {
   };
 
   return (
-    isAdmin && (
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button variant="ghost" size="sm">
-            <Trash2 className="h-4 w-4 text-destructive" />
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Account</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              account.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {isDeleting ? "Deleting..." : "Delete"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    )
+    // isAdmin && (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="ghost" size="sm">
+          <Trash2 className="h-4 w-4 text-destructive" />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete Account</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete the
+            account.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {isDeleting ? "Deleting..." : "Delete"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
+  // );
 }

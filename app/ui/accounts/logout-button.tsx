@@ -1,12 +1,12 @@
 "use client";
 
-import { useAuth } from "@/app/lib/auth/auth-context";
+// import { useAuth } from "@/app/lib/auth/auth-context";
 import { Button } from "@/components/ui/button";
 import { PowerIcon } from "@heroicons/react/24/outline";
 import { useSidebar } from "../dashboard/sidebar-wrapper";
 
 export default function SignoutButton() {
-  const { logout } = useAuth();
+  // const { logout } = useAuth();
   const { isCollapsed } = useSidebar();
 
   const handleSignout = async () => {
@@ -16,11 +16,11 @@ export default function SignoutButton() {
         credentials: "include",
       });
 
-      logout();
+      // logout();
       window.location.href = "/login";
     } catch (error) {
       console.error("Logout error:", error);
-      logout();
+      // logout();
       window.location.href = "/login";
     }
   };
