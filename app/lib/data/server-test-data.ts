@@ -24,6 +24,7 @@ export interface SemesterTest {
   startDate: string;
   endDate: string;
   name: string;
+  open: boolean;
   test: {
     id: number;
     name: string;

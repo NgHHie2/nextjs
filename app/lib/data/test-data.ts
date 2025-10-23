@@ -181,3 +181,27 @@ export async function getResultDetail(
 
   return await response.json();
 }
+
+export async function openTest(
+  semesterTestId: number
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/semester/test/${semesterTestId}/open`,
+      {
+        method: "POST",
+        credentials: "include",
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to open test");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Open Test Error:", error);
+    throw error;
+  }
+}
