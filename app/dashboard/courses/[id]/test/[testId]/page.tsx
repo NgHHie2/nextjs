@@ -7,6 +7,7 @@ import { notFound, redirect } from "next/navigation";
 import StudentTestClient from "@/app/ui/tests/student-test-client";
 import TeacherTestClient from "@/app/ui/tests/teacher-test-client";
 import { Account } from "@/app/lib/definitions";
+import { fetchSubmittedStudents } from "@/app/lib/data/server-test-data";
 
 export default async function TestPage({
   params,
@@ -17,10 +18,11 @@ export default async function TestPage({
   const courseId = parseInt(id);
   const semesterTestId = parseInt(testId);
 
-  const [testData, currentUser, course] = await Promise.all([
+  const [testData, currentUser, course, submittedStudents] = await Promise.all([
     fetchSemesterTestById(semesterTestId),
     fetchCurrentUser(),
     fetchCourseById(courseId),
+    fetchSubmittedStudents(semesterTestId),
   ]);
 
   if (!currentUser) {
@@ -31,10 +33,13 @@ export default async function TestPage({
     notFound();
   }
 
-  // Nếu là TEACHER hoặc ADMIN, lấy danh sách học sinh
+  // Nếu là TEACHER hoặc ADMIN, lấy danh sách học viên
   if (currentUser.role === "TEACHER" || currentUser.role === "ADMIN") {
     // Lấy danh sách accountId từ semesterAccounts
-    const accountIds = course.semesterAccounts?.map((sa) => sa.accountId) || [];
+    const accountIds =
+      course.semesterAccounts
+        ?.filter((sa) => sa.position.id === testData.test.position.id)
+        .map((sa) => sa.accountId) || [];
 
     // Fetch thông tin chi tiết accounts
     let accounts: Account[] = [];
@@ -47,6 +52,7 @@ export default async function TestPage({
         testData={testData}
         user={currentUser}
         semesterAccounts={accounts}
+        initialSubmittedUsers={submittedStudents}
       />
     );
   }

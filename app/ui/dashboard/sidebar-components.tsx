@@ -115,7 +115,7 @@ export function SidebarContainer({ children }: { children: React.ReactNode }) {
   return (
     <div
       className={`flex flex-none h-full flex-col px-3 py-4 md:px-2 bg-sidebar transition-all duration-300 ${
-        isCollapsed ? "w-full md:w-14" : "w-full md:w-64"
+        isCollapsed ? "md:w-14" : "md:w-64"
       }`}
     >
       {children}

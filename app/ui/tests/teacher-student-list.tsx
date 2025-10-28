@@ -1,3 +1,5 @@
+// app/ui/tests/teacher-student-list.tsx
+
 "use client";
 
 import React from "react";
@@ -11,18 +13,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Check, Circle, Users, X } from "lucide-react";
 import { Account } from "@/app/lib/definitions";
 import { TestStatus, TestRoomUpdate } from "@/app/lib/websocket/test-socket";
 
 interface TeacherStudentListProps {
   semesterAccounts: Account[];
   waitingRoom: TestRoomUpdate | null;
+  submittedUsers: Map<number, number>;
 }
 
 export default function TeacherStudentList({
   semesterAccounts,
   waitingRoom,
+  submittedUsers,
 }: TeacherStudentListProps) {
   const getUserStatus = (accountId: number): TestStatus | null => {
     if (!waitingRoom) return null;
@@ -48,10 +52,6 @@ export default function TeacherStudentList({
         return (
           <Badge className="bg-blue-500 hover:bg-blue-600">Đang thi</Badge>
         );
-      case TestStatus.SUBMITTED:
-        return (
-          <Badge className="bg-green-500 hover:bg-green-600">Đã nộp</Badge>
-        );
       default:
         return <Badge variant="outline">Không xác định</Badge>;
     }
@@ -60,37 +60,49 @@ export default function TeacherStudentList({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Danh sách học sinh ({semesterAccounts.length})</CardTitle>
+        <CardTitle>Danh sách thi ({semesterAccounts.length})</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[5%]">STT</TableHead>
-              <TableHead className="w-[35%]">Họ và tên</TableHead>
-              <TableHead className="w-[20%]">CCCD</TableHead>
-              <TableHead className="w-[20%]">Email</TableHead>
+              <TableHead className="w-[30%]">Họ và tên</TableHead>
+              <TableHead className="w-[15%]">CCCD</TableHead>
               <TableHead className="w-[20%] text-center">Trạng thái</TableHead>
+              <TableHead className="w-[15%] text-center">Nộp bài</TableHead>
+              <TableHead className="w-[15%] text-center">Điểm</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {semesterAccounts.map((account, index) => {
               const status = getUserStatus(account.id);
+              const hasSubmitted = submittedUsers.has(account.id);
+              let score = null;
+              if (hasSubmitted) score = submittedUsers.get(account.id);
+
               return (
                 <TableRow key={account.id}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell className="font-medium">
-                    <div className="flex items-center gap-3">
-                      {account.lastName} {account.firstName}
-                    </div>
+                    {account.lastName} {account.firstName}
                   </TableCell>
                   <TableCell>{account.cccd}</TableCell>
-                  <TableCell>{account.email}</TableCell>
                   <TableCell>
                     <div className="flex justify-center">
                       {getStatusBadge(status)}
                     </div>
                   </TableCell>
+                  <TableCell>
+                    <div className="flex justify-center">
+                      {hasSubmitted ? (
+                        <Check className="w-5 h-5 text-green-500" />
+                      ) : (
+                        <Circle className="w-4 h-4 text-gray-400" />
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="flex justify-center">{score}</TableCell>
                 </TableRow>
               );
             })}

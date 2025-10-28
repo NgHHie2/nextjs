@@ -1,29 +1,39 @@
+// app/ui/tests/teacher-test-client.tsx
+
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Account } from "@/app/lib/definitions";
+import { Account, SubmittedStudents } from "@/app/lib/definitions";
 import { SemesterTest } from "@/app/lib/data/server-test-data";
 import { openTest } from "@/app/lib/data/test-data";
-import WaitingHeader from "./waiting-header";
 import TeacherTestInfo from "./teacher-test-info";
 import TeacherStatistics from "./teacher-statistics";
 import TeacherStudentList from "./teacher-student-list";
-import { TestSocket, TestRoomUpdate } from "@/app/lib/websocket/test-socket";
+import {
+  TestSocket,
+  TestRoomUpdate,
+  TestSubmittedEvent,
+} from "@/app/lib/websocket/test-socket";
 
 interface Props {
   testData: SemesterTest;
   user: Account;
   semesterAccounts: Account[];
+  initialSubmittedUsers: SubmittedStudents[];
 }
 
 export default function TeacherTestClient({
   testData,
   user,
   semesterAccounts,
+  initialSubmittedUsers,
 }: Props) {
   const [isOpening, setIsOpening] = useState(false);
   const [isTestOpen, setIsTestOpen] = useState(testData.open || false);
   const [waitingRoom, setWaitingRoom] = useState<TestRoomUpdate | null>(null);
+  const [submittedUsers, setSubmittedUsers] = useState<Map<number, number>>(
+    new Map(initialSubmittedUsers.map((st) => [st.userId, st.score])) // ví dụ
+  );
   const [socket, setSocket] = useState<TestSocket | null>(null);
 
   // Initialize WebSocket
@@ -36,9 +46,20 @@ export default function TeacherTestClient({
       user.role
     );
 
-    ws.connect((update) => {
-      setWaitingRoom(update);
-    });
+    ws.connect(
+      (update) => {
+        setWaitingRoom(update);
+      },
+      undefined,
+      (event: TestSubmittedEvent) => {
+        setSubmittedUsers((prev) => {
+          const newMap = new Map(prev);
+          newMap.set(event.userId, event.score);
+          return newMap;
+        });
+        console.log(`User ${event.userId} submitted with score ${event.score}`);
+      }
+    );
 
     setSocket(ws);
 
@@ -67,24 +88,24 @@ export default function TeacherTestClient({
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* <WaitingHeader user={user} /> */}
+    <div className="max-w-7xl mx-auto">
+      <TeacherTestInfo
+        testData={testData}
+        isTestOpen={isTestOpen}
+        isOpening={isOpening}
+        onOpenTest={handleOpenTest}
+      />
 
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <TeacherTestInfo
-          testData={testData}
-          isTestOpen={isTestOpen}
-          isOpening={isOpening}
-          onOpenTest={handleOpenTest}
-        />
+      <TeacherStatistics
+        waitingRoom={waitingRoom}
+        submittedCount={submittedUsers.size}
+      />
 
-        <TeacherStatistics waitingRoom={waitingRoom} />
-
-        <TeacherStudentList
-          semesterAccounts={semesterAccounts}
-          waitingRoom={waitingRoom}
-        />
-      </div>
+      <TeacherStudentList
+        semesterAccounts={semesterAccounts}
+        waitingRoom={waitingRoom}
+        submittedUsers={submittedUsers}
+      />
     </div>
   );
 }

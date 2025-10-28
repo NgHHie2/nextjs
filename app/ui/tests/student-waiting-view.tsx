@@ -3,7 +3,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Clock, Calendar, Award, AlertCircle, Users } from "lucide-react";
+import { Clock, Calendar, Award, AlertCircle, Users, Play } from "lucide-react";
 import { SemesterTest } from "@/app/lib/data/server-test-data";
 import { TestRoomUpdate } from "@/app/lib/websocket/test-socket";
 
@@ -21,6 +21,7 @@ interface StudentWaitingViewProps {
   isStarting: boolean;
   waitingRoom: TestRoomUpdate | null;
   onStartTest: () => void;
+  buttonText: string;
 }
 
 export default function StudentWaitingView({
@@ -32,6 +33,7 @@ export default function StudentWaitingView({
   isStarting,
   waitingRoom,
   onStartTest,
+  buttonText,
 }: StudentWaitingViewProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -158,11 +160,10 @@ export default function StudentWaitingView({
             disabled={!canStart || isStarting}
             className="w-full h-12 bg-primary text-primary-foreground py-4 px-6 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isStarting ? (
-              <p className="text-lg">ĐANG VÀO BÀI...</p>
-            ) : (
-              <p className="text-lg">BẮT ĐẦU</p>
-            )}
+            <div className="flex items-center justify-center gap-2">
+              {canStart && !isStarting && <Play className="w-5 h-5" />}
+              <p className="text-lg">{buttonText}</p>
+            </div>
           </Button>
         </div>
       </div>
@@ -174,7 +175,7 @@ export default function StudentWaitingView({
             <Users className="w-5 h-5" />
             Trạng thái phòng thi
           </h3>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div className="p-4 bg-background rounded-lg text-center">
               <div className="text-2xl font-bold">
                 {waitingRoom.waitingCount}
@@ -187,12 +188,12 @@ export default function StudentWaitingView({
               </div>
               <div className="text-sm text-muted-foreground">Đang thi</div>
             </div>
-            <div className="p-4 bg-background rounded-lg text-center">
+            {/* <div className="p-4 bg-background rounded-lg text-center">
               <div className="text-2xl font-bold">
                 {waitingRoom.submittedCount}
               </div>
               <div className="text-sm text-muted-foreground">Đã nộp</div>
-            </div>
+            </div> */}
           </div>
         </div>
       )}

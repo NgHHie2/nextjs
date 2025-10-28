@@ -1,5 +1,8 @@
 // app/test/[id]/page.tsx
-import { fetchSemesterTestById } from "@/app/lib/data/server-test-data";
+import {
+  fetchSemesterTestById,
+  fetchTestStatus,
+} from "@/app/lib/data/server-test-data";
 import { fetchCurrentUser } from "@/app/lib/data/server-auth-data";
 import { fetchAccountsByIds } from "@/app/lib/data/server-account-data";
 import { notFound, redirect } from "next/navigation";
@@ -14,22 +17,29 @@ export default async function TestPage({
   const { id } = await params;
   const testId = parseInt(id);
 
-  const [testData, currentUser] = await Promise.all([
+  const [testData, currentUser, testStatus] = await Promise.all([
     fetchSemesterTestById(testId),
     fetchCurrentUser(),
+    fetchTestStatus(testId),
   ]);
 
   if (!currentUser) {
     redirect("/login");
   }
 
-  if (!testData) {
+  if (!testData || !testStatus) {
     notFound();
   }
 
   // Nếu là STUDENT, hiển thị màn hình student (gộp waiting + exam)
   if (currentUser.role === "STUDENT") {
-    return <StudentTestClient testData={testData} user={currentUser} />;
+    return (
+      <StudentTestClient
+        testData={testData}
+        user={currentUser}
+        initialTestStatus={testStatus}
+      />
+    );
   }
 
   // Fallback

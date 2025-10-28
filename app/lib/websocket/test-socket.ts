@@ -6,7 +6,6 @@ import { API_BASE_URL } from "../api-config";
 export enum TestStatus {
   WAITING = "WAITING",
   TESTING = "TESTING",
-  SUBMITTED = "SUBMITTED",
 }
 
 export interface UserStatus {
@@ -22,7 +21,12 @@ export interface TestRoomUpdate {
   totalUsers: number;
   waitingCount: number;
   testingCount: number;
-  submittedCount: number;
+}
+
+export interface TestSubmittedEvent {
+  semesterTestId: number;
+  userId: number;
+  score: number;
 }
 
 export interface TestOpenedEvent {
@@ -39,6 +43,7 @@ export class TestSocket {
   private role: string;
   private onRoomUpdateCallback?: (update: TestRoomUpdate) => void;
   private onTestOpenedCallback?: (event: TestOpenedEvent) => void;
+  private onTestSubmittedCallback?: (event: TestSubmittedEvent) => void;
 
   constructor(
     semesterTestId: number,
@@ -56,10 +61,12 @@ export class TestSocket {
 
   connect(
     onRoomUpdate: (update: TestRoomUpdate) => void,
-    onTestOpened?: (event: TestOpenedEvent) => void
+    onTestOpened?: (event: TestOpenedEvent) => void,
+    onTestSubmitted?: (event: TestSubmittedEvent) => void
   ) {
     this.onRoomUpdateCallback = onRoomUpdate;
     this.onTestOpenedCallback = onTestOpened;
+    this.onTestSubmittedCallback = onTestSubmitted;
 
     const socket = new SockJS(`${API_BASE_URL}/ws/test-waiting`);
 
@@ -85,6 +92,17 @@ export class TestSocket {
             (message: IMessage) => {
               const event: TestOpenedEvent = JSON.parse(message.body);
               this.onTestOpenedCallback?.(event);
+            }
+          );
+        }
+
+        // Subscribe to test submitted events
+        if (this.onTestSubmittedCallback) {
+          this.client?.subscribe(
+            `/topic/test/${this.semesterTestId}/submitted`,
+            (message: IMessage) => {
+              const event: TestSubmittedEvent = JSON.parse(message.body);
+              this.onTestSubmittedCallback?.(event);
             }
           );
         }

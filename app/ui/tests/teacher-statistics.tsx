@@ -1,3 +1,5 @@
+// app/ui/tests/teacher-statistics.tsx
+
 "use client";
 
 import React from "react";
@@ -7,10 +9,12 @@ import { TestRoomUpdate } from "@/app/lib/websocket/test-socket";
 
 interface TeacherStatisticsProps {
   waitingRoom: TestRoomUpdate | null;
+  submittedCount: number;
 }
 
 export default function TeacherStatistics({
   waitingRoom,
+  submittedCount,
 }: TeacherStatisticsProps) {
   if (!waitingRoom) {
     return null;
@@ -41,9 +45,7 @@ export default function TeacherStatistics({
             <div className="text-sm text-muted-foreground">Đang thi</div>
           </div>
           <div className="p-4 bg-background rounded-lg text-center">
-            <div className="text-2xl font-bold">
-              {waitingRoom.submittedCount}
-            </div>
+            <div className="text-2xl font-bold">{submittedCount}</div>
             <div className="text-sm text-muted-foreground">Đã nộp</div>
           </div>
         </div>

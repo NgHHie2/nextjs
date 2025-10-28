@@ -177,3 +177,8 @@ export interface JwtPayload {
   iat: number;
   exp: number;
 }
+
+export type SubmittedStudents = {
+  userId: number;
+  score: number;
+};

@@ -42,6 +42,7 @@ export interface QuestionResponse {
   answers: Answer[];
   selectedAnswers: number[];
   flagged: boolean;
+  answeredAt?: string | null;
 }
 
 export interface EndTestResponse {
@@ -60,6 +61,7 @@ export interface QuestionOverview {
 export interface StudentAnswer {
   flagged: boolean;
   selectedAnswers: number[];
+  answeredAt?: string | null;
 }
 
 export interface ResultDetailDTO {

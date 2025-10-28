@@ -1,3 +1,5 @@
+// app/ui/tests/student-test-client.tsx
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -14,41 +16,45 @@ import {
   ResultDetailDTO,
   StudentAnswer,
 } from "@/app/lib/data/test-data";
-import { SemesterTest } from "@/app/lib/data/server-test-data";
+import {
+  SemesterTest,
+  TestStatusResponse,
+} from "@/app/lib/data/server-test-data";
 import WaitingHeader from "./waiting-header";
 import ExamHeader from "./exam-header";
 import StudentWaitingView from "./student-waiting-view";
 import StudentExamView from "./student-exam-view";
-import {
-  TestSocket,
-  TestRoomUpdate,
-  TestOpenedEvent,
-} from "@/app/lib/websocket/test-socket";
+import StudentCompletedView from "./student-completed-view";
+import useTestWebSocket from "./hooks/use-test-websocket";
+import useWaitingCountdown from "./hooks/use-waiting-countdown";
+import useExamCountdown from "./hooks/use-exam-countdown";
 
 interface Props {
   testData: SemesterTest;
   user: Account;
+  initialTestStatus: TestStatusResponse;
 }
 
-type ViewMode = "waiting" | "exam";
+type ViewMode = "waiting" | "exam" | "completed";
 
-export default function StudentTestClient({ testData, user }: Props) {
+export default function StudentTestClient({
+  testData,
+  user,
+  initialTestStatus,
+}: Props) {
   const router = useRouter();
-  const [viewMode, setViewMode] = useState<ViewMode>("waiting");
-  const [resultId, setResultId] = useState<number | null>(null);
+
+  // Luôn bắt đầu từ waiting view, trừ khi đã completed
+  const [viewMode, setViewMode] = useState<ViewMode>(
+    initialTestStatus.status === "COMPLETED" ? "completed" : "waiting"
+  );
+
+  const [resultId, setResultId] = useState<number | null>(
+    initialTestStatus.resultId
+  );
 
   // Waiting state
-  const [countdown, setCountdown] = useState<{
-    days: number;
-    hours: number;
-    minutes: number;
-    seconds: number;
-  } | null>(null);
   const [isStarting, setIsStarting] = useState(false);
-  const [canStart, setCanStart] = useState(false);
-  const [testStatus, setTestStatus] = useState<
-    "upcoming" | "ongoing" | "ended"
-  >("upcoming");
   const [isTestOpen, setIsTestOpen] = useState(testData.open || false);
 
   // Exam state
@@ -63,123 +69,48 @@ export default function StudentTestClient({ testData, user }: Props) {
   const [studentAnswers, setStudentAnswers] = useState<
     Record<string, StudentAnswer>
   >({});
-  const [examCountdown, setExamCountdown] = useState<{
-    minutes: number;
-    seconds: number;
-  } | null>(null);
 
-  // WebSocket state
-  const [waitingRoom, setWaitingRoom] = useState<TestRoomUpdate | null>(null);
-  const [socket, setSocket] = useState<TestSocket | null>(null);
+  // Completed state
+  const [completedScore, setCompletedScore] = useState<number | null>(
+    initialTestStatus.score
+  );
 
-  // Initialize WebSocket
-  useEffect(() => {
-    const ws = new TestSocket(
-      testData.id,
-      user.id,
-      `${user.lastName} ${user.firstName}`,
-      user.cccd,
-      user.role
-    );
+  // Custom hooks
+  const { waitingRoom } = useTestWebSocket({
+    testData,
+    user,
+    isCompleted: viewMode === "completed",
+    onTestOpened: (opened) => setIsTestOpen(opened),
+  });
 
-    ws.connect(
-      (update) => {
-        setWaitingRoom(update);
-      },
-      (event) => {
-        setIsTestOpen(event.opened);
-      }
-    );
+  const { countdown, testStatus, canStart } = useWaitingCountdown({
+    testData,
+    isTestOpen,
+    enabled: viewMode === "waiting",
+  });
 
-    setSocket(ws);
+  const { examCountdown } = useExamCountdown({
+    resultDetail,
+    enabled: viewMode === "exam",
+    onTimeout: handleEndTest,
+  });
 
-    return () => {
-      ws.disconnect();
-    };
-  }, [testData.id, user]);
+  // Determine button text based on test status
+  const getStartButtonText = () => {
+    if (isStarting) return "ĐANG TẢI...";
+    if (!isTestOpen) return "BÀI THI CHƯA MỞ";
 
-  // Calculate countdown for waiting
-  useEffect(() => {
-    const calculateCountdown = () => {
-      const now = new Date();
-      const startTime = new Date(testData.startDate);
-      const endTime = new Date(testData.endDate);
-
-      if (now >= startTime && now <= endTime) {
-        setCanStart(isTestOpen);
-        setTestStatus("ongoing");
-        setCountdown(null);
-        return;
-      }
-
-      if (now < startTime) {
-        const diff = startTime.getTime() - now.getTime();
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor(
-          (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        setCountdown({ days, hours, minutes, seconds });
-        setCanStart(false);
-        setTestStatus("upcoming");
-        return;
-      }
-
-      if (now > endTime) {
-        setCanStart(false);
-        setTestStatus("ended");
-        setCountdown(null);
-      }
-    };
-
-    calculateCountdown();
-    const interval = setInterval(calculateCountdown, 1000);
-
-    return () => clearInterval(interval);
-  }, [testData, isTestOpen]);
-
-  // Update canStart when isTestOpen changes
-  useEffect(() => {
-    if (testStatus === "ongoing") {
-      setCanStart(isTestOpen);
+    // Nếu đã có result và chưa submit -> đang thi -> hiện "TIẾP TỤC THI"
+    if (initialTestStatus.status === "IN_PROGRESS") {
+      return "TIẾP TỤC THI";
     }
-  }, [isTestOpen, testStatus]);
 
-  // Calculate exam countdown
-  useEffect(() => {
-    if (!resultDetail || viewMode !== "exam") return;
+    // Chưa có result -> hiện "BẮT ĐẦU THI"
+    return "BẮT ĐẦU THI";
+  };
 
-    const calculateExamCountdown = () => {
-      const now = new Date();
-      const startTime = new Date(resultDetail.startDateTime);
-      const endTime = new Date(
-        startTime.getTime() + resultDetail.minutes * 60 * 1000
-      );
-
-      if (now <= endTime) {
-        const diff = endTime.getTime() - now.getTime();
-        const totalMinutes = Math.floor(diff / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        setExamCountdown({ minutes: totalMinutes, seconds });
-        return;
-      }
-
-      if (now > endTime) {
-        setExamCountdown(null);
-        handleEndTest();
-      }
-    };
-
-    calculateExamCountdown();
-    const interval = setInterval(calculateExamCountdown, 1000);
-
-    return () => clearInterval(interval);
-  }, [resultDetail, viewMode]);
-
-  const handleStartTest = async () => {
+  // Hàm start/continue test - dùng chung
+  const handleStartOrContinueTest = async () => {
     setIsStarting(true);
     try {
       const result = await startTest(testData.id);
@@ -191,9 +122,9 @@ export default function StudentTestClient({ testData, user }: Props) {
       } else {
         alert(result.message || "Không thể bắt đầu bài thi");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error starting test:", error);
-      alert("Đã xảy ra lỗi khi bắt đầu bài thi");
+      alert(error.message || "Đã xảy ra lỗi khi bắt đầu bài thi");
     } finally {
       setIsStarting(false);
     }
@@ -286,7 +217,7 @@ export default function StudentTestClient({ testData, user }: Props) {
     }
   };
 
-  const handleEndTest = async () => {
+  async function handleEndTest() {
     if (!resultId) return;
 
     try {
@@ -294,8 +225,9 @@ export default function StudentTestClient({ testData, user }: Props) {
       const result = await endTest(resultId);
 
       if (result.success) {
-        alert(`Nộp bài thành công! Điểm của bạn: ${result.score}`);
-        router.push("/dashboard");
+        setCompletedScore(result.score);
+        setViewMode("completed");
+        // alert(`Nộp bài thành công! Điểm của bạn: ${result.score}`);
       }
     } catch (error) {
       console.error("Error ending test:", error);
@@ -303,9 +235,20 @@ export default function StudentTestClient({ testData, user }: Props) {
     } finally {
       setIsEnding(false);
     }
-  };
+  }
 
-  // Render waiting view
+  // Render views
+  if (viewMode === "completed") {
+    return (
+      <StudentCompletedView
+        testData={testData}
+        user={user}
+        score={completedScore}
+        resultId={resultId}
+      />
+    );
+  }
+
   if (viewMode === "waiting") {
     return (
       <div className="min-h-screen bg-background">
@@ -318,13 +261,14 @@ export default function StudentTestClient({ testData, user }: Props) {
           canStart={canStart}
           isStarting={isStarting}
           waitingRoom={waitingRoom}
-          onStartTest={handleStartTest}
+          onStartTest={handleStartOrContinueTest}
+          buttonText={getStartButtonText()}
         />
       </div>
     );
   }
 
-  // Render exam view
+  // Exam view - loading state
   if (isLoading || !resultDetail || !currentQuestion) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -336,6 +280,7 @@ export default function StudentTestClient({ testData, user }: Props) {
     );
   }
 
+  // Exam view
   return (
     <div className="bg-background h-screen flex flex-col">
       <ExamHeader user={user} onEndTest={handleEndTest} isEnding={isEnding} />
